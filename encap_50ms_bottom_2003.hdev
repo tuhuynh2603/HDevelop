@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.2" halcon_version="13.0.2.2">
+<procedure name="main">
+<interface/>
+<body>
+<l>* dev_open_file_dialog ('read_image', 'dir', 'default', Selection)</l>
+<l>* file_name:= Selection + '/'</l>
+<l> file_name:='E:/cong viec 09 03 2020/2019.03.23/2019.03.23/'</l>
+<l> file_name:='E:/cong viec 09 03 2020/SUPERAMP_EXAMPLE/B_superamp_fail/B/'</l>
+<l>file_name_0:= 'HP_FCI_THA1_Pos1_B1'</l>
+<l>file_name_1:= 'HP_FCI_THA1_Pos1_B2'</l>
+<l>file_name_2:= 'HP_FCI_THA1_Pos1_B3'</l>
+<c></c>
+<l>file_name_3:= 'HP_FCI_THA1_Pos4_B1'</l>
+<l>file_name_4:= 'HP_FCI_THA1_Pos4_B2'</l>
+<l>file_name_5:= 'HP_FCI_THA1_Pos4_B3'</l>
+<c></c>
+<c></c>
+<l>file_names.at(0):= file_name_0</l>
+<l>file_names.at(1):= file_name_1</l>
+<l>file_names.at(2):= file_name_2</l>
+<c></c>
+<l>file_names.at(3):= file_name_3</l>
+<l>file_names.at(4):= file_name_4</l>
+<l>file_names.at(5):= file_name_5</l>
+<c></c>
+<l>first_file:= 2720817127</l>
+<l>end_file:= 2720817184</l>
+<l>Gauss_sig1:= 3</l>
+<l>select_big_min:= 1200</l>
+<l>select_big_max:= 1800</l>
+<l>crop_plus_big:= 220</l>
+<l>thres_big_min:=140</l>
+<l>thres_big_max:=255</l>
+<l>Thres_min_2:= 0</l>
+<l>Thres_max_2:= 25</l>
+<l>Thres_min_image1:=220</l>
+<l>Thres_max_image1:=255</l>
+<l>Thres_min_image2:=80</l>
+<l>Thres_max_image2:=255</l>
+<l>closing_value:=5</l>
+<l>shape_area_remove:=500</l>
+<l>smooth_value:=53</l>
+<l>shape_width_select:=500</l>
+<l>opening_value_final:=10</l>
+<l>for i:=first_file to end_file by 1</l>
+<c>    </c>
+<l>    path_0:= file_name + i + '/' + file_name_0 + '.bmp'</l>
+<l>    path_1:= file_name + i + '/' + file_name_1 + '.bmp'</l>
+<l>    path_2:= file_name + i + '/' + file_name_2 + '.bmp'  </l>
+<c>    </c>
+<l>    path_3:= file_name + i + '/' + file_name_3 + '.bmp'</l>
+<l>    path_4:= file_name + i + '/' + file_name_4 + '.bmp'</l>
+<l>    path_5:= file_name + i + '/' + file_name_5 + '.bmp'   </l>
+<c>        </c>
+<l>    read_image (Image.at(0), path_0) </l>
+<l>    read_image (Image.at(1), path_1)</l>
+<l>    read_image (Image.at(2), path_2)</l>
+<c>    </c>
+<l>    read_image (Image.at(3), path_3) </l>
+<l>    read_image (Image.at(4), path_4)</l>
+<l>    read_image (Image.at(5), path_5)</l>
+<c>   </c>
+<c>    </c>
+<c>    * encap bottom top</c>
+<l>    threshold (Image.at(1), Region, thres_big_min, thres_big_max)</l>
+<l>    connection (Region, Connection)</l>
+<l>    select_shape (Connection, SelectedRegions3, 'area', 'and', 1000000, 2000000)</l>
+<l>    boundary (SelectedRegions3, RegionBorder, 'inner')</l>
+<l>    get_region_points (RegionBorder, Rows1, Columns1)</l>
+<c>    </c>
+<l>    tuple_max (Rows1, Y_right)</l>
+<l>    tuple_min (Rows1, Y_left)</l>
+<l>    tuple_max (Columns1, X_right)</l>
+<l>    tuple_min (Columns1, X_left)</l>
+<l>         rectangle1_domain (Image.at(1), ImageReduced1,Y_left-crop_plus_big, X_left-crop_plus_big , Y_left, X_right+crop_plus_big)</l>
+<l>         rectangle1_domain (Image.at(2), ImageReduced_2,Y_left-crop_plus_big, X_left-crop_plus_big , Y_left, X_right+crop_plus_big)</l>
+<l>         threshold (ImageReduced1, Regions, Thres_min_2, Thres_max_2)</l>
+<l>         threshold (ImageReduced1, Regions1, Thres_min_image1, Thres_max_image1)</l>
+<l>         threshold(ImageReduced_2, Region2, Thres_min_image2, Thres_max_image2)</l>
+<l>         concat_obj (Regions, Regions1, ObjectsConcat1)</l>
+<l>         concat_obj (ObjectsConcat1, Region2, ObjectsConcat2)</l>
+<l>         union1 (ObjectsConcat2, RegionUnion1)</l>
+<l>         connection (RegionUnion1, ConnectedRegions)</l>
+<l>         select_shape (ConnectedRegions, SelectedRegions, 'area', 'and', shape_area_remove, 999999)                 </l>
+<l>         union1(SelectedRegions,RegionUnion)</l>
+<l>         closing_circle(RegionUnion, RegionClosing, closing_value)</l>
+<c>         </c>
+<l>         fill_up (RegionClosing, RegionClosing_fillup)              </l>
+<l>         gen_rectangle1 (Rectangle3,Y_left-crop_plus_big, X_left-crop_plus_big , Y_left, X_right+crop_plus_big)               </l>
+<l>         difference (Rectangle3, RegionClosing_fillup, RegionDifference1)</l>
+<l>         fill_up (RegionDifference1, RegionFillUp1)</l>
+<l>         connection (RegionFillUp1, ConnectedRegions2)</l>
+<l>         select_shape (ConnectedRegions2, SelectedRegions4, 'width', 'and', shape_width_select, 99999)</l>
+<l>         opening_circle (SelectedRegions4, RegionOpening, opening_value_final)</l>
+<l>         gen_contour_region_xld (RegionOpening, Contours2, 'center')</l>
+<c>         </c>
+<l>         smooth_contours_xld (Contours2, SmoothedContours, smooth_value)</l>
+<l>        dev_clear_window()</l>
+<l>        dev_display (Image.at(1))</l>
+<l>         dev_set_color ('red')</l>
+<l>         dev_display(Contours2)</l>
+<c></c>
+<l>         dev_set_color ('green')</l>
+<c>         </c>
+<l>          dev_display(SmoothedContours)</l>
+<l>stop()</l>
+<l>dev_clear_window()</l>
+<c>   *encap bottom bot   </c>
+<l>   threshold (Image.at(4), Region_bot, thres_big_min, thres_big_max)</l>
+<l>    connection (Region_bot, Connection_bot)</l>
+<l>    select_shape (Connection_bot, SelectedRegions3_bot, 'area', 'and', 1000000, 2000000)</l>
+<l>    boundary (SelectedRegions3_bot, RegionBorder_bot, 'inner')</l>
+<l>    get_region_points (RegionBorder_bot, Rows1_bot, Columns1_bot)</l>
+<c>    </c>
+<l>    tuple_max (Rows1_bot, Y_right_bot)</l>
+<l>    tuple_min (Rows1_bot, Y_left_bot)</l>
+<l>    tuple_max (Columns1_bot, X_right_bot)</l>
+<l>    tuple_min (Columns1_bot, X_left_bot)</l>
+<l>         rectangle1_domain (Image.at(4), ImageReduced1_bot,Y_right_bot, X_left_bot-crop_plus_big ,Y_right_bot+crop_plus_big, X_right_bot + crop_plus_big)</l>
+<l>         rectangle1_domain (Image.at(5), ImageReduced_2_bot,Y_right_bot, X_left_bot-crop_plus_big ,Y_right_bot+crop_plus_big, X_right_bot + crop_plus_big)</l>
+<l>         threshold (ImageReduced1_bot, Regions_bot, Thres_min_2, Thres_max_2)</l>
+<l>         threshold (ImageReduced1_bot, Regions1_bot, Thres_min_image1, Thres_max_image1)</l>
+<l>         threshold(ImageReduced_2_bot, Region2_bot, Thres_min_image2, Thres_max_image2)</l>
+<l>         concat_obj (Regions_bot, Regions1_bot, ObjectsConcat1_bot)</l>
+<l>         concat_obj (ObjectsConcat1_bot, Region2_bot, ObjectsConcat2_bot)</l>
+<l>         union1 (ObjectsConcat2_bot, RegionUnion1_bot)</l>
+<l>         connection (RegionUnion1_bot, ConnectedRegions_bot)</l>
+<l>         select_shape (ConnectedRegions_bot, SelectedRegions_bot, 'area', 'and', shape_area_remove, 999999)                 </l>
+<l>         union1(SelectedRegions_bot,RegionUnion_bot)</l>
+<l>         closing_circle(RegionUnion_bot, RegionClosing_bot, closing_value)</l>
+<c>         </c>
+<l>         fill_up (RegionClosing_bot, RegionClosing_fillup_bot)              </l>
+<l>         gen_rectangle1 (Rectangle3_bot,Y_right_bot, X_left_bot-crop_plus_big ,Y_right_bot+crop_plus_big, X_right_bot + crop_plus_big)               </l>
+<l>         difference (Rectangle3_bot, RegionClosing_fillup_bot, RegionDifference1_bot)</l>
+<l>         fill_up (RegionDifference1_bot, RegionFillUp1_bot)</l>
+<l>         connection (RegionFillUp1_bot, ConnectedRegions2_bot)</l>
+<l>         select_shape (ConnectedRegions2_bot, SelectedRegions4_bot, 'width', 'and', shape_width_select, 99999)</l>
+<l>         opening_circle (SelectedRegions4_bot, RegionOpening_bot, opening_value_final)</l>
+<l>         gen_contour_region_xld (RegionOpening_bot, Contours2_bot, 'center')</l>
+<c>         </c>
+<c></c>
+<l>         smooth_contours_xld (Contours2_bot, SmoothedContours_bot,151)</l>
+<l>         gen_region_contour_xld (SmoothedContours_bot, Region1, 'filled')</l>
+<c>         </c>
+<l>         dev_set_color ('red')</l>
+<l>         dev_clear_window()</l>
+<l>         dev_display (Image.at(5))</l>
+<l>           dev_display(SmoothedContours_bot)</l>
+<l>          dev_set_color ('green')</l>
+<l>          dev_display (Contours2_bot)</l>
+<c>          </c>
+<l>      stop()    </l>
+<c></c>
+<l>endfor</l>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>
