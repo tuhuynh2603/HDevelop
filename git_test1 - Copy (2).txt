@@ -1,2 +1,6 @@
 hello tu from server
+<<<<<<< HEAD
 rewrwer
+=======
+ádff
+>>>>>>> 6908598582914bab6147bfd22db80eab7ae6685a
