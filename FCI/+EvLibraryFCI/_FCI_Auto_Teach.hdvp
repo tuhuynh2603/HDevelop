@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.2" halcon_version="13.0.4">
+<procedure name="_FCI_Auto_Teach">
+<interface>
+<ic>
+<par name="nIntensityTop" base_type="ctrl" dimension="0"/>
+<par name="nIntensityBottom" base_type="ctrl" dimension="0"/>
+<par name="nIntensitySide" base_type="ctrl" dimension="0"/>
+<par name="TeachImageDir" base_type="ctrl" dimension="0"/>
+<par name="nFoVs" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<l>global object vector(2) TopImageVector</l>
+<l>global tuple vector(3) TopTupleVector</l>
+<l>global tuple vector(4) TopPVITupleVector</l>
+<l>global tuple vector(3) TopEncapTupleVector</l>
+<l>global tuple vector(3) TopCVLTupleVector</l>
+<l>global tuple vector(3) TopCVLATupleVector</l>
+<l>global tuple vector(3) TopTiltTupleVector</l>
+<c></c>
+<l>global object vector(2) BottomImageVector</l>
+<l>global tuple vector(3) BottomTupleVector</l>
+<l>global tuple vector(4) BottomPVITupleVector</l>
+<l>global tuple vector(3) BottomEncapTupleVector</l>
+<l>global tuple vector(3) BottomCVLTupleVector</l>
+<l>global tuple vector(3) BottomCVLATupleVector</l>
+<l>global tuple vector(3) BottomTiltTupleVector</l>
+<c></c>
+<l>global object vector(2) SideImageVector</l>
+<l>global tuple vector(3) SideTupleVector</l>
+<l>global tuple vector(4) SidePVITupleVector</l>
+<l>global tuple vector(3) SideEncapTupleVector</l>
+<l>global tuple vector(3) SideCVLTupleVector</l>
+<l>global tuple vector(3) SideCVLATupleVector</l>
+<c></c>
+<c>****************** Top AutoTeach ********************************</c>
+<l>stop()</l>
+<l>for fov:=1 to nFoVs by 1</l>
+<l>    for d:=1 to nIntensityTop by 1</l>
+<c>               </c>
+<l>        TeachDocdPath:=TeachImageDir+'Camera1/Doc'+d+'/'</l>
+<l>        list_files (TeachDocdPath, ['files','follow_links','recursive'], AutoTeachFilesDocd)</l>
+<l>        tuple_regexp_select (AutoTeachFilesDocd, ['.bmp$','ignore_case'], ImageFilesDocd)</l>
+<l>        tuple_regexp_select (ImageFilesDocd, ['pos'+fov,'ignore_case'], posDImageName)</l>
+<l>        read_image(posDTopImage, posDImageName)</l>
+<l>        TopImageVector.at(fov-1).insert(d-1,posDTopImage)</l>
+<l>        count_obj(posDTopImage, Number)</l>
+<l>        if(Number = 0 )</l>
+<l>            break</l>
+<l>        endif  </l>
+<c>        </c>
+<l>        tuple_regexp_select (AutoTeachFilesDocd, ['.bmp$','invert_match'], TupleFilesDocd)</l>
+<l>        tuple_regexp_select (TupleFilesDocd, ['pos'+fov,'ignore_case'], posDTupleNames)</l>
+<c>        </c>
+<c>        ******** Location AutoTeach ********</c>
+<c>                </c>
+<l>        _FCI_Location_AutoTeach_ReadData (posDTupleNames, TeachLocDoc, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, PatternTeachRows, PatternTeachCols, LocationTeachRows, LocationTeachCols, ModelIDs, PatternDegree, MatchModelCenterRow, MatchModelCenterColumn, MaskSize)</l>
+<c></c>
+<l>        _FCI_TeachUniquePattern (posDTopImage, \
+                                 NoOfUniquePatterns, MaxRotationAngle, PatternTeachRows, PatternTeachCols, \
+                                 ModelIDs)</l>
+<c>                    </c>
+<l>        AppendTeachLocation (TopTupleVector, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, PatternTeachRows, PatternTeachCols, LocationTeachRows, LocationTeachCols, ModelIDs, PatternDegree, MatchModelCenterRow, MatchModelCenterColumn, MaskSize, TeachLocDoc, fov, (d-1), TopTupleVector)</l>
+<c>        </c>
+<c>        </c>
+<c>        ******** Region/PVI/Mask AutoTeach ******</c>
+<c>        </c>
+<l>        tuple_regexp_select (posDTupleNames, ['NumOfPVIAreas','ignore_case'], tupleNumOfPVIAreas)</l>
+<l>        read_tuple(tupleNumOfPVIAreas, NoOfPVIAreas)</l>
+<l>        if(NoOfPVIAreas # 0)</l>
+<l>            for nPVIArea :=  0 to NoOfPVIAreas-1 by 1</l>
+<l>                SearchArea:= 'Area'+ (nPVIArea+1)           </l>
+<l>                tuple_regexp_select (posDTupleNames, [SearchArea,'ignore_case'], SingleAreaTeachTuple)                        </l>
+<c>                </c>
+<l>                _FCI_Region_AutoTeach_ReadData (SingleAreaTeachTuple, \
+                                                NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize)</l>
+<c>                </c>
+<l>                AppendTeachPVI (TopPVITupleVector, NoOfPVIAreas, NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize, fov, (d-1), nPVIArea, \
+                                TopPVITupleVector)</l>
+<c>                                </c>
+<l>            endfor</l>
+<l>        else</l>
+<l>            SearchArea := 'Area1'</l>
+<l>            tuple_regexp_select (posDTupleNames, [SearchArea,'ignore_case'], SingleAreaTeachTuple)                        </l>
+<c>            </c>
+<l>            _FCI_Region_AutoTeach_ReadData (SingleAreaTeachTuple, \
+                                            NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize)</l>
+<c>            </c>
+<l>            AppendTeachPVI (TopPVITupleVector, NoOfPVIAreas, NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize, fov, d-1, 0, \
+                                TopPVITupleVector)</l>
+<c></c>
+<l>        endif</l>
+<c></c>
+<c>        ******* Encap AutoTeach *********  </c>
+<c>        </c>
+<l>        _FCI_Encap_AutoTeach_ReadData (posDTupleNames, \
+                                       EncapTeachDoc, MinEncapContrast, MaxEncapContrast, NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols)</l>
+<c>        </c>
+<l>        _Encap_TeachTupleVector (TopEncapTupleVector, EncapTeachDoc, MinEncapContrast, MaxEncapContrast, NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols, fov, d-1, \
+                                 TopEncapTupleVector)</l>
+<c></c>
+<c>        ******* CoverLayer AutoTeach ************</c>
+<c>        </c>
+<l>        _FCI_CVL_AutoTeach_ReadData (posDTupleNames, \
+                                     CVLTeachDoc, NoOfRegions, CVLRectRgnRows, CVLRectRgnCols, CVLNoOfUniquePatterns, CVLMaxRotationAngle, CVLPatternSearchAreaAlongX, CVLPatternSearchAreaAlongY, CVLMinAcceptanceScore, CVLDatumRows, CVLDatumCols, CVLModelID, CVLRotationAngle, CVLMatchModelCenterRow, CVLMatchModelCenterCol, CVLContrast, CVLLength, MaskSize, MinCVLHeight)</l>
+<c>        </c>
+<l>        _FCI_TeachUniquePattern (posDTopImage, \
+                                 CVLNoOfUniquePatterns, MaxRotationAngle, CVLDatumRows, CVLDatumCols, \
+                                 CVLModelID)</l>
+<c>                </c>
+<l>        _CVL_TeachTupleVector (TopCVLTupleVector, CVLTeachDoc, NoOfRegions, CVLRectRgnRows, CVLRectRgnCols, CVLNoOfUniquePatterns, CVLMaxRotationAngle, CVLPatternSearchAreaAlongX, CVLPatternSearchAreaAlongY, CVLMinAcceptanceScore, CVLDatumRows, CVLDatumCols, CVLModelID, CVLRotationAngle, CVLMatchModelCenterRow, CVLMatchModelCenterCol, CVLContrast, CVLLength, MaskSize, MinCVLHeight, fov, d-1, \
+                               TopCVLTupleVector)</l>
+<c></c>
+<c>        ******* CoverLayer Alignment AutoTeach ************</c>
+<c>                </c>
+<l>        _FCI_CVLA_AutoTeach_ReadData (posDTupleNames, CVLAlignmentTeachDoc, NoOfCVLARect, CVLAMaxRotationAngle, CVLAPatternSearchAreaAlongX, CVLAPatternSearchAreaAlongY, CVLAMinAcceptanceScore, CVLAModelIDs, CVLATeachRows, CVLATeachCols, NoOfCVLADatum, CVLADatumModelID, CVLADatumTeachRows, CVLADatumTeachCols, CVLARefRotationAngle, CVLARefPointRow, CVLARefPointColumn, NoOfCVLArectFL, CVLATeachRowsFL, CVLATeachColsFL, MaxDistanceBtnCLFL)</l>
+<c>        </c>
+<l>        if(NoOfCVLARect &gt; 0)</l>
+<l>            CVLAModelIDs := []</l>
+<l>            for CLAIndex4Pointer := 0 to NoOfCVLARect-1 by 1</l>
+<l>                CVLARows := CVLATeachRows[2*CLAIndex4Pointer : 2*(CLAIndex4Pointer+1)-1]</l>
+<l>                CVLACols := CVLATeachCols[2*CLAIndex4Pointer : 2*(CLAIndex4Pointer+1)-1]</l>
+<c>                </c>
+<l>                _FCI_TeachUniquePattern (posDBottomImage, \
+                                         1, CVLAMaxRotationAngle, CVLARows, CVLACols, \
+                                         CVLAModelID)</l>
+<l>                CVLAModelIDs := [CVLAModelIDs, CVLAModelID]</l>
+<l>            endfor</l>
+<l>        else</l>
+<l>            _FCI_TeachUniquePattern (posDTopImage, \
+                                     NoOfCVLADatum, CVLAMaxRotationAngle, CVLADatumTeachRows, CVLADatumTeachCols, \
+                                     CVLADatumModelID)</l>
+<l>        endif</l>
+<c>                </c>
+<l>        _CVLA_TeachTupleVector (TopCVLATupleVector, CVLAlignmentTeachDoc, NoOfCVLARect, CVLAMaxRotationAngle, CVLAPatternSearchAreaAlongX, CVLAPatternSearchAreaAlongY, CVLAMinAcceptanceScore, CVLAModelIDs, CVLATeachRows, CVLATeachCols, NoOfCVLADatum, CVLADatumModelID, CVLADatumTeachRows, CVLADatumTeachCols, CVLARefRotationAngle, CVLARefPointRow, CVLARefPointColumn, NoOfCVLArectFL, CVLATeachRowsFL, CVLATeachColsFL, MaxDistanceBtnCLFL, fov, d-1, TopCVLATupleVector)</l>
+<c></c>
+<c>        </c>
+<c>        ****** Tilt AutoTeach *********</c>
+<c>        </c>
+<l>        _FCI_Tilt_AutoTeach_ReadData (posDTupleNames, \
+                                      TiltTeachDoc, TiltRectRows, TiltRectCols)</l>
+<c>        </c>
+<l>        _Tilt_TeachTupleVector (TopTiltTupleVector, TiltTeachDoc, TiltRectRows, TiltRectCols, fov, d-1, \
+                                TopTiltTupleVector)</l>
+<l>    endfor</l>
+<l>endfor</l>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c>******** Bottom Auto Teach ***********</c>
+<l>stop()</l>
+<l>for fov:=1 to nFoVs by 1</l>
+<l>    for d:=1 to nIntensityBottom by 1</l>
+<c></c>
+<l>        TeachDocdPath:=TeachImageDir+'Camera2/Doc'+d+'/'</l>
+<l>        list_files (TeachDocdPath, ['files','follow_links','recursive'], AutoTeachFilesDocd)</l>
+<l>        tuple_regexp_select (AutoTeachFilesDocd, ['.bmp$','ignore_case'], ImageFilesDocd)</l>
+<l>        tuple_regexp_select (ImageFilesDocd, ['pos'+fov,'ignore_case'], posDImageName)</l>
+<l>        read_image(posDBottomImage, posDImageName)</l>
+<l>        BottomImageVector.at(fov-1).insert(d-1,posDBottomImage)</l>
+<l>        count_obj(posDBottomImage, Number)</l>
+<l>        if(Number = 0 )</l>
+<l>            break</l>
+<l>        endif  </l>
+<l>        tuple_regexp_select (AutoTeachFilesDocd, ['.bmp$','invert_match'], TupleFilesDocd)</l>
+<l>        tuple_regexp_select (TupleFilesDocd, ['pos'+fov,'ignore_case'], posDTupleNames)</l>
+<c>        </c>
+<c>        ********** Location AutoTeach *****</c>
+<c>        </c>
+<l>        _FCI_Location_AutoTeach_ReadData (posDTupleNames, TeachLocDoc, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, PatternTeachRows, PatternTeachCols, LocationTeachRows, LocationTeachCols, ModelIDs, PatternDegree, MatchModelCenterRow, MatchModelCenterColumn, MaskSize)</l>
+<c></c>
+<l>        _FCI_TeachUniquePattern (posDBottomImage, \
+                                 NoOfUniquePatterns, MaxRotationAngle, PatternTeachRows, PatternTeachCols, \
+                                 ModelIDs)</l>
+<c>                </c>
+<l>        AppendTeachLocation (BottomTupleVector, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, PatternTeachRows, PatternTeachCols, LocationTeachRows, LocationTeachCols, ModelIDs, PatternDegree, MatchModelCenterRow, MatchModelCenterColumn, MaskSize, TeachLocDoc, fov, (d-1), BottomTupleVector)</l>
+<c>              </c>
+<c>        </c>
+<c>        ************ Region/PVI AutoTeach ********</c>
+<c>        </c>
+<l>        tuple_regexp_select (posDTupleNames, ['NumOfPVIAreas','ignore_case'], tupleNumOfPVIAreas)</l>
+<l>        read_tuple(tupleNumOfPVIAreas, NoOfPVIAreas)</l>
+<l>        if(NoOfPVIAreas # 0)</l>
+<l>            for nPVIArea :=  0 to NoOfPVIAreas-1 by 1</l>
+<l>                SearchArea:= 'Area'+ (nPVIArea+1)           </l>
+<l>                tuple_regexp_select (posDTupleNames, [SearchArea,'ignore_case'], SingleAreaTeachTuple)                        </l>
+<c>                </c>
+<l>                _FCI_Region_AutoTeach_ReadData (SingleAreaTeachTuple, NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize)</l>
+<c>                </c>
+<l>                AppendTeachPVI (BottomPVITupleVector, NoOfPVIAreas, NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize, fov, (d-1), nPVIArea, \
+                                BottomPVITupleVector)</l>
+<c>                </c>
+<l>            endfor</l>
+<l>        else</l>
+<l>            SearchArea := 'Area1'</l>
+<l>            tuple_regexp_select (posDTupleNames, [SearchArea,'ignore_case'], SingleAreaTeachTuple)                        </l>
+<c>            </c>
+<l>            _FCI_Region_AutoTeach_ReadData (SingleAreaTeachTuple, NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize)</l>
+<c>                </c>
+<l>            AppendTeachPVI (BottomPVITupleVector, NoOfPVIAreas, NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize, fov, (d-1), 0, \
+                            BottomPVITupleVector)</l>
+<c></c>
+<c>                 </c>
+<l>        endif</l>
+<c></c>
+<c>        *********** Encap AutoTeach ********</c>
+<c>        </c>
+<l>        _FCI_Encap_AutoTeach_ReadData (posDTupleNames, EncapTeachDoc, MinEncapContrast, MaxEncapContrast, NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols)</l>
+<c>        </c>
+<l>        _Encap_TeachTupleVector (BottomEncapTupleVector, EncapTeachDoc, MinEncapContrast, MaxEncapContrast, NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols, fov, d-1, \
+                                 BottomEncapTupleVector)</l>
+<c></c>
+<c>        ********** CoverLayer AutoTeach *******</c>
+<c>        </c>
+<l>        _FCI_CVL_AutoTeach_ReadData (posDTupleNames, \
+                                     CVLTeachDoc, NoOfRegions, CVLRectRgnRows, CVLRectRgnCols, CVLNoOfUniquePatterns, CVLMaxRotationAngle, CVLPatternSearchAreaAlongX, CVLPatternSearchAreaAlongY, CVLMinAcceptanceScore, CVLDatumRows, CVLDatumCols, CVLModelID, CVLRotationAngle, CVLMatchModelCenterRow, CVLMatchModelCenterCol, CVLContrast, CVLLength, MaskSize, MinCVLHeight)</l>
+<c>        </c>
+<l>        _FCI_TeachUniquePattern (posDBottomImage, \
+                                 CVLNoOfUniquePatterns, MaxRotationAngle, CVLDatumRows, CVLDatumCols, \
+                                 CVLModelID)</l>
+<c>                </c>
+<l>        _CVL_TeachTupleVector (BottomCVLTupleVector, CVLTeachDoc, NoOfRegions, CVLRectRgnRows, CVLRectRgnCols, CVLNoOfUniquePatterns, CVLMaxRotationAngle, CVLPatternSearchAreaAlongX, CVLPatternSearchAreaAlongY, CVLMinAcceptanceScore, CVLDatumRows, CVLDatumCols, CVLModelID, CVLRotationAngle, CVLMatchModelCenterRow, CVLMatchModelCenterCol, CVLContrast, CVLLength, MaskSize, MinCVLHeight, fov, d-1, \
+                               BottomCVLTupleVector)</l>
+<c></c>
+<c>        ******* CoverLayer Alignment AutoTeach ************</c>
+<c>        </c>
+<l>        _FCI_CVLA_AutoTeach_ReadData (posDTupleNames, CVLAlignmentTeachDoc, NoOfCVLARect, CVLAMaxRotationAngle, CVLAPatternSearchAreaAlongX, CVLAPatternSearchAreaAlongY, CVLAMinAcceptanceScore, CVLAModelIDs, CVLATeachRows, CVLATeachCols, NoOfCVLADatum, CVLADatumModelID, CVLADatumTeachRows, CVLADatumTeachCols, CVLARefRotationAngle, CVLARefPointRow, CVLARefPointColumn, NoOfCVLArectFL, CVLATeachRowsFL, CVLATeachColsFL, MaxDistanceBtnCLFL)</l>
+<c>          </c>
+<l>        if(NoOfCVLARect &gt; 0)</l>
+<l>            CVLAModelIDs := []</l>
+<l>            for CLAIndex4Pointer := 0 to NoOfCVLARect-1 by 1</l>
+<l>                CVLARows := CVLATeachRows[2*CLAIndex4Pointer : 2*(CLAIndex4Pointer+1)-1]</l>
+<l>                CVLACols := CVLATeachCols[2*CLAIndex4Pointer : 2*(CLAIndex4Pointer+1)-1]</l>
+<c>                </c>
+<l>                _FCI_TeachUniquePattern (posDBottomImage, \
+                                         1, CVLAMaxRotationAngle, CVLARows, CVLACols, \
+                                         CVLAModelID)</l>
+<l>                CVLAModelIDs := [CVLAModelIDs, CVLAModelID]</l>
+<l>            endfor</l>
+<l>        else</l>
+<l>            _FCI_TeachUniquePattern (posDBottomImage, \
+                                     NoOfCVLADatum, CVLAMaxRotationAngle, CVLADatumTeachRows, CVLADatumTeachCols, \
+                                     CVLADatumModelID)</l>
+<l>        endif</l>
+<c>                </c>
+<l>        _CVLA_TeachTupleVector (BottomCVLATupleVector, CVLAlignmentTeachDoc, NoOfCVLARect, CVLAMaxRotationAngle, CVLAPatternSearchAreaAlongX, CVLAPatternSearchAreaAlongY, CVLAMinAcceptanceScore, CVLAModelIDs, CVLATeachRows, CVLATeachCols, NoOfCVLADatum, CVLADatumModelID, CVLADatumTeachRows, CVLADatumTeachCols, CVLARefRotationAngle, CVLARefPointRow, CVLARefPointColumn, NoOfCVLArectFL, CVLATeachRowsFL, CVLATeachColsFL, MaxDistanceBtnCLFL, fov, d-1, BottomCVLATupleVector)</l>
+<c>        </c>
+<c>        ******** Tilt AutoTeach **************</c>
+<c>        </c>
+<l>        _FCI_Tilt_AutoTeach_ReadData (posDTupleNames, \
+                                      TiltTeachDoc, TiltRectRows, TiltRectCols)</l>
+<c>        </c>
+<l>        _Tilt_TeachTupleVector (BottomTiltTupleVector, TiltTeachDoc, TiltRectRows, TiltRectCols, fov, d-1, \
+                                BottomTiltTupleVector)</l>
+<l>    endfor</l>
+<l>endfor</l>
+<c></c>
+<c></c>
+<c>****************************Side Auto Teach ***********</c>
+<l>stop()</l>
+<l>for fov:=1 to nFoVs by 1</l>
+<l>    for d:=1 to nIntensitySide by 1</l>
+<c>        </c>
+<l>        TeachDocdPath:=TeachImageDir+'Camera3/Doc'+d+'/'</l>
+<l>        list_files (TeachDocdPath, ['files','follow_links','recursive'], AutoTeachFilesDocd)</l>
+<l>        tuple_regexp_select (AutoTeachFilesDocd, ['.bmp$','ignore_case'], ImageFilesDocd)</l>
+<l>        tuple_regexp_select (ImageFilesDocd, ['pos'+fov,'ignore_case'], posDImageName)</l>
+<l>        read_image(posDSideImage, posDImageName)</l>
+<l>        SideImageVector.at(fov-1).insert(d-1,posDSideImage)        </l>
+<l>        count_obj(posDSideImage, Number)</l>
+<l>        if(Number = 0 )</l>
+<l>            break</l>
+<l>        endif       </l>
+<l>        tuple_regexp_select (AutoTeachFilesDocd, ['.bmp$','invert_match'], TupleFilesDocd)</l>
+<l>        tuple_regexp_select (TupleFilesDocd, ['pos'+fov,'ignore_case'], posDTupleNames)</l>
+<c>        </c>
+<c>        ************ Location AutoTeach *******</c>
+<c>        </c>
+<l>        _FCI_Location_AutoTeach_ReadData (posDTupleNames, TeachLocDoc, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, PatternTeachRows, PatternTeachCols, LocationTeachRows, LocationTeachCols, ModelIDs, PatternDegree, MatchModelCenterRow, MatchModelCenterColumn, MaskSize)</l>
+<c></c>
+<l>        AppendTeachLocation (SideTupleVector, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, PatternTeachRows, PatternTeachCols, LocationTeachRows, LocationTeachCols, ModelIDs, PatternDegree, MatchModelCenterRow, MatchModelCenterColumn, MaskSize, TeachLocDoc, fov, (d-1), SideTupleVector)</l>
+<c></c>
+<c>        ************* Region/Mask AutoTeach ******</c>
+<c>        </c>
+<l>        tuple_regexp_select (posDTupleNames, ['NumOfPVIAreas','ignore_case'], tupleNumOfPVIAreas)</l>
+<l>        read_tuple(tupleNumOfPVIAreas, NoOfPVIAreas)</l>
+<l>        if(NoOfPVIAreas # 0)</l>
+<l>            for nPVIArea :=  0 to NoOfPVIAreas-1 by 1</l>
+<l>                SearchArea:= 'Area'+ (nPVIArea+1)            </l>
+<l>                tuple_regexp_select (posDTupleNames, [SearchArea,'ignore_case'], SingleAreaTeachTuple)                        </l>
+<c>                </c>
+<l>                _FCI_Region_AutoTeach_ReadData (SingleAreaTeachTuple, \
+                                                NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize)</l>
+<c>                </c>
+<l>                AppendTeachPVI (SidePVITupleVector, NoOfPVIAreas, NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize, fov, (d-1), nPVIArea, \
+                                SidePVITupleVector)</l>
+<c>                                </c>
+<l>            endfor</l>
+<l>        else</l>
+<l>            SearchArea := 'Area1'</l>
+<l>            tuple_regexp_select (posDTupleNames, [SearchArea,'ignore_case'], SingleAreaTeachTuple)                        </l>
+<c>            </c>
+<l>            _FCI_Region_AutoTeach_ReadData (SingleAreaTeachTuple, \
+                                            NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize)</l>
+<c>                </c>
+<l>             AppendTeachPVI (SidePVITupleVector, NoOfPVIAreas, NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize, fov, (d-1), 0, \
+                             SidePVITupleVector)</l>
+<c> </c>
+<l>        endif</l>
+<c>        </c>
+<c>        ***************** Encap AutoTeach ***********</c>
+<c> </c>
+<l>        _FCI_Encap_AutoTeach_ReadData (posDTupleNames, EncapTeachDoc, MinEncapContrast, MaxEncapContrast, NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols)</l>
+<c>        </c>
+<l>        _FCI_TeachUniquePattern (posDSideImage, \
+                                 NoOfUniquePatterns, MaxRotationAngle, PatternTeachRows, PatternTeachCols, \
+                                 ModelIDs)</l>
+<c>       </c>
+<l>        _Encap_TeachTupleVector (SideEncapTupleVector, EncapTeachDoc, MinEncapContrast, MaxEncapContrast, NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols, fov, d-1, \
+                                 SideEncapTupleVector)</l>
+<c></c>
+<c>        ****************** CoverLayer AutoTeach *********</c>
+<c>        </c>
+<l>        _FCI_CVL_AutoTeach_ReadData (posDTupleNames, \
+                                     CVLTeachDoc, NoOfRegions, CVLRectRgnRows, CVLRectRgnCols, CVLNoOfUniquePatterns, CVLMaxRotationAngle, CVLPatternSearchAreaAlongX, CVLPatternSearchAreaAlongY, CVLMinAcceptanceScore, CVLDatumRows, CVLDatumCols, CVLModelID, CVLRotationAngle, CVLMatchModelCenterRow, CVLMatchModelCenterCol, CVLContrast, CVLLength, MaskSize, MinCVLHeight)</l>
+<c>        </c>
+<l>        _FCI_TeachUniquePattern (posDSideImage, \
+                                 CVLNoOfUniquePatterns, MaxRotationAngle, CVLDatumRows, CVLDatumCols, \
+                                 CVLModelID)</l>
+<c>                </c>
+<l>        _CVL_TeachTupleVector (SideCVLTupleVector, CVLTeachDoc, NoOfRegions, CVLRectRgnRows, CVLRectRgnCols, CVLNoOfUniquePatterns, CVLMaxRotationAngle, CVLPatternSearchAreaAlongX, CVLPatternSearchAreaAlongY, CVLMinAcceptanceScore, CVLDatumRows, CVLDatumCols, CVLModelID, CVLRotationAngle, CVLMatchModelCenterRow, CVLMatchModelCenterCol, CVLContrast, CVLLength, MaskSize, MinCVLHeight, fov, d-1, \
+                               SideCVLTupleVector)</l>
+<c>        </c>
+<c>        ******* CoverLayer Alignment AutoTeach ************</c>
+<c>        </c>
+<l>        _FCI_CVLA_AutoTeach_ReadData (posDTupleNames, CVLAlignmentTeachDoc, NoOfCVLARect, CVLAMaxRotationAngle, CVLAPatternSearchAreaAlongX, CVLAPatternSearchAreaAlongY, CVLAMinAcceptanceScore, CVLAModelIDs, CVLATeachRows, CVLATeachCols, NoOfCVLADatum, CVLADatumModelID, CVLADatumTeachRows, CVLADatumTeachCols, CVLARefRotationAngle, CVLARefPointRow, CVLARefPointColumn, NoOfCVLArectFL, CVLATeachRowsFL, CVLATeachColsFL, MaxDistanceBtnCLFL)</l>
+<c>        </c>
+<l>        if(NoOfCVLARect &gt; 0)</l>
+<l>            CVLAModelIDs := []</l>
+<l>            for CLAIndex4Pointer := 0 to NoOfCVLARect-1 by 1</l>
+<l>                CVLARows := CVLATeachRows[2*CLAIndex4Pointer : 2*(CLAIndex4Pointer+1)-1]</l>
+<l>                CVLACols := CVLATeachCols[2*CLAIndex4Pointer : 2*(CLAIndex4Pointer+1)-1]</l>
+<c>                </c>
+<l>                _FCI_TeachUniquePattern (posDSideImage, \
+                                         1, CVLAMaxRotationAngle, CVLARows, CVLACols, \
+                                         CVLAModelID)</l>
+<l>                CVLAModelIDs := [CVLAModelIDs, CVLAModelID]</l>
+<l>            endfor</l>
+<l>        else</l>
+<l>            _FCI_TeachUniquePattern (posDBottomImage, \
+                                     NoOfCVLADatum, CVLAMaxRotationAngle, CVLADatumTeachRows, CVLADatumTeachCols, \
+                                     CVLADatumModelID)</l>
+<l>        endif</l>
+<c>        </c>
+<l>        _CVLA_TeachTupleVector (SideCVLATupleVector, CVLAlignmentTeachDoc, NoOfCVLARect, CVLAMaxRotationAngle, CVLAPatternSearchAreaAlongX, CVLAPatternSearchAreaAlongY, CVLAMinAcceptanceScore, CVLAModelIDs, CVLATeachRows, CVLATeachCols, NoOfCVLADatum, CVLADatumModelID, CVLADatumTeachRows, CVLADatumTeachCols, CVLARefRotationAngle, CVLARefPointRow, CVLARefPointColumn, NoOfCVLArectFL, CVLATeachRowsFL, CVLATeachColsFL, MaxDistanceBtnCLFL, fov, d-1, SideCVLATupleVector)</l>
+<l>    endfor</l>
+<l>endfor   </l>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="_FCI_Auto_Teach">
+<parameters>
+<parameter id="TeachImageDir"/>
+<parameter id="nFoVs"/>
+<parameter id="nIntensityBottom"/>
+<parameter id="nIntensitySide"/>
+<parameter id="nIntensityTop"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

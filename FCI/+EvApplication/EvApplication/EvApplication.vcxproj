@@ -1,0 +1,411 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{3D7C808A-90DF-46C9-A357-D2912616AB83}</ProjectGuid>
+    <RootNamespace>EvApplication</RootNamespace>
+    <Keyword>MFCProj</Keyword>
+    <ProjectName>EvApplication</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v141</PlatformToolset>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\_$(PlatformName)\$(Configuration)\</OutDir>
+    <IntDir>$(PlatformName)\$(Configuration)\</IntDir>
+    <TargetName>SAEdge_FCI4X</TargetName>
+    <GenerateManifest />
+    <EmbedManifest>false</EmbedManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\_$(PlatformName)\$(Configuration)\</OutDir>
+    <IntDir>$(PlatformName)\$(Configuration)\</IntDir>
+    <TargetName>EmageEquipment_FCI4X</TargetName>
+    <EmbedManifest>false</EmbedManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files\boost library;C:\Program Files\boost_1_63_0\boost_1_63_0;D:\boost_1_69_0\boost_1_69_0;_libPdf;..\EvPeripherals;..\..\EvCoreHeaders\EvUtilities;..\..\EvCoreHeaders\EvImaging;..\..\EvCoreHeaders\EvFramework\Controls;..\..\EvCoreHeaders\EvFramework;..\..\EvCoreHeaders;$(HALCONROOT)\include;$(HALCONROOT)\include\halconcpp;..\..\Peripherals\_Definitions;$(PlatformName);C:\Program Files\boost_1_63_0</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>_libPdf;$(OutDir);$(PlatformName);$(HALCONROOT)\lib\x64-win64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>EvLibraryFCI.lib;EvUtilities.lib;EvImaging.lib;EvPeripherals.lib;EvFramework.lib;halconcpp.lib;DebugViewerLib.lib;IPHlpApi.Lib;libhpdf.lib;Mpr.lib;ZLib.lib</AdditionalDependencies>
+      <ManifestFile>
+      </ManifestFile>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files\boost library;C:\Program Files\boost_1_63_0\boost_1_63_0;_libPdf;..\EvPeripherals;..\..\EvCoreHeaders\EvUtilities;..\..\EvCoreHeaders\EvImaging;..\..\EvCoreHeaders\EvFramework\Controls;..\..\EvCoreHeaders\EvFramework;..\..\EvCoreHeaders;$(HALCONROOT)\include;$(HALCONROOT)\include\halconcpp;..\..\Peripherals\_Definitions;$(PlatformName);C:\Program Files\boost_1_63_0</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>_libPdf;$(OutDir);$(PlatformName);$(HALCONROOT)\lib\x64-win64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>EvLibraryFCI.lib;EvUtilities.lib;EvImaging.lib;EvPeripherals.lib;EvFramework.lib;halconcpp.lib;DebugViewerLib.lib;IPHlpApi.Lib;libhpdf.lib;Mpr.lib;mpr.lib;ZLib.lib</AdditionalDependencies>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>$(OutDir)\$(TargetName).map</MapFileName>
+      <AssemblyDebug>false</AssemblyDebug>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <CLRThreadAttribute>STAThreadingAttribute</CLRThreadAttribute>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="res\bitmap1.bmp" />
+    <None Include="res\bitmap3.bmp" />
+    <None Include="res\bitmap4.bmp" />
+    <None Include="res\bitmap5.bmp" />
+    <None Include="res\buttons.bmp" />
+    <None Include="res\CalibDown.bmp" />
+    <None Include="res\ChildToolbar.bmp" />
+    <None Include="res\default.bin" />
+    <None Include="res\Doc.ico" />
+    <None Include="res\Doc1.ico" />
+    <None Include="res\Doc2.ico" />
+    <None Include="res\Doc3.ico" />
+    <None Include="res\EV24.bmp" />
+    <None Include="res\EV32.png" />
+    <None Include="res\EvApplication.ico" />
+    <None Include="res\EvApplication.rc2" />
+    <None Include="res\EvApplicationDoc.ico" />
+    <None Include="res\filelarge.bmp" />
+    <None Include="res\filesmall.bmp" />
+    <None Include="res\Help-icon.png" />
+    <None Include="res\icon1.ico" />
+    <None Include="res\info.bmp" />
+    <None Include="res\main.bmp" />
+    <None Include="res\MotionDown.bmp" />
+    <None Include="res\MotionHome.bmp" />
+    <None Include="res\MotionLeft.bmp" />
+    <None Include="res\MotionPlay.bmp" />
+    <None Include="res\MotionRight.bmp" />
+    <None Include="res\MotionStop.bmp" />
+    <None Include="res\MotionUp.bmp" />
+    <None Include="res\nav_large.bmp" />
+    <None Include="res\nav_large_hc.bmp" />
+    <None Include="res\output_wnd.ico" />
+    <None Include="res\output_wnd_hc.ico" />
+    <None Include="res\pages.bmp" />
+    <None Include="res\pages_hc.bmp" />
+    <None Include="res\pages_small.bmp" />
+    <None Include="res\pages_small_hc.bmp" />
+    <None Include="res\properties.bmp" />
+    <None Include="res\properties_hc.bmp" />
+    <None Include="res\properties_wnd.ico" />
+    <None Include="res\properties_wnd_hc.ico" />
+    <None Include="res\ribbon.mfcribbon-ms">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="res\ribbon1.mfcribbon-ms" />
+    <None Include="res\SplashScreen.bmp" />
+    <None Include="res\StationMap.bmp" />
+    <None Include="res\StationMapAdd.bmp" />
+    <None Include="res\StationMapNull.bmp" />
+    <None Include="res\StationMapRemove.bmp" />
+    <None Include="res\StationMapRetake.bmp" />
+    <None Include="res\StationMapSwap.bmp" />
+    <None Include="res\StationMapZDown.bmp" />
+    <None Include="res\StationMapZUp.bmp" />
+    <None Include="res\Toolbar.bmp" />
+    <None Include="res\toolbar1.bmp" />
+    <None Include="res\Toolbar256.bmp" />
+    <None Include="res\writelarge.bmp" />
+    <None Include="res\writelarge.png" />
+    <None Include="res\writesmall.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\evlsapp.blister_latest 03Aug\trunk\+EvApplication\EvApplication\EncryptionCore.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvUtilities\multivectorOperations.h" />
+    <ClInclude Include="AdvSecurityDlg.h" />
+    <ClInclude Include="AppDefectPropWnd.h" />
+    <ClInclude Include="AppTeachPropWnd.h" />
+    <ClInclude Include="AuditTrailDlg.h" />
+    <ClInclude Include="CalibInfo.h" />
+    <ClInclude Include="CalibrationSettings.h" />
+    <ClInclude Include="CameraSetupDialog.h" />
+    <ClInclude Include="AppTabView.h" />
+    <ClInclude Include="AppPropWnd.h" />
+    <ClInclude Include="CDeepLearningInterface.h" />
+    <ClInclude Include="CentralizedCommInterface.h" />
+    <ClInclude Include="CentralizedCommManager.h" />
+    <ClInclude Include="CentralizedCommMonitor.h" />
+    <ClInclude Include="CentralizedCommunicationDlg.h" />
+    <ClInclude Include="CentralizedFTPSettings.h" />
+    <ClInclude Include="CentralizedMonitorDlg.h" />
+    <ClInclude Include="ChildFormView.h" />
+    <ClInclude Include="CommDef.h" />
+    <ClInclude Include="CommInterface.h" />
+    <ClInclude Include="CommManager.h" />
+    <ClInclude Include="CommMonitor.h" />
+    <ClInclude Include="DefectCodesDlg.h" />
+    <ClInclude Include="DefectErrorCodeSelection.h" />
+    <ClInclude Include="DefectPrioritySelDlg.h" />
+    <ClInclude Include="DeviceConfig.h" />
+    <ClInclude Include="DisplayOnlinePanel.h" />
+    <ClInclude Include="Encryption.h" />
+    <ClInclude Include="ErrorDlg.h" />
+    <ClInclude Include="FCI_Integrate.h" />
+    <ClInclude Include="FileOperations.h" />
+    <ClInclude Include="ImageSelectionDlg.h" />
+    <ClInclude Include="InfoMsgDlg.h" />
+    <ClInclude Include="InPlaceComboBoxImp.h" />
+    <ClInclude Include="InPlaceEditImp.h" />
+    <ClInclude Include="ApplicationDef.h" />
+    <ClInclude Include="Inspection.h" />
+    <ClInclude Include="InspectionHandler.h" />
+    <ClInclude Include="InspectionSettings.h" />
+    <ClInclude Include="InspParms.h" />
+    <ClInclude Include="IOTestDialog.h" />
+    <ClInclude Include="LightControlDlg.h" />
+    <ClInclude Include="LightHandler.h" />
+    <ClInclude Include="LotInfoDlg.h" />
+    <ClInclude Include="MessageDlg.h" />
+    <ClInclude Include="MotionControlDialog.h" />
+    <ClInclude Include="MotionParameters.h" />
+    <ClInclude Include="motion_information.h" />
+    <ClInclude Include="MultipleRecipeDialog.h" />
+    <ClInclude Include="MyData.h" />
+    <ClInclude Include="MyList.h" />
+    <ClInclude Include="NewRecipeDialog.h" />
+    <ClInclude Include="OpticsDialog.h" />
+    <ClInclude Include="PasswordDialog.h" />
+    <ClInclude Include="PictureCtrl.h" />
+    <ClInclude Include="PixelRuler.h" />
+    <ClInclude Include="position_info.h" />
+    <ClInclude Include="ProgressBarDlg.h" />
+    <ClInclude Include="PropertyItem.h" />
+    <ClInclude Include="PropertyListCtrl.h" />
+    <ClInclude Include="ChangePasswordDlg.h" />
+    <ClInclude Include="CreateNewUserDlg.h" />
+    <ClInclude Include="DeleteUserDlg.h" />
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="AppDoc.h" />
+    <ClInclude Include="AppView.h" />
+    <ClInclude Include="Hardware.h" />
+    <ClInclude Include="ImageQueueHandler.h" />
+    <ClInclude Include="LoginDlg.h" />
+    <ClInclude Include="LotStruct.h" />
+    <ClInclude Include="MainFrame.h" />
+    <ClInclude Include="MemCDC.h" />
+    <ClInclude Include="ModifyAccounts.h" />
+    <ClInclude Include="OpticsDlg.h" />
+    <ClInclude Include="PVIInspectionParameters.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="SaveCalibRationPosition.h" />
+    <ClInclude Include="SavePositionDialog.h" />
+    <ClInclude Include="ScanBarcode.h" />
+    <ClInclude Include="ScanningTeachDialog.h" />
+    <ClInclude Include="SelectFolder.h" />
+    <ClInclude Include="SelectGoodBDlg.h" />
+    <ClInclude Include="SequenceThread.h" />
+    <ClInclude Include="SmartString.h" />
+    <ClInclude Include="SplashScreen.h" />
+    <ClInclude Include="StationMapping.h" />
+    <ClInclude Include="StepSelection.h" />
+    <ClInclude Include="TrackHandler.h" />
+    <ClInclude Include="StatisticsResetDlg.h" />
+    <ClInclude Include="StatisticsView.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SystemLogger.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="ThreadManager.h" />
+    <ClInclude Include="UserLoginAccount.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AdvSecurityDlg.cpp" />
+    <ClCompile Include="AppDefectPropWnd.cpp" />
+    <ClCompile Include="AppTeachPropWnd.cpp" />
+    <ClCompile Include="AuditTrailDlg.cpp" />
+    <ClCompile Include="CalibInfo.cpp" />
+    <ClCompile Include="CalibrationSettings.cpp" />
+    <ClCompile Include="CameraSetupDialog.cpp" />
+    <ClCompile Include="AppTabView.cpp" />
+    <ClCompile Include="AppPropWnd.cpp" />
+    <ClCompile Include="CDeepLearningInterface.cpp" />
+    <ClCompile Include="CentralizedCommInterface.cpp" />
+    <ClCompile Include="CentralizedCommManager.cpp" />
+    <ClCompile Include="CentralizedCommMonitor.cpp" />
+    <ClCompile Include="CentralizedCommunicationDlg.cpp" />
+    <ClCompile Include="CentralizedFTPSettings.cpp" />
+    <ClCompile Include="CentralizedMonitorDlg.cpp" />
+    <ClCompile Include="CommInterface.cpp" />
+    <ClCompile Include="CommManager.cpp" />
+    <ClCompile Include="CommMonitor.cpp" />
+    <ClCompile Include="DefectCodesDlg.cpp" />
+    <ClCompile Include="DefectErrorCodeSelection.cpp" />
+    <ClCompile Include="DefectPrioritySelDlg.cpp" />
+    <ClCompile Include="DeviceConfig.cpp" />
+    <ClCompile Include="DisplayOnlinePanel.cpp" />
+    <ClCompile Include="Encryption.cpp" />
+    <ClCompile Include="ErrorDlg.cpp" />
+    <ClCompile Include="FileOperations.cpp" />
+    <ClCompile Include="ImageSelectionDlg.cpp" />
+    <ClCompile Include="InfoMsgDlg.cpp" />
+    <ClCompile Include="InPlaceComboBoxImp.cpp" />
+    <ClCompile Include="InPlaceEditImp.cpp" />
+    <ClCompile Include="Inspection.cpp" />
+    <ClCompile Include="InspectionHandler.cpp" />
+    <ClCompile Include="InspectionSettings.cpp" />
+    <ClCompile Include="InspParms.cpp" />
+    <ClCompile Include="IOTestDialog.cpp" />
+    <ClCompile Include="LightControlDlg.cpp" />
+    <ClCompile Include="LightHandler.cpp" />
+    <ClCompile Include="LotInfoDlg.cpp" />
+    <ClCompile Include="MessageDlg.cpp" />
+    <ClCompile Include="MotionControlDialog.cpp" />
+    <ClCompile Include="MotionParameters.cpp" />
+    <ClCompile Include="motion_information.cpp" />
+    <ClCompile Include="MultipleRecipeDialog.cpp" />
+    <ClCompile Include="MyData.cpp" />
+    <ClCompile Include="NewRecipeDialog.cpp" />
+    <ClCompile Include="OpticsDialog.cpp" />
+    <ClCompile Include="PasswordDialog.cpp" />
+    <ClCompile Include="PictureCtrl.cpp" />
+    <ClCompile Include="PixelRuler.cpp" />
+    <ClCompile Include="position_info.cpp" />
+    <ClCompile Include="ProgressBarDlg.cpp" />
+    <ClCompile Include="PropertyItem.cpp" />
+    <ClCompile Include="PropertyListCtrl.cpp" />
+    <ClCompile Include="ChangePasswordDlg.cpp" />
+    <ClCompile Include="CreateNewUserDlg.cpp" />
+    <ClCompile Include="DeleteUserDlg.cpp" />
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="AppDoc.cpp" />
+    <ClCompile Include="AppView.cpp" />
+    <ClCompile Include="Hardware.cpp" />
+    <ClCompile Include="ImageQueueHandler.cpp" />
+    <ClCompile Include="LoginDlg.cpp" />
+    <ClCompile Include="LotStruct.cpp" />
+    <ClCompile Include="MainFrame.cpp" />
+    <ClCompile Include="ModifyAccounts.cpp" />
+    <ClCompile Include="OpticsDlg.cpp" />
+    <ClCompile Include="PVIInspectionParameters.cpp" />
+    <ClCompile Include="SaveCalibRationPosition.cpp" />
+    <ClCompile Include="SavePositionDialog.cpp" />
+    <ClCompile Include="ScanBarcode.cpp" />
+    <ClCompile Include="ScanningTeachDialog.cpp" />
+    <ClCompile Include="SelectFolder.cpp" />
+    <ClCompile Include="SelectGoodBDlg.cpp" />
+    <ClCompile Include="SequenceThread.cpp" />
+    <ClCompile Include="SmartString.cpp" />
+    <ClCompile Include="SplashScreen.cpp" />
+    <ClCompile Include="StationMapping.cpp" />
+    <ClCompile Include="StepSelection.cpp" />
+    <ClCompile Include="TrackHandler.cpp" />
+    <ClCompile Include="StatisticsResetDlg.cpp" />
+    <ClCompile Include="StatisticsView.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SystemLogger.cpp" />
+    <ClCompile Include="ThreadManager.cpp" />
+    <ClCompile Include="UserLoginAccount.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="EvApplication.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\arrows\arrow_down_grey.bmp" />
+    <Image Include="res\arrows\arrow_down_grey_clicked.bmp" />
+    <Image Include="res\arrows\arrow_left_grey.bmp" />
+    <Image Include="res\arrows\arrow_left_grey_clicked.bmp" />
+    <Image Include="res\arrows\arrow_right_grey.bmp" />
+    <Image Include="res\arrows\arrow_right_grey_clicked.bmp" />
+    <Image Include="res\arrows\arrow_up_grey.bmp" />
+    <Image Include="res\arrows\arrow_up_grey_clicked.bmp" />
+    <Image Include="res\arrows_small\arrow_down_grey.bmp" />
+    <Image Include="res\arrows_small\arrow_down_grey_clicked.bmp" />
+    <Image Include="res\arrows_small\arrow_left_grey.bmp" />
+    <Image Include="res\arrows_small\arrow_left_grey_clicked.bmp" />
+    <Image Include="res\arrows_small\arrow_right_grey.bmp" />
+    <Image Include="res\arrows_small\arrow_right_grey_clicked.bmp" />
+    <Image Include="res\arrows_small\arrow_up_grey.bmp" />
+    <Image Include="res\arrows_small\arrow_up_grey_clicked.bmp" />
+    <Image Include="res\bitmap2.bmp" />
+    <Image Include="res\filetypes.bmp" />
+    <Image Include="res\Retry_Disabled.bmp" />
+    <Image Include="res\StopButton.bmp" />
+    <Image Include="res\StopButton_pressed.bmp" />
+    <Image Include="res\stop_but.bmp" />
+    <Image Include="res\writelarge_extend.png" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="EvApplication.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

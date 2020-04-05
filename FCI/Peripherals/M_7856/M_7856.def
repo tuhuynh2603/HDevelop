@@ -1,0 +1,57 @@
+; M_7856.def : Declares the module parameters for the DLL.
+
+LIBRARY "M_7856"
+
+EXPORTS
+    ; Explicit exports can go here
+	InitMotionDLL;
+	FreeMotionDLL;
+	LoadConfigFromFile;
+	RegisterCard;
+	ReleaseCard;
+	EnableInterrupt;
+	RegisterIOCard;
+	ReleaseIOCard;
+	InitializeAxis;
+	FreeAxis;
+	SetWaitTimeOut;
+	GetIOStatus;
+	GetMotorStatus;
+	SetHomeMode;
+	SetSoftLimits;
+	ResetSoftLimits;
+	SetAcceleration;
+	SetServoOn;
+	GetAlarmStatus;
+	HomeMove;
+	AbsoluteMove;
+	RelativeMove;
+	ContinuousMove;
+	Stop;
+	SpeedOverride;
+	EmergencyStop;
+	SetCurrentPosition;
+	GetCurrentPosition;
+	SetAlarm;
+	ResetAlarm;
+	WaitForMotionDone;
+	WaitForAnyMotionError;
+	OutPortRead;
+	OutPortWrite;
+	InPortRead;
+	OutPortReadBit;
+	OutPortWriteBit;
+	InPortReadBit;
+	SetDIInterrupt;
+	WaitForActiveDIInterrupt;
+	ClearActiveDIInterrupt;
+	InitializeFifoArray;
+	SetFifoArray;
+	ManualTrigger;
+	GetTriggerCount;
+	ResetTriggerCount;
+	EnableLatch;
+	GetLatchValue;
+	ManualLatch;
+	AbsoluteLinearMove;
+	RelativeLinearMove;

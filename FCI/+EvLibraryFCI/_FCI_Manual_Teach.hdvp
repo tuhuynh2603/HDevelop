@@ -1,0 +1,1312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.2" halcon_version="13.0.4">
+<procedure name="_FCI_Manual_Teach">
+<interface>
+<ic>
+<par name="IsStepMode" base_type="ctrl" dimension="0"/>
+<par name="nIntensityTop" base_type="ctrl" dimension="0"/>
+<par name="nIntensityBottom" base_type="ctrl" dimension="0"/>
+<par name="nIntensitySide" base_type="ctrl" dimension="0"/>
+<par name="nFoVs" base_type="ctrl" dimension="0"/>
+<par name="WindowHandle" base_type="ctrl" dimension="0"/>
+<par name="TeachImageDir" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<l>global object vector(2) TopImageVector</l>
+<l>global tuple vector(3) TopTupleVector</l>
+<l>global tuple vector(4) TopPVITupleVector</l>
+<l>global tuple vector(3) TopEncapTupleVector</l>
+<l>global tuple vector(3) TopCVLTupleVector</l>
+<l>global tuple vector(3) TopCVLATupleVector</l>
+<l>global tuple vector(3) TopTiltTupleVector</l>
+<c></c>
+<l>global object vector(2) BottomImageVector</l>
+<l>global tuple vector(3) BottomTupleVector</l>
+<l>global tuple vector(4) BottomPVITupleVector</l>
+<l>global tuple vector(3) BottomEncapTupleVector</l>
+<l>global tuple vector(3) BottomCVLTupleVector</l>
+<l>global tuple vector(3) BottomCVLATupleVector</l>
+<l>global tuple vector(3) BottomTiltTupleVector</l>
+<c></c>
+<l>global object vector(2) SideImageVector</l>
+<l>global tuple vector(3) SideTupleVector</l>
+<l>global tuple vector(4) SidePVITupleVector</l>
+<l>global tuple vector(3) SideEncapTupleVector</l>
+<l>global tuple vector(3) SideCVLTupleVector</l>
+<l>global tuple vector(3) SideCVLATupleVector</l>
+<l>WindowHandleOut := WindowHandle</l>
+<c></c>
+<c>********************Top Location Teach****************************</c>
+<l>stop()</l>
+<c></c>
+<l>_LoadImages (TeachImageFiles, PassImgPath, FailImgPath) </l>
+<l>for TopIndex := 0 to |TeachImageFiles|/nIntensityTop-1 by 1</l>
+<l>    TeachImageFileName := TeachImageFiles[TopIndex*nIntensityTop: (TopIndex+1)*nIntensityTop-1]    </l>
+<c>    *****For Finding FoV</c>
+<l>    tuple_strrstr(TeachImageFileName[0], '_Pos', Position)</l>
+<l>    tuple_str_bit_select(TeachImageFileName[0], Position+4, FindFoV)</l>
+<l>    FoVInspect := ['1','2','3','4','5','6','7','8']</l>
+<l>    tuple_find(FoVInspect, FindFoV, FoVIndex)</l>
+<l>    FoV := FoVIndex + 1  </l>
+<c>    </c>
+<l>    gen_empty_obj (ConcatDeviceLocation)  </l>
+<l>    ConcatProjectionParam := []   </l>
+<l>    ConcatTeachDoc := []</l>
+<l>    tuple_gen_const (nIntensityTop, 0, ConcatEdgeTeachTuple)</l>
+<l>    tuple_gen_const (nIntensityTop, 0, ConcatDatumTeachTuple)</l>
+<c>    </c>
+<l>    for i:= 0 to nIntensityTop-1 by 1</l>
+<l>        read_image(TeachImage, TeachImageFileName[i])        </l>
+<c>        </c>
+<c>        ****For Finding Doc</c>
+<l>        tuple_strrchr(TeachImageFileName[i], '_Pos',Position)</l>
+<l>        tuple_str_bit_select(TeachImageFileName[i], Position+2, Intensity)</l>
+<c>        </c>
+<l>        TeachDocPath:=TeachImageDir+'Camera1/Doc'+Intensity+'/'</l>
+<l>        TeachDocFilename:=TeachDocPath+'pos'+FoV+'_Image'</l>
+<l>        write_image(TeachImage, 'bmp', 0, TeachDocFilename)</l>
+<l>        TopImageVector.at(FoV-1).insert(i, TeachImage)</l>
+<c>        </c>
+<c>        *******Initialization Teach Parameter</c>
+<l>        gen_empty_region (DeviceLocation)</l>
+<c>        </c>
+<l>        DatumTeachTuple1 := 0</l>
+<l>        EdgeTeachTuple1  := 0</l>
+<c>        </c>
+<l>        TeachLocDoc := 0</l>
+<l>        NoOfLocationTeachRegs   := 0</l>
+<l>        MinDeviceContrast       := 0</l>
+<l>        DeviceWidth             := 0</l>
+<l>        DeviceHeight            := 0</l>
+<c>        </c>
+<l>        NoOfUniquePatterns      := 0</l>
+<l>        MaxRotationAngle        := 0</l>
+<l>        PatternSearchAreaAlongX := 0</l>
+<l>        PatternSearchAreaAlongY := 0</l>
+<l>        MinAcceptanceScore      := 0</l>
+<l>        PatternTeachRectRows    :=[]</l>
+<l>        PatternTeachRectCols    :=[]            </l>
+<l>        LocationTeachRectRows   :=[]</l>
+<l>        LocationTeachRectCols   :=[]</l>
+<c>        </c>
+<l>        ModelIDs         := []</l>
+<l>        RefRotationAngle := []</l>
+<l>        RefPointRow      := []</l>
+<l>        RefPointColumn   := []</l>
+<c>        </c>
+<l>        GotRotationAngleDev := 0 </l>
+<l>        GotShiftAlongRow    := 0 </l>
+<l>        GotShiftAlongCol    := 0</l>
+<c>        </c>
+<l>        MaskSize := []</l>
+<c>        </c>
+<c>        *****Asking the user to teach intensity image</c>
+<l>        dev_display (TeachImage)</l>
+<l>        disp_message (WindowHandleOut, 'Unique Pattern Teach : [Y/N] ?', 'window', 12, 12, 'black', 'true')</l>
+<l>        stop()</l>
+<l>        IsDatumTeach := 1</l>
+<c>        </c>
+<l>        if(IsDatumTeach)</l>
+<l>            TeachLocDoc := 1</l>
+<l>            ConcatDatumTeachTuple[i] := 1</l>
+<c>            </c>
+<c>            *****Unique pattern teach parameters</c>
+<l>            NoOfUniquePatterns      := 2</l>
+<l>            MaxRotationAngle        := 10</l>
+<l>            PatternSearchAreaAlongX := 10</l>
+<l>            PatternSearchAreaAlongY := 50</l>
+<l>            MinAcceptanceScore      := 0.65</l>
+<l>            if(NoOfUniquePatterns &lt; 2)</l>
+<l>                NoOfUniquePatterns := 2</l>
+<l>            endif </l>
+<c>            </c>
+<c>            ***Halcon File//Draw Rectangle</c>
+<l>            _FCI_Gen_Rectangles (RectRegion, NoOfUniquePatterns, PatternTeachRectRows, PatternTeachRectCols, WindowHandleOut, \
+                                 PatternTeachRectRows, PatternTeachRectCols)</l>
+<c>            </c>
+<c>            *******//Finding ModelID //Only execute when there is unique pattern or TeachUniquePatternFlag is true</c>
+<l>            _FCI_TeachUniquePattern (TeachImage, \
+                                     NoOfUniquePatterns, MaxRotationAngle, PatternTeachRectRows, PatternTeachRectCols, \
+                                     ModelIDs)</l>
+<c>            </c>
+<l>            _FCI_Inspect_UniquePattern (TeachImage, \
+                                        MatchModelRegion, DebugImageOut, DebugRegionOut, \
+                                        IsStepMode, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MaxRotationAngle, MinAcceptanceScore, ModelIDs, PatternTeachRectRows, PatternTeachRectCols, \
+                                        IsFindDatum, MatchModelScore, DatumRefRotationAngle, DatumRefPointRow, DatumRefPointColumn, DebugMessageOut)</l>
+<c>            </c>
+<l>        endif</l>
+<c>        </c>
+<c>        </c>
+<l>        dev_display (TeachImage)</l>
+<l>        disp_message (WindowHandleOut, 'Edge Location Teach : [Y/N] ?', 'window', 12, 12, 'black', 'true')</l>
+<l>        stop()</l>
+<c>        </c>
+<l>        IsEdgeLocationTeach := 1</l>
+<c>        </c>
+<l>        if(IsEdgeLocationTeach)</l>
+<l>            TeachLocDoc := 1</l>
+<l>            ConcatEdgeTeachTuple[i] := 1</l>
+<c>            </c>
+<c>            ***Halcon file</c>
+<l>            dev_display(TeachImage)</l>
+<l>            dev_get_window (WindowHandleOut)</l>
+<l>            disp_message (WindowHandleOut, 'Draw the gross device location', 'window', 12, 12, 'black', 'true')</l>
+<c>            </c>
+<l>            MinDeviceContrast := 50</l>
+<l>            DeviceWidth := 1000</l>
+<l>            DeviceHeight := 500  </l>
+<l>            MaskSize := 65</l>
+<c>            </c>
+<l>            IsSobelFlag  := false</l>
+<c>            </c>
+<l>            NoOfLocationTeachRegs := 1</l>
+<c>            ***Halcon File//Draw Rectangle</c>
+<l>            _FCI_Gen_Rectangles (RectRegion, \
+                                 NoOfLocationTeachRegs, LocationTeachRectRows, LocationTeachRectCols, WindowHandleOut, LocationTeachRectRows, LocationTeachRectCols)</l>
+<c>            </c>
+<l>            Track := 1</l>
+<l>            _FCI_Inspect_EdgeLocation (TeachImage, EdgeLocation, IsSobelFlag, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, LocationTeachRectRows, LocationTeachRectCols, MaskSize, FoV, nFoVs, Track, EdgeRefRotationAngle, EdgeRefPointRow, EdgeRefPointColumn)</l>
+<c>                        </c>
+<l>        endif</l>
+<c>        </c>
+<l>        if(IsDatumTeach or IsEdgeLocationTeach)</l>
+<c>                </c>
+<l>            if(IsDatumTeach)</l>
+<l>                RefRotationAngle := DatumRefRotationAngle</l>
+<l>                RefPointRow := DatumRefPointRow</l>
+<l>                RefPointColumn := DatumRefPointColumn</l>
+<c>                </c>
+<l>            else</l>
+<l>                RefRotationAngle := EdgeRefRotationAngle</l>
+<l>                RefPointRow := EdgeRefPointRow</l>
+<l>                RefPointColumn := EdgeRefPointColumn</l>
+<l>            endif</l>
+<c>            </c>
+<c>            </c>
+<l>            Track := 1</l>
+<l>            IsSobelFlag  := false</l>
+<l>            stop()</l>
+<l>            _FCI_Inspect_DeviceLocation (TeachImage, \
+                                         DeviceLocation, MatchModelRegion, DebugImageOut, DebugRegionOut, \
+                                         IsDatumTeach, IsEdgeLocationTeach, IsStepMode, IsSobelFlag, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, ModelIDs, RefRotationAngle, RefPointRow, RefPointColumn, PatternTeachRectRows, PatternTeachRectCols, LocationTeachRectRows, LocationTeachRectCols, MaskSize, FoV, nFoVs, Track, \
+                                         IsPass, IsFindDatum, GotRotationAngleDev, GotShiftAlongRow, GotShiftAlongCol, MatchModelScore, DebugMessageOut)</l>
+<c></c>
+<l>            if(IsPass)             </l>
+<l>                if(IsFindDatum) </l>
+<l>                    concat_obj (DeviceLocation, MatchModelRegion, EmptyObject1)</l>
+<l>                    _FCI_AppendOverlayRegion (TeachImage, EmptyObject1, \
+                                              OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>                    </c>
+<l>                else</l>
+<l>                    _FCI_AppendOverlayRegion (TeachImage, \
+                                              DeviceLocation, OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<l>                endif </l>
+<l>            endif</l>
+<l>        endif</l>
+<c>        </c>
+<l>        concat_obj (ConcatDeviceLocation, DeviceLocation, ConcatDeviceLocation)</l>
+<l>        tuple_concat (ConcatProjectionParam, [GotRotationAngleDev, GotShiftAlongRow, GotShiftAlongCol], ConcatProjectionParam)            </l>
+<l>        tuple_concat (ConcatTeachDoc, TeachLocDoc, ConcatTeachDoc)</l>
+<c>        </c>
+<c>        *****Halcon File</c>
+<l>        if(IsDatumTeach = 1 or IsEdgeLocationTeach = 1)</l>
+<l>            _FCI_Save_TeachParameters (TeachLocDoc, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, LocationTeachRectRows, LocationTeachRectCols, PatternTeachRectRows, PatternTeachRectCols, RefRotationAngle, RefPointRow, RefPointColumn, ModelIDs, MaskSize, TeachDocPath, FoV)</l>
+<l>        else</l>
+<c>            </c>
+<l>            TeachLocDoc             := 0</l>
+<l>            NoOfLocationTeachRegs   := 0</l>
+<l>            MinDeviceContrast       := 0</l>
+<l>            DeviceWidth             := 0</l>
+<l>            DeviceHeight            := 0</l>
+<l>            NoOfUniquePatterns      := 0</l>
+<l>            MaxRotationAngle        := 0</l>
+<l>            PatternSearchAreaAlongX := 0</l>
+<l>            PatternSearchAreaAlongY := 0</l>
+<l>            MinAcceptanceScore      := 0</l>
+<l>            PatternTeachRectRows    := []</l>
+<l>            PatternTeachRectCols    := []            </l>
+<l>            LocationTeachRectRows   := []</l>
+<l>            LocationTeachRectCols   := []</l>
+<l>            ModelIDs                := []</l>
+<l>            RefRotationAngle := []</l>
+<l>            RefPointRow     := []</l>
+<l>            RefPointColumn  := []</l>
+<l>            MaskSize := []</l>
+<c>            </c>
+<l>           _FCI_Save_TeachParameters (TeachLocDoc, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, LocationTeachRectRows, LocationTeachRectCols, PatternTeachRectRows, PatternTeachRectCols, RefRotationAngle, RefPointRow, RefPointColumn, ModelIDs, MaskSize, TeachDocPath, FoV)</l>
+<c>        </c>
+<l>        endif        </l>
+<c>        *****Save Parameter in Tuple Vector</c>
+<l>        AppendTeachLocation (TopTupleVector, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, PatternTeachRectRows, PatternTeachRectCols, LocationTeachRectRows, LocationTeachRectCols, ModelIDs, RefRotationAngle, RefPointRow, RefPointColumn, MaskSize, TeachLocDoc, FoV, i, \
+                              TopTupleVector)</l>
+<c>        </c>
+<l>    endfor</l>
+<c>    </c>
+<c>    ***********Top Region Teach****************    </c>
+<l>    for i:= 0  to nIntensityTop-1 by 1          </l>
+<l>        FileName := TeachImageFileName[i]</l>
+<l>        read_image(TeachImage, FileName)  </l>
+<c>        </c>
+<l>        _FCI_Extract_LocationParameterData (ConcatProjectionParam, ConcatTeachDoc, ConcatEdgeTeachTuple, ConcatDatumTeachTuple, i, IsSelect, InspectRotationAngle, InspectShiftAlongRow, InspectShiftAlongColumn)</l>
+<c>        </c>
+<l>        if(IsSelect = false)</l>
+<l>            disp_message (WindowHandle, 'No Device Present', 'window', 12, 12, 'black', 'true')</l>
+<l>            break</l>
+<l>        endif</l>
+<c>        </c>
+<l>        _FCI_Select_DeviceLocation (ConcatDeviceLocation, DeviceLocationSelected, i, \
+                                    DeviceCenterRow, DeviceCenterColumn)</l>
+<c>        </c>
+<l>        tuple_strrchr(TeachImageFileName[i], '_Pos',Position)</l>
+<l>        tuple_str_bit_select(TeachImageFileName[i], Position+2, Intensity)          </l>
+<l>        TeachDocPath:=TeachImageDir+'Camera1/Doc'+Intensity+'/'</l>
+<l>        disp_message (WindowHandleOut, 'Input No. of PVI Areas', 'window', 5, 5, 'black', 'true')</l>
+<c>        </c>
+<c>        ******PVI Area Vision Parameter</c>
+<l>        NoOfPVIAreas  := 0</l>
+<l>        PVIAngle      := []</l>
+<l>        PVI2DCenter   := []</l>
+<l>        PVISize       := []</l>
+<c>        </c>
+<l>        NoOfMaskRegions     := 0</l>
+<l>        Mask2DCenterPoints  :=[]</l>
+<l>        MaskAngleConcat     :=[]</l>
+<l>        MaskSize            :=[]</l>
+<c>        </c>
+<l>        dev_display (TeachImage)</l>
+<l>        disp_message(WindowHandle, 'Region Teach [Y/N] ? :', 'window', 12, 12, 'black', 'true')</l>
+<l>        stop()</l>
+<l>        IsRegionTeach := 0</l>
+<c>        </c>
+<l>        if(IsRegionTeach)</l>
+<c>            </c>
+<c>            ****Vision Parameter // No of PVI Areas</c>
+<l>            NoOfPVIAreas := 1</l>
+<l>            for w:=1 to NoOfPVIAreas by 1</l>
+<c>                </c>
+<l>                dev_display (TeachImage)</l>
+<l>                Message:='Draw the region to be inspected'</l>
+<l>                disp_message (WindowHandle, Message, 'window', 5, 5, 'black', 'true')</l>
+<c>                </c>
+<c>                ****Halcon File</c>
+<l>                _FCI_GenerateRectangleRegion(TeachImage,\
+                                             Row1, Column1, Row2, Column2)</l>
+<c>                </c>
+<l>                GetRegionCenter (PVIRegion, Row1, Column1, Row2, Column2, \
+                                 RegionCenterRow, RegionCenterColumn)</l>
+<c>                </c>
+<l>                TopReferencePoints (TeachImage, PVIRegion, \
+                                    FoV, nFoVs, PVITopRow, PVITopColumn, PVIAngle, PVI2DCenter, PVISize)</l>
+<c>                </c>
+<l>                dev_display(TeachImage)</l>
+<l>                dev_display(PVIRegion)</l>
+<l>                disp_message (WindowHandle, 'Input No. of Regions to be masked', 'window', 5, 5, 'black', 'true')</l>
+<c></c>
+<c>                ******Vision Parameter for Mask // No of Masks</c>
+<c>                </c>
+<l>                NoOfMaskRegions    :=  1               </l>
+<l>                Mask2DCenterPoints := []</l>
+<l>                MaskAngleConcat    := []</l>
+<l>                MaskSize           := []</l>
+<c>                </c>
+<l>                gen_empty_obj (ConcatMaskRegions)</l>
+<l>                for e:= 1 to NoOfMaskRegions by 1</l>
+<c>                    </c>
+<c>                    ****Halcon File</c>
+<l>                    _FCI_GenerateRectangleRegion(TeachImage, \
+                                                 Row1, Column1, Row2, Column2)</l>
+<c>                    </c>
+<l>                    GetRegionCenter (MaskRegion, \
+                                     Row1, Column1, Row2, Column2, \
+                                     MaskCenterRow, MaskCenterColumn)</l>
+<c>                    </c>
+<l>                    TopReferencePoints (TeachImage, MaskRegion, \
+                                        FoV, nFoVs, MaskTopRow, MaskTopColumn, MaskAngle, Mask2DCenter, MaskSizeEach)</l>
+<c>                    </c>
+<l>                    tuple_concat (Mask2DCenterPoints, Mask2DCenter, Mask2DCenterPoints)</l>
+<l>                    tuple_concat (MaskAngleConcat, MaskAngle, MaskAngleConcat)</l>
+<l>                    tuple_concat (MaskSize, MaskSizeEach, MaskSize)</l>
+<c>                    ***End for Mask</c>
+<l>                    gen_rectangle2 (Rectangle, Mask2DCenter[0], Mask2DCenter[1], MaskAngle, MaskSizeEach[0], MaskSizeEach[1])</l>
+<l>                    concat_obj (ConcatMaskRegions,Rectangle , ConcatMaskRegions)</l>
+<l>                endfor</l>
+<c>                </c>
+<c>                **** Display in application *******</c>
+<c>                </c>
+<l>                union1 (ConcatMaskRegions, FitMaskRegions)</l>
+<l>                gen_rectangle2 (FitPVIRegions, PVI2DCenter[0], PVI2DCenter[1], PVIAngle, PVISize[0], PVISize[1])</l>
+<c>                </c>
+<l>                _FCI_SavePVIParameters (NoOfPVIAreas, NoOfMaskRegions, PVIAngle, Mask2DCenterPoints, MaskAngleConcat, MaskSize, PVI2DCenter, PVISize, TeachDocPath, w, FoV)</l>
+<c>                </c>
+<l>                AppendTeachPVI (TopPVITupleVector, NoOfPVIAreas, NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize, FoV, i, w-1, \
+                                TopPVITupleVector)</l>
+<l>            endfor</l>
+<l>        else            </l>
+<l>            _FCI_SavePVIParameters (NoOfPVIAreas, NoOfMaskRegions, PVIAngle, Mask2DCenterPoints, MaskAngleConcat, MaskSize, PVI2DCenter, PVISize, TeachDocPath, 1, FoV) </l>
+<c>            </c>
+<l>            AppendTeachPVI (TopPVITupleVector, NoOfPVIAreas, NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize, FoV, i, 0, \
+                            TopPVITupleVector)</l>
+<l>        endif    </l>
+<c>        **********Region Teach Over</c>
+<c>        </c>
+<c>        *:::::::::: Encap Teach :::::::::::::::::*</c>
+<c>        *****This is true only when Encap is Present             </c>
+<l>        EncapTeachDoc := -1</l>
+<l>        MinEncapContrast := []</l>
+<l>        MaxEncapContrast := []</l>
+<c>        </c>
+<l>        NoOfEncapRect4EncapLoc := 0</l>
+<l>        EncapRectRows := []</l>
+<l>        EncapRectCols := []</l>
+<c>        </c>
+<l>        NoOfRectangle4EncapInsp := 0</l>
+<l>        EncapInspectRectRows := []</l>
+<l>        EncapInspectRectCols := []</l>
+<c>        </c>
+<l>        dev_display (TeachImage)</l>
+<l>        disp_message (WindowHandleOut, 'Encap Teach [Y/N] ?: ', 'window', 12, 12, 'black', 'true')</l>
+<l>        stop()</l>
+<l>        IsEncapTeach := 1</l>
+<c>        </c>
+<l>        if(IsEncapTeach)</l>
+<c>            </c>
+<l>            EncapTeachDoc := i          </l>
+<l>            dev_display (TeachImage)</l>
+<l>            DisplayText := 'Draw Rectangle on Encap Location'</l>
+<l>            disp_message (WindowHandleOut, DisplayText, 'window', 20, 20, 'black', 'true')</l>
+<c>            </c>
+<l>            NoOfEncapRect4EncapLoc := 1</l>
+<c>            *****Draw Rectangle on Encap Location</c>
+<l>            _FCI_Gen_Rectangles (EncapTeachRegion, NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, WindowHandleOut, \
+                                 EncapRectRows, EncapRectCols)</l>
+<c>            </c>
+<c>            *******Overlay Encap Region</c>
+<l>             _FCI_AppendOverlayRegion (TeachImage, \
+                                       EncapTeachRegion, OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>            </c>
+<c>            *****Teach Vision Parameter</c>
+<l>            WireColor := 0</l>
+<l>            MinEncapContrast := 50</l>
+<l>            MaxEncapContrast := 255</l>
+<c>            </c>
+<l>            _FCI_Inspect_EncapLocation (TeachImage, DeviceLocationSelected, EncapTeachRegion, \
+                                        EncapLocation, DebugImageOut, DebugRegionOut, \
+                                        IsStepMode, WireColor, MinEncapContrast, MaxEncapContrast, \
+                                        IsPassEncap, DebugMessageOut)</l>
+<c>            *******Overlay Encap Location        </c>
+<l>            _FCI_AppendOverlayRegion (TeachImage, \
+                                      EncapLocation, OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>           </c>
+<c>            *******Drawing inner and Outer Rectangle</c>
+<l>            NoOfRectangle4EncapInsp := 2</l>
+<l>            dev_display (TeachImage)</l>
+<c>            ****Halcon File</c>
+<l>            _FCI_Gen_Rectangles (EncapInspectRegion, NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols, WindowHandleOut, \
+                                 EncapInspectRectRows, EncapInspectRectCols)</l>
+<c>            </c>
+<c>            *******Overlay Inner and Outer Region        </c>
+<l>            _FCI_AppendOverlayRegion (TeachImage, \
+                                      EncapInspectRegion, OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>        </c>
+<c>            ******Save Encap Teach Parameters</c>
+<l>            _FCI_SaveEncapParameter (EncapTeachDoc, MinEncapContrast, MaxEncapContrast, \
+                                     NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, \
+                                     NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols, TeachDocPath, FoV)</l>
+<l>        else            </l>
+<l>             _FCI_SaveEncapParameter (EncapTeachDoc, MinEncapContrast, MaxEncapContrast, \
+                                     NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, \
+                                     NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols, TeachDocPath, FoV)</l>
+<l>        endif</l>
+<c>        </c>
+<c>        *******Save Encap Teach Parameters in a Vector</c>
+<l>        _Encap_TeachTupleVector (TopEncapTupleVector, EncapTeachDoc, MinEncapContrast, MaxEncapContrast, NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols, FoV, i, \
+                                 TopEncapTupleVector)</l>
+<c>        </c>
+<c>        ***********  End Of Encap Teach Procedure ***********************</c>
+<c>        </c>
+<c>        </c>
+<c>        ***:::::::::::::: CoverLayer Teach ::::::::::*******</c>
+<l>        _FCI_CoverLayer_Manual_Teach (TeachImage, TeachCoverLayerRgn, OverlayImage, OverlayRegionOut, IsStepMode, TopCVLTupleVector, WindowHandleOut, TeachDocPath, FoV, nFoVs, i, TopCVLTupleVector)</l>
+<c>        </c>
+<c>        ******* CVL Alignment Teach</c>
+<l>        _FCI_CVLAlignment_Manual_Teach (TeachImage, CVLARegion, \
+                                        IsStepMode, TopCVLATupleVector, TeachDocPath, FoV, i, \
+                                        TopCVLATupleVector)</l>
+<c>        </c>
+<c>       </c>
+<c>        ***:::::::::::::: Tilt Teach :::::::::::::::::*******</c>
+<c>        </c>
+<l>        TiltTeachDoc := -1            </l>
+<l>        TiltRectRows := []</l>
+<l>        TiltRectCols := []</l>
+<c>        </c>
+<l>        dev_display (TeachImage)</l>
+<l>        disp_message (WindowHandleOut, 'Tilt Teach [Y/N] ?:', 'window', 12, 12, 'black', 'true')</l>
+<l>        stop()</l>
+<l>        IsTiltTeach := 0</l>
+<c>        </c>
+<l>        if(IsTiltTeach)</l>
+<c>            </c>
+<l>            TiltTeachDoc := i</l>
+<l>            NoOfRect := 1</l>
+<l>            _FCI_Gen_Rectangles (TiltTeachRegion, NoOfRect, TiltRectRows, TiltRectCols, WindowHandleOut, \
+                                 TiltRectRows, TiltRectCols)</l>
+<c>            </c>
+<l>            _FCI_SaveTiltParameter (TiltTeachDoc, TiltRectRows, TiltRectCols, TeachDocPath, FoV)            </l>
+<l>        else                </l>
+<l>            _FCI_SaveTiltParameter (TiltTeachDoc, TiltRectRows, TiltRectCols, TeachDocPath, FoV)</l>
+<l>        endif            </l>
+<l>        _Tilt_TeachTupleVector (TopTiltTupleVector, TiltTeachDoc, TiltRectRows, TiltRectCols, FoV, i, \
+                                TopTiltTupleVector)</l>
+<c>        </c>
+<c>        ***:::::::::::::: End of Tilt Teach :::::::::::::::::****       </c>
+<l>    endfor   </l>
+<l>endfor </l>
+<c></c>
+<l>stop()</l>
+<c>***************************************************************************</c>
+<c></c>
+<c>******************** Bottom Teach ****************</c>
+<l>stop()</l>
+<l>_LoadImages (TeachImageFiles, PassImgPath, FailImgPath) </l>
+<l>for BottomIndex := 0 to |TeachImageFiles|/nIntensityBottom-1 by 1</l>
+<l>    TeachImageFileName := TeachImageFiles[BottomIndex*nIntensityBottom: (BottomIndex+1)*nIntensityBottom-1]    </l>
+<c>    *****For Finding FoV</c>
+<l>    tuple_strrstr(TeachImageFileName[0], '_Pos', Position)</l>
+<l>    tuple_str_bit_select(TeachImageFileName[0], Position+4, FindFoV)</l>
+<l>    FoVInspect := ['1','2','3','4','5','6','7','8']</l>
+<l>    tuple_find(FoVInspect, FindFoV, FoVIndex)</l>
+<l>    FoV := FoVIndex + 1  </l>
+<c>    </c>
+<l>    gen_empty_obj (ConcatDeviceLocation)  </l>
+<l>    ConcatProjectionParam := []   </l>
+<l>    ConcatTeachDoc := []</l>
+<l>    tuple_gen_const (nIntensityBottom, 0, ConcatEdgeTeachTuple)</l>
+<l>    tuple_gen_const (nIntensityBottom, 0, ConcatDatumTeachTuple)</l>
+<c>    </c>
+<l>    for i:= 0 to nIntensityBottom-1 by 1</l>
+<l>        read_image(TeachImage, TeachImageFileName[i])        </l>
+<c>        </c>
+<c>        ****For Finding Doc</c>
+<l>        tuple_strrchr(TeachImageFileName[i], '_Pos',Position)</l>
+<l>        tuple_str_bit_select(TeachImageFileName[i], Position+2, Intensity)</l>
+<c>        </c>
+<l>        TeachDocPath:=TeachImageDir+'Camera2/Doc'+Intensity+'/'</l>
+<l>        TeachDocFilename:=TeachDocPath+'pos'+FoV+'_Image'</l>
+<l>        write_image(TeachImage, 'bmp', 0, TeachDocFilename)</l>
+<l>        BottomImageVector.at(FoV-1).insert(i, TeachImage)</l>
+<c>        </c>
+<c>        *******Initialization Teach Parameter</c>
+<l>        gen_empty_region (DeviceLocation)</l>
+<l>        gen_empty_obj (MatchModelRegion)</l>
+<c>        </c>
+<l>        DatumTeachTuple1 := 0</l>
+<l>        EdgeTeachTuple1  := 0</l>
+<c>        </c>
+<l>        TeachLocDoc := 0</l>
+<l>        NoOfLocationTeachRegs   := 0</l>
+<l>        MinDeviceContrast       := 0</l>
+<l>        DeviceWidth             := 0</l>
+<l>        DeviceHeight            := 0</l>
+<c>        </c>
+<l>        NoOfUniquePatterns      := 0</l>
+<l>        MaxRotationAngle        := 0</l>
+<l>        PatternSearchAreaAlongX := 0</l>
+<l>        PatternSearchAreaAlongY := 0</l>
+<l>        MinAcceptanceScore      := 0</l>
+<l>        PatternTeachRectRows    :=[]</l>
+<l>        PatternTeachRectCols    :=[]            </l>
+<l>        LocationTeachRectRows   :=[]</l>
+<l>        LocationTeachRectCols   :=[]</l>
+<c>        </c>
+<l>        ModelIDs         := []</l>
+<l>        RefRotationAngle := []</l>
+<l>        RefPointRow      := []</l>
+<l>        RefPointColumn   := []</l>
+<c>        </c>
+<l>        MaskSize := []</l>
+<c>        </c>
+<l>        GotRotationAngleDev := 0 </l>
+<l>        GotShiftAlongRow    := 0 </l>
+<l>        GotShiftAlongCol    := 0</l>
+<c>        </c>
+<c>        *****Asking the user to teach intensity image</c>
+<l>        dev_display (TeachImage)</l>
+<l>        disp_message (WindowHandleOut, 'Unique Pattern Teach : [Y/N] ?', 'window', 12, 12, 'black', 'true')</l>
+<l>        stop()</l>
+<l>        IsDatumTeach := 0</l>
+<c>        </c>
+<l>        if(IsDatumTeach)</l>
+<l>            TeachLocDoc := 1</l>
+<l>            ConcatDatumTeachTuple[i] := 1</l>
+<c>            </c>
+<c>            *****Unique pattern teach parameters</c>
+<l>            NoOfUniquePatterns      := 2</l>
+<l>            MaxRotationAngle        := 10</l>
+<l>            PatternSearchAreaAlongX := 100</l>
+<l>            PatternSearchAreaAlongY := 50</l>
+<l>            MinAcceptanceScore      := 0.65</l>
+<l>            if(NoOfUniquePatterns &lt; 2)</l>
+<l>                NoOfUniquePatterns := 2</l>
+<l>            endif </l>
+<c>            </c>
+<c>            ***Halcon File//Draw Rectangle</c>
+<l>            _FCI_Gen_Rectangles (RectRegion, NoOfUniquePatterns, PatternTeachRectRows, PatternTeachRectCols, WindowHandleOut, \
+                                 PatternTeachRectRows, PatternTeachRectCols)</l>
+<c>            </c>
+<c>            *******//Finding ModelID //Only execute when there is unique pattern or TeachUniquePatternFlag is true</c>
+<l>            _FCI_TeachUniquePattern (TeachImage, \
+                                     NoOfUniquePatterns, MaxRotationAngle, PatternTeachRectRows, PatternTeachRectCols, \
+                                     ModelIDs)</l>
+<c>            </c>
+<l>            _FCI_Inspect_UniquePattern (TeachImage, \
+                                        MatchModelRegion, DebugImageOut, DebugRegionOut, \
+                                        IsStepMode, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MaxRotationAngle, MinAcceptanceScore, ModelIDs, PatternTeachRectRows, PatternTeachRectCols, \
+                                        IsFindDatum, MatchModelScore, DatumRefRotationAngle, DatumRefPointRow, DatumRefPointColumn, DebugMessageOut)</l>
+<c>  </c>
+<l>        endif</l>
+<c>        </c>
+<c>        </c>
+<l>        dev_display (TeachImage)</l>
+<l>        disp_message (WindowHandleOut, 'Edge Location Teach : [Y/N] ?', 'window', 12, 12, 'black', 'true')</l>
+<l>        stop()</l>
+<l>        IsEdgeLocationTeach := 0</l>
+<c>        </c>
+<l>        if(IsEdgeLocationTeach)</l>
+<l>            TeachLocDoc := 1</l>
+<l>            ConcatEdgeTeachTuple[i] := 1</l>
+<c>            </c>
+<c>            ***Halcon file</c>
+<l>            dev_display(TeachImage)</l>
+<l>            dev_get_window (WindowHandleOut)</l>
+<l>            disp_message (WindowHandleOut, 'Draw the gross device location', 'window', 12, 12, 'black', 'true')</l>
+<c>            </c>
+<l>            MinDeviceContrast := 100</l>
+<l>            DeviceWidth := 1000</l>
+<l>            DeviceHeight := 500     </l>
+<l>            MaskSize := 65</l>
+<c>            </c>
+<l>            IsSobelFlag  := false</l>
+<c>            </c>
+<l>            NoOfLocationTeachRegs := 1</l>
+<c>            ***Halcon File//Draw Rectangle</c>
+<l>            _FCI_Gen_Rectangles (RectRegion, \
+                                 NoOfLocationTeachRegs, LocationTeachRectRows, LocationTeachRectCols, WindowHandleOut, LocationTeachRectRows, LocationTeachRectCols)</l>
+<c>            </c>
+<l>            Track := 2</l>
+<l>            _FCI_Inspect_EdgeLocation (TeachImage, EdgeLocation, IsSobelFlag, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, LocationTeachRectRows, LocationTeachRectCols, MaskSize, FoV, nFoVs, Track, EdgeRefRotationAngle, EdgeRefPointRow, EdgeRefPointColumn)</l>
+<c>                        </c>
+<l>        endif</l>
+<c>        </c>
+<l>        if(IsDatumTeach or IsEdgeLocationTeach)</l>
+<c>                </c>
+<l>            if(IsDatumTeach)</l>
+<l>                RefRotationAngle := DatumRefRotationAngle</l>
+<l>                RefPointRow := DatumRefPointRow</l>
+<l>                RefPointColumn := DatumRefPointColumn</l>
+<c>                </c>
+<l>            else</l>
+<l>                RefRotationAngle := EdgeRefRotationAngle</l>
+<l>                RefPointRow := EdgeRefPointRow</l>
+<l>                RefPointColumn := EdgeRefPointColumn</l>
+<l>            endif</l>
+<c>            </c>
+<c>            </c>
+<l>            Track := 2</l>
+<l>            IsSobelFlag  := false</l>
+<l>            _FCI_Inspect_DeviceLocation (TeachImage, \
+                                         DeviceLocation, MatchModelRegion, DebugImageOut, DebugRegionOut, \
+                                         IsDatumTeach, IsEdgeLocationTeach, IsStepMode, IsSobelFlag, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, ModelIDs, RefRotationAngle, RefPointRow, RefPointColumn, PatternTeachRectRows, PatternTeachRectCols, LocationTeachRectRows, LocationTeachRectCols, MaskSize, FoV, nFoVs, Track, \
+                                         IsPass, IsFindDatum, GotRotationAngleDev, GotShiftAlongRow, GotShiftAlongCol, MatchModelScore, DebugMessageOut)</l>
+<c></c>
+<c>       </c>
+<l>            if(IsPass)             </l>
+<l>                if(IsFindDatum) </l>
+<l>                    gen_empty_obj (EmptyObject1)</l>
+<l>                    concat_obj (DeviceLocation, MatchModelRegion, EmptyObject1)</l>
+<l>                    _FCI_AppendOverlayRegion (TeachImage, EmptyObject1, \
+                                              OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>                    </c>
+<l>                else</l>
+<l>                    _FCI_AppendOverlayRegion (TeachImage, \
+                                              DeviceLocation, OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<l>                endif </l>
+<l>            endif</l>
+<l>        endif</l>
+<c>        </c>
+<l>        concat_obj (ConcatDeviceLocation, DeviceLocation, ConcatDeviceLocation)</l>
+<l>        tuple_concat (ConcatProjectionParam, [GotRotationAngleDev, GotShiftAlongRow, GotShiftAlongCol], ConcatProjectionParam)            </l>
+<l>        tuple_concat (ConcatTeachDoc, TeachLocDoc, ConcatTeachDoc)</l>
+<c>        </c>
+<c>        *****Halcon File</c>
+<l>        if(IsDatumTeach = 1 or IsEdgeLocationTeach = 1)</l>
+<l>           _FCI_Save_TeachParameters (TeachLocDoc, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, LocationTeachRectRows, LocationTeachRectCols, PatternTeachRectRows, PatternTeachRectCols, RefRotationAngle, RefPointRow, RefPointColumn, ModelIDs, MaskSize, TeachDocPath, FoV)</l>
+<c>        </c>
+<l>        else</l>
+<c>            </c>
+<l>            TeachLocDoc             := 0</l>
+<l>            NoOfLocationTeachRegs   := 0</l>
+<l>            MinDeviceContrast       := 0</l>
+<l>            DeviceWidth             := 0</l>
+<l>            DeviceHeight            := 0</l>
+<l>            NoOfUniquePatterns      := 0</l>
+<l>            MaxRotationAngle        := 0</l>
+<l>            PatternSearchAreaAlongX := 0</l>
+<l>            PatternSearchAreaAlongY := 0</l>
+<l>            MinAcceptanceScore      := 0</l>
+<l>            PatternTeachRectRows    := []</l>
+<l>            PatternTeachRectCols    := []            </l>
+<l>            LocationTeachRectRows   := []</l>
+<l>            LocationTeachRectCols   := []</l>
+<l>            ModelIDs                := []</l>
+<l>            RefRotationAngle := []</l>
+<l>            RefPointRow     := []</l>
+<l>            RefPointColumn  := []</l>
+<l>            MaskSize := []</l>
+<c>            </c>
+<l>            _FCI_Save_TeachParameters (TeachLocDoc, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, LocationTeachRectRows, LocationTeachRectCols, PatternTeachRectRows, PatternTeachRectCols, RefRotationAngle, RefPointRow, RefPointColumn, ModelIDs, MaskSize, TeachDocPath, FoV)</l>
+<c>        </c>
+<l>        endif        </l>
+<c>        *****Save Parameter in Tuple Vector</c>
+<l>         AppendTeachLocation (BottomTupleVector, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, PatternTeachRectRows, PatternTeachRectCols, LocationTeachRectRows, LocationTeachRectCols, ModelIDs, RefRotationAngle, RefPointRow, RefPointColumn, MaskSize, TeachLocDoc, FoV, i, \
+                              BottomTupleVector)</l>
+<c></c>
+<c>             </c>
+<l>        dev_display (TeachImage)</l>
+<l>        dev_display (DeviceLocation)</l>
+<l>        dev_display (MatchModelRegion)</l>
+<l>        stop()</l>
+<l>    endfor</l>
+<c>    </c>
+<c>    ***********Bottom Region Teach****************    </c>
+<l>    for i:= 0  to nIntensityBottom-1 by 1          </l>
+<l>        FileName := TeachImageFileName[i]</l>
+<l>        read_image(TeachImage, FileName)  </l>
+<c>        </c>
+<l>        _FCI_Extract_LocationParameterData (ConcatProjectionParam, ConcatTeachDoc, ConcatEdgeTeachTuple, ConcatDatumTeachTuple, i, IsSelect, InspectRotationAngle, InspectShiftAlongRow, InspectShiftAlongColumn)</l>
+<c>        </c>
+<l>        if(IsSelect = false)</l>
+<l>            disp_message (WindowHandle, 'No Device Present', 'window', 12, 12, 'black', 'true')</l>
+<l>            break</l>
+<l>        endif</l>
+<c>        </c>
+<l>        _FCI_Select_DeviceLocation (ConcatDeviceLocation, DeviceLocationSelected, i, \
+                                    DeviceCenterRow, DeviceCenterColumn)</l>
+<c>        </c>
+<l>        tuple_strrchr(TeachImageFileName[i], '_Pos',Position)</l>
+<l>        tuple_str_bit_select(TeachImageFileName[i], Position+2, Intensity)          </l>
+<l>        TeachDocPath:=TeachImageDir+'Camera2/Doc'+Intensity+'/'</l>
+<l>        disp_message (WindowHandleOut, 'Input No. of PVI Areas', 'window', 5, 5, 'black', 'true')</l>
+<c>        </c>
+<c>        ******PVI Area Vision Parameter</c>
+<l>        NoOfPVIAreas  := 0</l>
+<l>        PVIAngle      := []</l>
+<l>        PVI2DCenter   := []</l>
+<l>        PVISize       := []</l>
+<c>        </c>
+<l>        NoOfMaskRegions     := 0</l>
+<l>        Mask2DCenterPoints  :=[]</l>
+<l>        MaskAngleConcat     :=[]</l>
+<l>        MaskSize            :=[]</l>
+<c>        </c>
+<l>        dev_display (TeachImage)</l>
+<l>        disp_message(WindowHandle, 'Region Teach [Y/N] ? :', 'window', 12, 12, 'black', 'true')</l>
+<l>        stop()</l>
+<l>        IsRegionTeach := 0</l>
+<c>        </c>
+<l>        if(IsRegionTeach)</l>
+<c>            </c>
+<c>            ****Vision Parameter // No of PVI Areas</c>
+<l>            NoOfPVIAreas := 1</l>
+<l>            for w:=1 to NoOfPVIAreas by 1</l>
+<c>                </c>
+<l>                dev_display (TeachImage)</l>
+<l>                Message:='Draw the region to be inspected'</l>
+<l>                disp_message (WindowHandle, Message, 'window', 5, 5, 'black', 'true')</l>
+<c>                </c>
+<c>                ****Halcon File</c>
+<l>                _FCI_GenerateRectangleRegion(TeachImage,\
+                                             Row1, Column1, Row2, Column2)</l>
+<c>                </c>
+<l>                GetRegionCenter (PVIRegion, Row1, Column1, Row2, Column2, \
+                                 RegionCenterRow, RegionCenterColumn)</l>
+<c>                </c>
+<l>                TopReferencePoints (TeachImage, PVIRegion, \
+                                    FoV, nFoVs, PVITopRow, PVITopColumn, PVIAngle, PVI2DCenter, PVISize)</l>
+<c>                </c>
+<l>                dev_display(TeachImage)</l>
+<l>                dev_display(PVIRegion)</l>
+<l>                disp_message (WindowHandle, 'Input No. of Regions to be masked', 'window', 5, 5, 'black', 'true')</l>
+<c></c>
+<c>                ******Vision Parameter for Mask // No of Masks</c>
+<c>                </c>
+<l>                NoOfMaskRegions    :=  1               </l>
+<l>                Mask2DCenterPoints := []</l>
+<l>                MaskAngleConcat    := []</l>
+<l>                MaskSize           := []</l>
+<c>                </c>
+<l>                gen_empty_obj (ConcatMaskRegions)</l>
+<l>                for e:= 1 to NoOfMaskRegions by 1</l>
+<c>                    </c>
+<c>                    ****Halcon File</c>
+<l>                    _FCI_GenerateRectangleRegion(TeachImage, \
+                                                 Row1, Column1, Row2, Column2)</l>
+<c>                    </c>
+<l>                    GetRegionCenter (MaskRegion, \
+                                     Row1, Column1, Row2, Column2, \
+                                     MaskCenterRow, MaskCenterColumn)</l>
+<c>                    </c>
+<l>                    TopReferencePoints (TeachImage, MaskRegion, \
+                                        FoV, nFoVs, MaskTopRow, MaskTopColumn, MaskAngle, Mask2DCenter, MaskSizeEach)</l>
+<c>                    </c>
+<l>                    tuple_concat (Mask2DCenterPoints, Mask2DCenter, Mask2DCenterPoints)</l>
+<l>                    tuple_concat (MaskAngleConcat, MaskAngle, MaskAngleConcat)</l>
+<l>                    tuple_concat (MaskSize, MaskSizeEach, MaskSize)</l>
+<c>                    ***End for Mask</c>
+<l>                    gen_rectangle2 (Rectangle, Mask2DCenter[0], Mask2DCenter[1], MaskAngle, MaskSizeEach[0], MaskSizeEach[1])</l>
+<l>                    concat_obj (ConcatMaskRegions,Rectangle , ConcatMaskRegions)</l>
+<l>                endfor</l>
+<c>                </c>
+<c>                **** Display in application *******</c>
+<c>                </c>
+<l>                union1 (ConcatMaskRegions, FitMaskRegions)</l>
+<l>                gen_rectangle2 (FitPVIRegions, PVI2DCenter[0], PVI2DCenter[1], PVIAngle, PVISize[0], PVISize[1])</l>
+<c>                </c>
+<l>                _FCI_SavePVIParameters (NoOfPVIAreas, NoOfMaskRegions, PVIAngle, Mask2DCenterPoints, MaskAngleConcat, MaskSize, PVI2DCenter, PVISize, TeachDocPath, w, FoV)</l>
+<c>                </c>
+<l>                AppendTeachPVI (BottomPVITupleVector, NoOfPVIAreas, NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize, FoV, i, w-1, \
+                                BottomPVITupleVector)</l>
+<l>            endfor</l>
+<l>        else            </l>
+<l>            _FCI_SavePVIParameters (NoOfPVIAreas, NoOfMaskRegions, PVIAngle, Mask2DCenterPoints, MaskAngleConcat, MaskSize, PVI2DCenter, PVISize, TeachDocPath, 1, FoV) </l>
+<c>            </c>
+<l>            AppendTeachPVI (BottomPVITupleVector, NoOfPVIAreas, NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize, FoV, i, 0, \
+                            BottomPVITupleVector)</l>
+<l>        endif    </l>
+<c>        **********Region Teach Over</c>
+<c>        </c>
+<c>        *:::::::::: Encap Teach :::::::::::::::::*</c>
+<c>        *****This is true only when Encap is Present             </c>
+<l>        EncapTeachDoc := -1</l>
+<l>        MinEncapContrast := []</l>
+<l>        MaxEncapContrast := []</l>
+<c>        </c>
+<l>        NoOfEncapRect4EncapLoc := 0</l>
+<l>        EncapRectRows := []</l>
+<l>        EncapRectCols := []</l>
+<c>        </c>
+<l>        NoOfRectangle4EncapInsp := 0</l>
+<l>        EncapInspectRectRows := []</l>
+<l>        EncapInspectRectCols := []</l>
+<c>        </c>
+<l>        dev_display (TeachImage)</l>
+<l>        disp_message (WindowHandleOut, 'Encap Teach [Y/N] ?: ', 'window', 12, 12, 'black', 'true')</l>
+<l>        stop()</l>
+<l>        IsEncapTeach := 0</l>
+<c>        </c>
+<l>        if(IsEncapTeach)</l>
+<c>            </c>
+<l>            EncapTeachDoc := i          </l>
+<l>            dev_display (TeachImage)</l>
+<l>            DisplayText := 'Draw Rectangle on Encap Location'</l>
+<l>            disp_message (WindowHandleOut, DisplayText, 'window', 20, 20, 'black', 'true')</l>
+<c>            </c>
+<l>            NoOfEncapRect4EncapLoc := 1</l>
+<c>            *****Draw Rectangle on Encap Location</c>
+<l>            _FCI_Gen_Rectangles (EncapTeachRegion, NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, WindowHandleOut, \
+                                 EncapRectRows, EncapRectCols)</l>
+<c>            </c>
+<c>            *******Overlay Encap Region</c>
+<l>             _FCI_AppendOverlayRegion (TeachImage, \
+                                       EncapTeachRegion, OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>            </c>
+<c>            *****Teach Vision Parameter</c>
+<l>            WireColor := 1</l>
+<l>            MinEncapContrast := 50</l>
+<l>            MaxEncapContrast := 180</l>
+<c>            </c>
+<l>            _FCI_Inspect_EncapLocation (TeachImage, DeviceLocationSelected, EncapTeachRegion, \
+                                        EncapLocation, DebugImageOut, DebugRegionOut, \
+                                        IsStepMode, WireColor, MinEncapContrast, MaxEncapContrast, \
+                                        IsPassEncap, DebugMessageOut)</l>
+<c>            *******Overlay Encap Location        </c>
+<l>            _FCI_AppendOverlayRegion (TeachImage, \
+                                      EncapLocation, OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>           </c>
+<c>            *******Drawing inner and Outer Rectangle</c>
+<l>            NoOfRectangle4EncapInsp := 2</l>
+<l>            dev_display (TeachImage)</l>
+<c>            ****Halcon File</c>
+<l>            _FCI_Gen_Rectangles (EncapInspectRegion, NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols, WindowHandleOut, \
+                                 EncapInspectRectRows, EncapInspectRectCols)</l>
+<c>            </c>
+<c>            *******Overlay Inner and Outer Region        </c>
+<l>            _FCI_AppendOverlayRegion (TeachImage, \
+                                      EncapInspectRegion, OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>        </c>
+<c>            ******Save Encap Teach Parameters</c>
+<l>            _FCI_SaveEncapParameter (EncapTeachDoc, MinEncapContrast, MaxEncapContrast, \
+                                     NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, \
+                                     NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols, TeachDocPath, FoV)</l>
+<l>        else            </l>
+<l>             _FCI_SaveEncapParameter (EncapTeachDoc, MinEncapContrast, MaxEncapContrast, \
+                                     NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, \
+                                     NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols, TeachDocPath, FoV)</l>
+<l>        endif</l>
+<c>        </c>
+<c>        *******Save Encap Teach Parameters in a Vector</c>
+<l>        _Encap_TeachTupleVector (BottomEncapTupleVector, EncapTeachDoc, MinEncapContrast, MaxEncapContrast, NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols, FoV, i, \
+                                 BottomEncapTupleVector)</l>
+<c>        </c>
+<c>        ***********  End Of Encap Teach Procedure ***********************</c>
+<c>        </c>
+<c>        </c>
+<c>        ***:::::::::::::: CoverLayer Teach ::::::::::*******</c>
+<l>        _FCI_CoverLayer_Manual_Teach (TeachImage, TeachCoverLayerRgn, OverlayImage, OverlayRegionOut, IsStepMode, BottomCVLTupleVector, WindowHandleOut, TeachDocPath, FoV, nFoVs, i, BottomCVLTupleVector)</l>
+<c>        </c>
+<c>        ******* CVL Alignment Teach</c>
+<l>        _FCI_CVLAlignment_Manual_Teach (TeachImage, CVLARegion, \
+                                        IsStepMode, BottomCVLATupleVector, TeachDocPath, FoV, i, \
+                                        BottomCVLATupleVector)</l>
+<c>        </c>
+<c>       </c>
+<c>        ***:::::::::::::: Tilt Teach :::::::::::::::::*******</c>
+<c>        </c>
+<l>        TiltTeachDoc := -1            </l>
+<l>        TiltRectRows := []</l>
+<l>        TiltRectCols := []</l>
+<c>        </c>
+<l>        dev_display (TeachImage)</l>
+<l>        disp_message (WindowHandleOut, 'Tilt Teach [Y/N] ?:', 'window', 12, 12, 'black', 'true')</l>
+<l>        IsTiltTeach := 0</l>
+<c>        </c>
+<l>        if(IsTiltTeach)</l>
+<c>            </c>
+<l>            TiltTeachDoc := i</l>
+<l>            NoOfRect := 1</l>
+<l>            _FCI_Gen_Rectangles (TiltTeachRegion, NoOfRect, TiltRectRows, TiltRectCols, WindowHandleOut, \
+                                 TiltRectRows, TiltRectCols)</l>
+<c>            </c>
+<l>            _FCI_SaveTiltParameter (TiltTeachDoc, TiltRectRows, TiltRectCols, TeachDocPath, FoV)            </l>
+<l>        else                </l>
+<l>            _FCI_SaveTiltParameter (TiltTeachDoc, TiltRectRows, TiltRectCols, TeachDocPath, FoV)</l>
+<l>        endif            </l>
+<l>        _Tilt_TeachTupleVector (BottomTiltTupleVector, TiltTeachDoc, TiltRectRows, TiltRectCols, FoV, i, \
+                                BottomTiltTupleVector)</l>
+<c>        </c>
+<c>        ***:::::::::::::: End of Tilt Teach :::::::::::::::::*******        </c>
+<l>    endfor   </l>
+<l>endfor  </l>
+<c>***************************************************************************</c>
+<c></c>
+<c>************************   Side Teach  ************************</c>
+<l>stop()</l>
+<l>_LoadImages (TeachImageFiles, PassImgPath, FailImgPath) </l>
+<l>for SideIndex := 0 to |TeachImageFiles|/nIntensitySide-1 by 1</l>
+<l>    TeachImageFileName := TeachImageFiles[SideIndex*nIntensitySide: (SideIndex+1)*nIntensitySide-1]    </l>
+<c>    *****For Finding FoV</c>
+<l>    tuple_strrstr(TeachImageFileName[0], '_Pos', Position)</l>
+<l>    tuple_str_bit_select(TeachImageFileName[0], Position+4, FindFoV)</l>
+<l>    FoVInspect := ['1','2','3','4','5','6','7','8']</l>
+<l>    tuple_find(FoVInspect, FindFoV, FoVIndex)</l>
+<l>    FoV := FoVIndex + 1  </l>
+<c>    </c>
+<l>    gen_empty_obj (ConcatDeviceLocation)  </l>
+<l>    ConcatProjectionParam := []   </l>
+<l>    ConcatTeachDoc := []</l>
+<l>    tuple_gen_const (nIntensitySide, 0, ConcatEdgeTeachTuple)</l>
+<l>    tuple_gen_const (nIntensitySide, 0, ConcatDatumTeachTuple)</l>
+<c>    </c>
+<l>    for i:= 0 to nIntensitySide-1 by 1</l>
+<l>        read_image(TeachImage, TeachImageFileName[i])        </l>
+<c>        </c>
+<c>        ****For Finding Doc</c>
+<l>        tuple_strrchr(TeachImageFileName[i], '_Pos',Position)</l>
+<l>        tuple_str_bit_select(TeachImageFileName[i], Position+2, Intensity)</l>
+<c>        </c>
+<l>        TeachDocPath:=TeachImageDir+'Camera3/Doc'+Intensity+'/'</l>
+<l>        TeachDocFilename:=TeachDocPath+'pos'+FoV+'_Image'</l>
+<l>        write_image(TeachImage, 'bmp', 0, TeachDocFilename)</l>
+<l>        SideImageVector.at(FoV-1).insert(i, TeachImage)</l>
+<c>        </c>
+<c>        *******Initialization Teach Parameter</c>
+<l>        gen_empty_region (DeviceLocation)</l>
+<c>        </c>
+<l>        DatumTeachTuple1 := 0</l>
+<l>        EdgeTeachTuple1  := 0</l>
+<c>        </c>
+<l>        TeachLocDoc := 0</l>
+<l>        NoOfLocationTeachRegs   := 0</l>
+<l>        MinDeviceContrast       := 0</l>
+<l>        DeviceWidth             := 0</l>
+<l>        DeviceHeight            := 0</l>
+<c>        </c>
+<l>        NoOfUniquePatterns      := 0</l>
+<l>        MaxRotationAngle        := 0</l>
+<l>        PatternSearchAreaAlongX := 0</l>
+<l>        PatternSearchAreaAlongY := 0</l>
+<l>        MinAcceptanceScore      := 0</l>
+<l>        PatternTeachRectRows    :=[]</l>
+<l>        PatternTeachRectCols    :=[]            </l>
+<l>        LocationTeachRectRows   :=[]</l>
+<l>        LocationTeachRectCols   :=[]</l>
+<c>        </c>
+<l>        ModelIDs         := []</l>
+<l>        RefRotationAngle := []</l>
+<l>        RefPointRow      := []</l>
+<l>        RefPointColumn   := []</l>
+<c>        </c>
+<l>        MaskSize := []</l>
+<c>        </c>
+<l>        GotRotationAngleDev := 0 </l>
+<l>        GotShiftAlongRow    := 0 </l>
+<l>        GotShiftAlongCol    := 0</l>
+<c>        </c>
+<c>        *****Asking the user to teach intensity image</c>
+<l>        dev_display (TeachImage)</l>
+<l>        disp_message (WindowHandle, 'Unique Pattern Teach : [Y/N] ?', 'window', 12, 12, 'black', 'true')</l>
+<l>        stop()</l>
+<l>        IsDatumTeach := 0</l>
+<c>        </c>
+<l>        if(IsDatumTeach)</l>
+<l>            TeachLocDoc := 1</l>
+<l>            ConcatDatumTeachTuple[i] := 1</l>
+<c>            </c>
+<c>            *****Unique pattern teach parameters</c>
+<l>            NoOfUniquePatterns      := 2</l>
+<l>            MaxRotationAngle        := 10</l>
+<l>            PatternSearchAreaAlongX := 10</l>
+<l>            PatternSearchAreaAlongY := 50</l>
+<l>            MinAcceptanceScore      := 0.65</l>
+<l>            if(NoOfUniquePatterns &lt; 2)</l>
+<l>                NoOfUniquePatterns := 2</l>
+<l>            endif </l>
+<c>            </c>
+<c>            ***Halcon File//Draw Rectangle</c>
+<l>            _FCI_Gen_Rectangles (RectRegion, NoOfUniquePatterns, PatternTeachRectRows, PatternTeachRectCols, WindowHandleOut, \
+                                 PatternTeachRectRows, PatternTeachRectCols)</l>
+<c>            </c>
+<c>            *******//Finding ModelID //Only execute when there is unique pattern or TeachUniquePatternFlag is true</c>
+<l>            _FCI_TeachUniquePattern (TeachImage, \
+                                     NoOfUniquePatterns, MaxRotationAngle, PatternTeachRectRows, PatternTeachRectCols, \
+                                     ModelIDs)</l>
+<c>            </c>
+<l>            _FCI_Inspect_UniquePattern (TeachImage, \
+                                        MatchModelRegion, DebugImageOut, DebugRegionOut, \
+                                        IsStepMode, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MaxRotationAngle, MinAcceptanceScore, ModelIDs, PatternTeachRectRows, PatternTeachRectCols, \
+                                        IsFindDatum, MatchModelScore, DatumRefRotationAngle, DatumRefPointRow, DatumRefPointColumn, DebugMessageOut)</l>
+<c> </c>
+<l>        endif</l>
+<c>        </c>
+<c>        </c>
+<l>        dev_display (TeachImage)</l>
+<l>        disp_message (WindowHandle, 'Edge Location Teach : [Y/N] ?', 'window', 12, 12, 'black', 'true')</l>
+<l>        stop()</l>
+<l>        IsEdgeLocationTeach := 1</l>
+<c>        </c>
+<l>        if(IsEdgeLocationTeach)</l>
+<l>            TeachLocDoc := 1</l>
+<l>            ConcatEdgeTeachTuple[i] := 1</l>
+<c>            </c>
+<c>            ***Halcon file</c>
+<l>            dev_display(TeachImage)</l>
+<l>            dev_get_window (WindowHandleOut)</l>
+<l>            disp_message (WindowHandleOut, 'Draw the gross device location', 'window', 12, 12, 'black', 'true')</l>
+<c>            </c>
+<l>            MinDeviceContrast := 150</l>
+<l>            DeviceWidth := 1000</l>
+<l>            DeviceHeight := 80                </l>
+<l>            IsSobelFlag  := false</l>
+<c>            </c>
+<l>            NoOfLocationTeachRegs := 1</l>
+<c>            ***Halcon File//Draw Rectangle</c>
+<l>            _FCI_Gen_Rectangles (RectRegion, \
+                                 NoOfLocationTeachRegs, LocationTeachRectRows, LocationTeachRectCols, WindowHandleOut, LocationTeachRectRows, LocationTeachRectCols)</l>
+<c>            </c>
+<l>            Track := 3</l>
+<l>            _FCI_Inspect_EdgeLocation (TeachImage, EdgeLocation, IsSobelFlag, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, LocationTeachRectRows, LocationTeachRectCols, MaskSize, FoV, nFoVs, Track, EdgeRefRotationAngle, EdgeRefPointRow, EdgeRefPointColumn)</l>
+<c>                        </c>
+<l>        endif</l>
+<c>        </c>
+<l>        if(IsDatumTeach or IsEdgeLocationTeach)</l>
+<c>                </c>
+<l>            if(IsDatumTeach)</l>
+<l>                RefRotationAngle := DatumRefRotationAngle</l>
+<l>                RefPointRow := DatumRefPointRow</l>
+<l>                RefPointColumn := DatumRefPointColumn</l>
+<c>                </c>
+<l>            else</l>
+<l>                RefRotationAngle := EdgeRefRotationAngle</l>
+<l>                RefPointRow := EdgeRefPointRow</l>
+<l>                RefPointColumn := EdgeRefPointColumn</l>
+<l>            endif</l>
+<c>            </c>
+<c>            </c>
+<l>            Track := 3</l>
+<l>            IsSobelFlag  := false</l>
+<l>            _FCI_Inspect_DeviceLocation (TeachImage, \
+                                         DeviceLocation, MatchModelRegion, DebugImageOut, DebugRegionOut, \
+                                         IsDatumTeach, IsEdgeLocationTeach, IsStepMode, IsSobelFlag, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, ModelIDs, RefRotationAngle, RefPointRow, RefPointColumn, PatternTeachRectRows, PatternTeachRectCols, LocationTeachRectRows, LocationTeachRectCols, MaskSize, FoV, nFoVs, Track, \
+                                         IsPass, IsFindDatum, GotRotationAngleDev, GotShiftAlongRow, GotShiftAlongCol, MatchModelScore, DebugMessageOut)</l>
+<c> </c>
+<l>            if(IsPass)             </l>
+<l>                if(IsFindDatum) </l>
+<l>                    gen_empty_obj (EmptyObject1)</l>
+<l>                    concat_obj (DeviceLocation, MatchModelRegion, EmptyObject1)</l>
+<l>                    _FCI_AppendOverlayRegion (TeachImage, EmptyObject1, \
+                                              OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>                    </c>
+<l>                else</l>
+<l>                    _FCI_AppendOverlayRegion (TeachImage, \
+                                              DeviceLocation, OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<l>                endif </l>
+<l>            endif</l>
+<l>        endif</l>
+<c>        </c>
+<l>        concat_obj (ConcatDeviceLocation, DeviceLocation, ConcatDeviceLocation)</l>
+<l>        tuple_concat (ConcatProjectionParam, [GotRotationAngleDev, GotShiftAlongRow, GotShiftAlongCol], ConcatProjectionParam)            </l>
+<l>        tuple_concat (ConcatTeachDoc, TeachLocDoc, ConcatTeachDoc)</l>
+<c>        </c>
+<c>        *****Halcon File</c>
+<l>        if(IsDatumTeach = 1 or IsEdgeLocationTeach = 1)</l>
+<l>            _FCI_Save_TeachParameters (TeachLocDoc, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, LocationTeachRectRows, LocationTeachRectCols, PatternTeachRectRows, PatternTeachRectCols, RefRotationAngle, RefPointRow, RefPointColumn, ModelIDs, MaskSize, TeachDocPath, FoV)</l>
+<c>        </c>
+<l>        else</l>
+<c>            </c>
+<l>            TeachLocDoc             := 0</l>
+<l>            NoOfLocationTeachRegs   := 0</l>
+<l>            MinDeviceContrast       := 0</l>
+<l>            DeviceWidth             := 0</l>
+<l>            DeviceHeight            := 0</l>
+<l>            NoOfUniquePatterns      := 0</l>
+<l>            MaxRotationAngle        := 0</l>
+<l>            PatternSearchAreaAlongX := 0</l>
+<l>            PatternSearchAreaAlongY := 0</l>
+<l>            MinAcceptanceScore      := 0</l>
+<l>            PatternTeachRectRows    := []</l>
+<l>            PatternTeachRectCols    := []            </l>
+<l>            LocationTeachRectRows   := []</l>
+<l>            LocationTeachRectCols   := []</l>
+<l>            ModelIDs                := []</l>
+<l>            RefRotationAngle := []</l>
+<l>            RefPointRow     := []</l>
+<l>            RefPointColumn  := []</l>
+<l>            MaskSize := []</l>
+<c>            </c>
+<l>            _FCI_Save_TeachParameters (TeachLocDoc, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, LocationTeachRectRows, LocationTeachRectCols, PatternTeachRectRows, PatternTeachRectCols, RefRotationAngle, RefPointRow, RefPointColumn, ModelIDs, MaskSize, TeachDocPath, FoV)</l>
+<c>        </c>
+<l>        endif        </l>
+<c>        *****Save Parameter in Tuple Vector</c>
+<l>        AppendTeachLocation (SideTupleVector, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, PatternTeachRectRows, PatternTeachRectCols, LocationTeachRectRows, LocationTeachRectCols, ModelIDs, RefRotationAngle, RefPointRow, RefPointColumn, MaskSize, TeachLocDoc, FoV, i, SideTupleVector)</l>
+<c>        </c>
+<l>    endfor</l>
+<c>    </c>
+<c>    ***********Side Region Teach****************    </c>
+<l>    for i:= 0  to nIntensitySide-1 by 1          </l>
+<l>        FileName := TeachImageFileName[i]</l>
+<l>        read_image(TeachImage, FileName)  </l>
+<c>        </c>
+<l>        _FCI_Extract_LocationParameterData (ConcatProjectionParam, ConcatTeachDoc, ConcatEdgeTeachTuple, ConcatDatumTeachTuple, i, IsSelect, InspectRotationAngle, InspectShiftAlongRow, InspectShiftAlongColumn)</l>
+<c>        </c>
+<l>        if(IsSelect = false)</l>
+<l>            disp_message (WindowHandle, 'No Device Present', 'window', 12, 12, 'black', 'true')</l>
+<l>            break</l>
+<l>        endif</l>
+<c>        </c>
+<l>        _FCI_Select_DeviceLocation (ConcatDeviceLocation, DeviceLocationSelected, i, \
+                                    DeviceCenterRow, DeviceCenterColumn)</l>
+<c>        </c>
+<l>        tuple_strrchr(TeachImageFileName[i], '_Pos',Position)</l>
+<l>        tuple_str_bit_select(TeachImageFileName[i], Position+2, Intensity)          </l>
+<l>        TeachDocPath:=TeachImageDir+'Camera3/Doc'+Intensity+'/'</l>
+<l>        disp_message (WindowHandleOut, 'Input No. of PVI Areas', 'window', 5, 5, 'black', 'true')</l>
+<c>        </c>
+<c>        ******PVI Area Vision Parameter</c>
+<l>        NoOfPVIAreas  := 0</l>
+<l>        PVIAngle      := []</l>
+<l>        PVI2DCenter   := []</l>
+<l>        PVISize       := []</l>
+<c>        </c>
+<l>        NoOfMaskRegions     := 0</l>
+<l>        Mask2DCenterPoints  :=[]</l>
+<l>        MaskAngleConcat     :=[]</l>
+<l>        MaskSize            :=[]</l>
+<c>        </c>
+<l>        dev_display (TeachImage)</l>
+<l>        disp_message(WindowHandle, 'Region Teach [Y/N] ? :', 'window', 12, 12, 'black', 'true')</l>
+<l>        stop()</l>
+<l>        IsRegionTeach := 0</l>
+<c>        </c>
+<l>        if(IsRegionTeach)</l>
+<c>            </c>
+<c>            ****Vision Parameter // No of PVI Areas</c>
+<l>            NoOfPVIAreas := 1</l>
+<l>            for w:=1 to NoOfPVIAreas by 1</l>
+<c>                </c>
+<l>                dev_display (TeachImage)</l>
+<l>                Message:='Draw the region to be inspected'</l>
+<l>                disp_message (WindowHandle, Message, 'window', 5, 5, 'black', 'true')</l>
+<c>                </c>
+<c>                ****Halcon File</c>
+<l>                _FCI_GenerateRectangleRegion(TeachImage,\
+                                             Row1, Column1, Row2, Column2)</l>
+<c>                </c>
+<l>                GetRegionCenter (PVIRegion, Row1, Column1, Row2, Column2, \
+                                 RegionCenterRow, RegionCenterColumn)</l>
+<c>                </c>
+<l>                TopReferencePoints (TeachImage, PVIRegion, \
+                                    FoV, nFoVs, PVITopRow, PVITopColumn, PVIAngle, PVI2DCenter, PVISize)</l>
+<c>                </c>
+<l>                dev_display(TeachImage)</l>
+<l>                dev_display(PVIRegion)</l>
+<l>                disp_message (WindowHandle, 'Input No. of Regions to be masked', 'window', 5, 5, 'black', 'true')</l>
+<c></c>
+<c>                ******Vision Parameter for Mask // No of Masks</c>
+<c>                </c>
+<l>                NoOfMaskRegions    :=  1               </l>
+<l>                Mask2DCenterPoints := []</l>
+<l>                MaskAngleConcat    := []</l>
+<l>                MaskSize           := []</l>
+<c>                </c>
+<l>                gen_empty_obj (ConcatMaskRegions)</l>
+<l>                for e:= 1 to NoOfMaskRegions by 1</l>
+<c>                    </c>
+<c>                    ****Halcon File</c>
+<l>                    _FCI_GenerateRectangleRegion(TeachImage, \
+                                                 Row1, Column1, Row2, Column2)</l>
+<c>                    </c>
+<l>                    GetRegionCenter (MaskRegion, \
+                                     Row1, Column1, Row2, Column2, \
+                                     MaskCenterRow, MaskCenterColumn)</l>
+<c>                    </c>
+<l>                    TopReferencePoints (TeachImage, MaskRegion, \
+                                        FoV, nFoVs, MaskTopRow, MaskTopColumn, MaskAngle, Mask2DCenter, MaskSizeEach)</l>
+<c>                    </c>
+<l>                    tuple_concat (Mask2DCenterPoints, Mask2DCenter, Mask2DCenterPoints)</l>
+<l>                    tuple_concat (MaskAngleConcat, MaskAngle, MaskAngleConcat)</l>
+<l>                    tuple_concat (MaskSize, MaskSizeEach, MaskSize)</l>
+<c>                    ***End for Mask</c>
+<l>                    gen_rectangle2 (Rectangle, Mask2DCenter[0], Mask2DCenter[1], MaskAngle, MaskSizeEach[0], MaskSizeEach[1])</l>
+<l>                    concat_obj (ConcatMaskRegions,Rectangle , ConcatMaskRegions)</l>
+<l>                endfor</l>
+<c>                </c>
+<c>                **** Display in application *******</c>
+<c>                </c>
+<l>                union1 (ConcatMaskRegions, FitMaskRegions)</l>
+<l>                gen_rectangle2 (FitPVIRegions, PVI2DCenter[0], PVI2DCenter[1], PVIAngle, PVISize[0], PVISize[1])</l>
+<c>                </c>
+<l>                _FCI_SavePVIParameters (NoOfPVIAreas, NoOfMaskRegions, PVIAngle, Mask2DCenterPoints, MaskAngleConcat, MaskSize, PVI2DCenter, PVISize, TeachDocPath, w, FoV)</l>
+<c>                </c>
+<l>                AppendTeachPVI (SidePVITupleVector, NoOfPVIAreas, NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize, FoV, i, w-1, \
+                                SidePVITupleVector)</l>
+<l>            endfor</l>
+<l>        else            </l>
+<l>            _FCI_SavePVIParameters (NoOfPVIAreas, NoOfMaskRegions, PVIAngle, Mask2DCenterPoints, MaskAngleConcat, MaskSize, PVI2DCenter, PVISize, TeachDocPath, 1, FoV) </l>
+<c>            </c>
+<l>            AppendTeachPVI (SidePVITupleVector, NoOfPVIAreas, NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize, FoV, i, 0, \
+                            SidePVITupleVector)</l>
+<l>        endif    </l>
+<c>        **********Region Teach Over</c>
+<c>        </c>
+<c>        *:::::::::: Encap Teach :::::::::::::::::*</c>
+<c>        *****This is true only when Encap is Present             </c>
+<l>        EncapTeachDoc := -1</l>
+<l>        MinEncapContrast := []</l>
+<l>        MaxEncapContrast := []</l>
+<c>        </c>
+<l>        NoOfEncapRect4EncapLoc := 0</l>
+<l>        EncapRectRows := []</l>
+<l>        EncapRectCols := []</l>
+<c>        </c>
+<l>        NoOfRectangle4EncapInsp := 0</l>
+<l>        EncapInspectRectRows := []</l>
+<l>        EncapInspectRectCols := []</l>
+<c>        </c>
+<l>        dev_display (TeachImage)</l>
+<l>        disp_message (WindowHandleOut, 'Encap Teach [Y/N] ?: ', 'window', 12, 12, 'black', 'true')</l>
+<l>        stop()</l>
+<l>        IsEncapTeach := 0</l>
+<c>        </c>
+<l>        if(IsEncapTeach)</l>
+<c>            </c>
+<l>            EncapTeachDoc := i          </l>
+<l>            dev_display (TeachImage)</l>
+<l>            DisplayText := 'Draw Rectangle on Encap Location'</l>
+<l>            disp_message (WindowHandleOut, DisplayText, 'window', 20, 20, 'black', 'true')</l>
+<c>            </c>
+<l>            NoOfEncapRect4EncapLoc := 1</l>
+<c>            *****Draw Rectangle on Encap Location</c>
+<l>            _FCI_Gen_Rectangles (EncapTeachRegion, NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, WindowHandleOut, \
+                                 EncapRectRows, EncapRectCols)</l>
+<c>            </c>
+<c>            *******Overlay Encap Region</c>
+<l>             _FCI_AppendOverlayRegion (TeachImage, \
+                                       EncapTeachRegion, OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>            </c>
+<c>            *****Teach Vision Parameter</c>
+<l>            WireColor := 0</l>
+<l>            MinEncapContrast := 50</l>
+<l>            MaxEncapContrast := 255</l>
+<c>            </c>
+<l>            _FCI_Inspect_EncapLocation (TeachImage, DeviceLocationSelected, EncapTeachRegion, \
+                                        EncapLocation, DebugImageOut, DebugRegionOut, \
+                                        IsStepMode, WireColor, MinEncapContrast, MaxEncapContrast, \
+                                        IsPassEncap, DebugMessageOut)</l>
+<c>            *******Overlay Encap Location        </c>
+<l>            _FCI_AppendOverlayRegion (TeachImage, \
+                                      EncapLocation, OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>           </c>
+<c>            *******Drawing inner and Outer Rectangle</c>
+<l>            NoOfRectangle4EncapInsp := 2</l>
+<l>            dev_display (TeachImage)</l>
+<c>            ****Halcon File</c>
+<l>            _FCI_Gen_Rectangles (EncapInspectRegion, NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols, WindowHandleOut, \
+                                 EncapInspectRectRows, EncapInspectRectCols)</l>
+<c>            </c>
+<c>            *******Overlay Inner and Outer Region        </c>
+<l>            _FCI_AppendOverlayRegion (TeachImage, \
+                                      EncapInspectRegion, OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>        </c>
+<c>            ******Save Encap Teach Parameters</c>
+<l>            _FCI_SaveEncapParameter (EncapTeachDoc, MinEncapContrast, MaxEncapContrast, \
+                                     NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, \
+                                     NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols, TeachDocPath, FoV)</l>
+<l>        else            </l>
+<l>             _FCI_SaveEncapParameter (EncapTeachDoc, MinEncapContrast, MaxEncapContrast, \
+                                     NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, \
+                                     NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols, TeachDocPath, FoV)</l>
+<l>        endif</l>
+<c>        </c>
+<c>        *******Save Encap Teach Parameters in a Vector</c>
+<l>        _Encap_TeachTupleVector (SideEncapTupleVector, EncapTeachDoc, MinEncapContrast, MaxEncapContrast, NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols, FoV, i, \
+                                 SideEncapTupleVector)</l>
+<c>        </c>
+<c>        ***********  End Of Encap Teach Procedure ***********************</c>
+<c>        </c>
+<c>        </c>
+<c>        ***:::::::::::::: CoverLayer Teach ::::::::::*******</c>
+<l>        _FCI_CoverLayer_Manual_Teach (TeachImage, TeachCoverLayerRgn, OverlayImage, OverlayRegionOut, IsStepMode, SideCVLTupleVector, WindowHandleOut, TeachDocPath, FoV, nFoVs, i, SideCVLTupleVector)</l>
+<c>        </c>
+<c>        ******* CVL Alignment Teach</c>
+<l>        _FCI_CVLAlignment_Manual_Teach (TeachImage, CVLARegion, IsStepMode, SideCVLATupleVector, TeachDocPath, FoV, i, SideCVLATupleVector)</l>
+<c>        </c>
+<c>            </c>
+<l>    endfor   </l>
+<l>endfor  </l>
+<c>***************************************************************************</c>
+<l>return ()</l>
+</body>
+<docu id="_FCI_Manual_Teach">
+<parameters>
+<parameter id="IsStepMode"/>
+<parameter id="TeachImageDir"/>
+<parameter id="WindowHandle"/>
+<parameter id="nFoVs"/>
+<parameter id="nIntensityBottom"/>
+<parameter id="nIntensitySide"/>
+<parameter id="nIntensityTop"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

@@ -1,0 +1,1759 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="13.0.1.1">
+<procedure name="main">
+<interface/>
+<body>
+<l>dev_close_window ()</l>
+<l>dev_update_off ()</l>
+<l>set_system('parallelize_operators','false')</l>
+<c></c>
+<c>*** Open Graphics window to display images ***</c>
+<l>dev_open_file_dialog ('read_image', 'default', 'default', Selection)</l>
+<l>read_image (RefImageForWindow, Selection)</l>
+<l>get_image_size (RefImageForWindow, Width, Height)</l>
+<c></c>
+<c>*********** Window for XY image ************</c>
+<l>dev_open_window (0, 0, 600, 400*Height/Width, 'black', WindowHandle)</l>
+<l>set_display_font (WindowHandle, 14, 'mono', 'true', 'false')</l>
+<l>dev_set_colored (12)</l>
+<l>dev_set_draw ('margin')</l>
+<l>dev_set_line_width (2)</l>
+<l>get_window_extents (WindowHandle, Row, Column, WindowWidth, WindowHeight)</l>
+<c></c>
+<c>******* Step Mode **********</c>
+<l>IsStepMode        := true</l>
+<c></c>
+<c>******* Teach ***********</c>
+<l>autoTeach         := true </l>
+<l>IsInspect         := true</l>
+<c></c>
+<c>****** Teach Directory *******</c>
+<l>TeachImageDir     := 'C:/FCI/'</l>
+<l>TeachFileDir      := 'C:/FCI/'</l>
+<c></c>
+<c>****** Initialization</c>
+<l>nFoVs            := 4</l>
+<l>nIntensityTop    := 3</l>
+<l>nIntensityBottom := 3</l>
+<l>nIntensitySide   := 1</l>
+<c></c>
+<c>*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*</c>
+<c>********CALIBRATION****************</c>
+<c></c>
+<l>IsCalibration     := false</l>
+<l>IsLightCorrection := true</l>
+<l>IsDotCalibTop     := true</l>
+<l>IsDotCalibBottom  := true</l>
+<l>IsDotCalibSide    := true</l>
+<c></c>
+<c>****** LOCATION TEACH *************</c>
+<l>global object vector(2) TopImageVector</l>
+<l>global tuple vector(3) TopTupleVector</l>
+<l>global tuple vector(4) TopPVITupleVector</l>
+<l>global tuple vector(3) TopEncapTupleVector</l>
+<l>global tuple vector(3) TopCVLTupleVector</l>
+<l>global tuple vector(3) TopCVLATupleVector</l>
+<l>global tuple vector(3) TopTiltTupleVector</l>
+<c></c>
+<l>global object vector(2) BottomImageVector</l>
+<l>global tuple vector(3) BottomTupleVector</l>
+<l>global tuple vector(4) BottomPVITupleVector</l>
+<l>global tuple vector(3) BottomEncapTupleVector</l>
+<l>global tuple vector(3) BottomCVLTupleVector</l>
+<l>global tuple vector(3) BottomCVLATupleVector</l>
+<l>global tuple vector(3) BottomTiltTupleVector</l>
+<c></c>
+<l>global object vector(2) SideImageVector</l>
+<l>global tuple vector(3) SideTupleVector</l>
+<l>global tuple vector(4) SidePVITupleVector</l>
+<l>global tuple vector(3) SideEncapTupleVector</l>
+<l>global tuple vector(3) SideCVLTupleVector</l>
+<l>global tuple vector(3) SideCVLATupleVector</l>
+<l>global tuple vector(3) SideTiltTupleVector</l>
+<c></c>
+<c>****Top</c>
+<l>TopImageVector := {}</l>
+<l>TopTupleVector := {}</l>
+<l>TopPVITupleVector := {}</l>
+<l>TopEncapTupleVector := {}</l>
+<l>TopCVLTupleVector := {}</l>
+<l>TopCVLATupleVector := {}</l>
+<l>TopTiltTupleVector := {}</l>
+<c></c>
+<c>****Bottom</c>
+<l>BottomImageVector := {}</l>
+<l>BottomTupleVector := {}</l>
+<l>BottomPVITupleVector := {}</l>
+<l>BottomEncapTupleVector := {}</l>
+<l>BottomCVLTupleVector := {}</l>
+<l>BottomCVLATupleVector := {}</l>
+<l>BottomTiltTupleVector := {}</l>
+<c></c>
+<c>****Side</c>
+<l>SideImageVector := {}</l>
+<l>SideTupleVector := {}</l>
+<l>SidePVITupleVector := {}</l>
+<l>SideEncapTupleVector := {}</l>
+<l>SideCVLTupleVector := {}</l>
+<l>SideCVLATupleVector := {}</l>
+<c></c>
+<l>if(IsCalibration)</l>
+<c>    </c>
+<c>    ************** Light Correction Attempt2 ************</c>
+<c>    </c>
+<l>    if(IsLightCorrection)</l>
+<l>        read_image (Image, 'G:/Seq22/4806919599/HP_FCI_Device3_Pos1_T1.bmp')</l>
+<l>        get_image_size (Image, Width, Height)</l>
+<c>        </c>
+<l>        get_domain (Image, Domain)</l>
+<l>        min_max_gray (Domain, Image, 0, MinGrayValue, MaxGrayValue, Range)</l>
+<c>        </c>
+<l>        Percentage := 1</l>
+<l>        if(MaxGrayValue = 255)</l>
+<l>            TargetGrayUniformValue := TargetGrayUniformValue - (Percentage * TargetGrayUniformValue / 100) </l>
+<l>        else</l>
+<l>            TargetGrayUniformValue := MaxGrayValue</l>
+<l>        endif</l>
+<c>        </c>
+<c>        </c>
+<l>    endif</l>
+<c>    </c>
+<c>    ****************Light Correction ************************</c>
+<l>    if(IsLightCorrection)</l>
+<c>        </c>
+<c>        **** Outer loop for Average imaging</c>
+<l>        nRefImage := 4</l>
+<l>        nImage4Avg := 30</l>
+<c>        </c>
+<l>        gen_empty_obj (ReferenceAverageImage)</l>
+<l>        for nRefImgIndex := 0 to nRefImage-1 by 1</l>
+<l>            if(nRefImgIndex = 0)</l>
+<l>                list_image_files ('G:/TempDelete/1', 'default', [], ImageFiles)</l>
+<l>            endif</l>
+<l>            if(nRefImgIndex = 1)</l>
+<l>                list_image_files ('G:/TempDelete/2', 'default', [], ImageFiles)</l>
+<l>            endif</l>
+<l>            if(nRefImgIndex = 2)</l>
+<l>                list_image_files ('G:/TempDelete/3', 'default', [], ImageFiles)</l>
+<l>            endif</l>
+<l>            if(nRefImgIndex = 3)</l>
+<l>                list_image_files ('G:/TempDelete/4', 'default', [], ImageFiles)</l>
+<l>            endif</l>
+<c>            </c>
+<l>            for nImg4AvgIndex := 0 to nImage4Avg-1 by 1</l>
+<l>                read_image (Image, ImageFiles[nImg4AvgIndex])</l>
+<l>                if(nImg4AvgIndex = 0)</l>
+<l>                    gen_image_proto (Image, TotalSumImage, 0)</l>
+<l>                    add_image (Image, TotalSumImage, TotalSumImage, 1, 0)</l>
+<l>                    convert_image_type (TotalSumImage, TotalSumImage, 'uint2')</l>
+<l>                else</l>
+<l>                    add_image (Image, TotalSumImage, TotalSumImage, 1, 0)</l>
+<l>                endif</l>
+<l>            endfor</l>
+<c>            </c>
+<c>            ***End of For Loop</c>
+<c>            *****After 30 times it executes onces </c>
+<l>            _Average_Reference_Image (TotalSumImage, \
+                                      AverageImage)</l>
+<l>            concat_obj (ReferenceAverageImage, AverageImage, ReferenceAverageImage)</l>
+<l>        endfor</l>
+<c>        </c>
+<l>        select_obj (ReferenceAverageImage, ReferenceAverageImage1, 1)</l>
+<l>        select_obj (ReferenceAverageImage, ReferenceAverageImage2, 2)</l>
+<l>        select_obj (ReferenceAverageImage, ReferenceAverageImage3, 3)</l>
+<l>        select_obj (ReferenceAverageImage, ReferenceAverageImage4, 4)</l>
+<c>        </c>
+<c>        </c>
+<c>        ***Vision Parameter</c>
+<l>        TargetGrayValue := 100</l>
+<c>        </c>
+<l>        _FCI_LightCorrection (ReferenceAverageImage1, ReferenceAverageImage2, ReferenceAverageImage3, ReferenceAverageImage4, \
+                              ResultantImage, TargetUniformImage, LightCorrectionImage, PositiveContrastImage, NegativeContrastImage, \
+                              TargetGrayValue)</l>
+<c>        </c>
+<l>        dev_display (ResultantImage)</l>
+<l>    endif</l>
+<c>    </c>
+<c>    *********** Camera Calibration Procedure Starts *******************</c>
+<l>    read_image (DotImage, 'G:/Subash/FCI/Calibration Image/Calibraion/top_cam_Calibration.bmp')</l>
+<l>    _FCI_Dot_Calibration (DotImage, \
+                          DotRegions, \
+                          IsDotCalibTop, IsDotCalibBottom, IsDotCalibSide, \
+                          ResolutionAlongXInMicronPerPixel, ResolutionAlongYInMicronPerPixel)</l>
+<c>    </c>
+<c>    ******Dot Calibration Finish ********</c>
+<c>    </c>
+<l>endif</l>
+<c>*****************   END OF CALIBRATION   *************************</c>
+<c></c>
+<c>*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*</c>
+<c>**************************LOCATION TEACH*************************</c>
+<l>if(not autoTeach)</l>
+<c>    </c>
+<c>    **** Manual Teach</c>
+<l>    _FCI_Manual_Teach (IsStepMode, nIntensityTop, nIntensityBottom, nIntensitySide, nFoVs, WindowHandle, TeachImageDir)</l>
+<c>    </c>
+<l>else</l>
+<c>    </c>
+<c>    ****Auto Teach</c>
+<l>    _FCI_Auto_Teach (nIntensityTop, nIntensityBottom, nIntensitySide, TeachImageDir, nFoVs)</l>
+<l>endif</l>
+<c>***********************END of TEACH PROCESS*************************</c>
+<c></c>
+<c></c>
+<c>*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-</c>
+<c>**************************INSPECTION*********************</c>
+<l>if(IsInspect)</l>
+<c>    </c>
+<l>    stop()</l>
+<c>    ****Inspect Location for Top Images</c>
+<l>    _LoadImages (ImageFiles, PassImgPath, FailImgPath)</l>
+<l>    TotalNoOfImages := |ImageFiles|</l>
+<l>    for Img := 0 to TotalNoOfImages/nIntensityTop-1 by 1</l>
+<l>        ImageFilesNew := ImageFiles[Img*nIntensityTop:(Img+1)*nIntensityTop-1]</l>
+<l>        gen_empty_obj(ConcatInspectImage)</l>
+<l>        for i:= 0 to nIntensityTop-1 by 1</l>
+<l>            read_image(Image, ImageFilesNew[i])</l>
+<l>            concat_obj(ConcatInspectImage, Image, ConcatInspectImage)   </l>
+<l>        endfor</l>
+<c>        </c>
+<c>        ****Finding FoV of Image</c>
+<l>        tuple_strrstr (ImageFiles[Img*nIntensityTop], '_Pos', Position)</l>
+<l>        tuple_str_bit_select(ImageFiles[Img*nIntensityTop], Position+4, FindFoV)</l>
+<l>        FoVInspect := ['1','2','3','4','5','6','7','8']</l>
+<l>        tuple_find(FoVInspect, FindFoV, FoVIndex)</l>
+<l>        FoV := FoVIndex + 1</l>
+<c>        </c>
+<c>        ******Selected tuple vector </c>
+<l>        TupleVector4EachPos := TopTupleVector.at(FoV-1)        </l>
+<l>        ConcatProjectionParam := []   </l>
+<l>        ConcatTeachDoc := []</l>
+<l>        tuple_gen_const (nIntensityTop, 0, ConcatEdgeTeachTuple)</l>
+<l>        tuple_gen_const (nIntensityTop, 0, ConcatDatumTeachTuple)</l>
+<c>        </c>
+<l>        gen_empty_obj (ConcatDeviceLocation)</l>
+<l>        for IntensityIndex := 0 to nIntensityTop-1 by 1</l>
+<c>            </c>
+<l>            GotRotationAngleDev := 0</l>
+<l>            GotShiftAlongRow := 0</l>
+<l>            GotShiftAlongCol := 0</l>
+<c>            </c>
+<l>            select_obj(ConcatInspectImage, InspectImage, IntensityIndex+1)</l>
+<l>            TupleVector4Eachntensity :=  TupleVector4EachPos.at(IntensityIndex) </l>
+<c>            </c>
+<l>            _Extract_DeviceLocation_Data (TupleVector4Eachntensity, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, PatternTeachRectRows, PatternTeachRectCols, LocationTeachRectRows, LocationTeachRectCols, ModelIDs, RefRotationAngle, RefPointRow, RefPointColumn, MaskSize, TeachDoc)</l>
+<c>            </c>
+<l>            IsDatumTeach := false</l>
+<l>            IsDeviceLocationTeach := false </l>
+<c>            </c>
+<l>            if(NoOfUniquePatterns&gt;=2)</l>
+<l>                ConcatDatumTeachTuple[IntensityIndex] := 1</l>
+<l>                IsDatumTeach := true</l>
+<l>            endif</l>
+<c>            </c>
+<l>            if(NoOfLocationTeachRegs &gt; 0)</l>
+<l>                ConcatEdgeTeachTuple[IntensityIndex] := 1</l>
+<l>                IsDeviceLocationTeach := true</l>
+<c>                </c>
+<l>            endif</l>
+<c>            </c>
+<l>            IsSobelFlag := false</l>
+<l>            Track := 1</l>
+<l>            _FCI_Inspect_DeviceLocation (InspectImage, \
+                                         DeviceLocation, MatchModelRegion, DebugImageOutDeviceLocation, DebugRegionOutDeviceLocation, \
+                                         IsDatumTeach, IsDeviceLocationTeach, IsStepMode, IsSobelFlag, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, ModelIDs, RefRotationAngle, RefPointRow, RefPointColumn, PatternTeachRectRows, PatternTeachRectCols, LocationTeachRectRows, LocationTeachRectCols, MaskSize, FoV, nFoVs, Track, \
+                                         IsPass, IsFindDatum, GotRotationAngleDev, GotShiftAlongRow, GotShiftAlongCol, MatchModelScore, DebugMessageOut)</l>
+<c>            </c>
+<l>            concat_obj (ConcatDeviceLocation, DeviceLocation, ConcatDeviceLocation)</l>
+<l>            tuple_concat (ConcatProjectionParam, [GotRotationAngleDev, GotShiftAlongRow, GotShiftAlongCol], ConcatProjectionParam)            </l>
+<l>            tuple_concat (ConcatTeachDoc, TeachDoc, ConcatTeachDoc)</l>
+<l>            if(IsPass)             </l>
+<l>                if(IsFindDatum) </l>
+<l>                    concat_obj (DeviceLocation, MatchModelRegion, EmptyObject1)</l>
+<l>                    _FCI_AppendOverlayRegion (InspectImage, EmptyObject1, \
+                                              OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>                    </c>
+<l>                else</l>
+<l>                    _FCI_AppendOverlayRegion (InspectImage, \
+                                              DeviceLocation, OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<l>                endif </l>
+<l>            endif </l>
+<l>            dev_display (InspectImage)</l>
+<l>            dev_display (DeviceLocation)</l>
+<l>            dev_display (MatchModelRegion)</l>
+<l>            stop()</l>
+<c>            </c>
+<l>        endfor</l>
+<c>        </c>
+<c>        ************ Region Inspection Starts *******</c>
+<c>        *************** Selected tuple vector **************** </c>
+<l>        stop()</l>
+<l>        PVITupleVector4EachPos   := TopPVITupleVector.at(FoV-1)   </l>
+<l>        EncapTupleVector4EachPos := TopEncapTupleVector.at(FoV-1)</l>
+<l>        CVLTupleVector4EachPos   := TopCVLTupleVector.at(FoV-1)</l>
+<l>        CVLATupleVector4EachPos  := TopCVLATupleVector.at(FoV-1)</l>
+<l>        TiltTupleVector4EachPos  := TopTiltTupleVector.at(FoV-1)</l>
+<c>        </c>
+<l>        gen_empty_obj (CVLAReferenceRegion)</l>
+<l>        ConcatMaxDistanceBtnCLFL := []</l>
+<l>        IsCVLATeachUsingPointer := 0</l>
+<l>        IsCVLATeachUsingFL := 0</l>
+<c>        </c>
+<l>        area_center (ConcatDeviceLocation, ConcatArea, Row2, Column2)</l>
+<l>        tuple_max (ConcatArea, MaxArea)</l>
+<l>        if(MaxArea = 0 )</l>
+<l>            disp_message (WindowHandle, 'No Device Present', 'window', Row, Column, 'black', 'true')</l>
+<l>            continue</l>
+<l>        endif</l>
+<c>            </c>
+<c>        </c>
+<l>        for IntensityIndex := 0 to nIntensityTop-1 by 1</l>
+<l>            select_obj(ConcatInspectImage, InspectImage, IntensityIndex+1)             </l>
+<l>            gen_empty_obj (TeachObj)</l>
+<l>            TeachObj:=TopImageVector.at(FoV-1).at(IntensityIndex)</l>
+<c>            ****</c>
+<c>            </c>
+<l>            _FCI_Extract_LocationParameterData (ConcatProjectionParam, ConcatTeachDoc, ConcatEdgeTeachTuple, ConcatDatumTeachTuple, IntensityIndex, \
+                                                IsSelect, InspectRotationAngle, InspectShiftAlongRow, InspectShiftAlongColumn)</l>
+<c>            </c>
+<l>            if(IsSelect = false)</l>
+<l>                disp_message (WindowHandle, 'No Device Present', 'window', Row, Column, 'black', 'true')</l>
+<l>                break</l>
+<l>            endif</l>
+<c>            </c>
+<c>            </c>
+<l>            _FCI_Select_DeviceLocation (ConcatDeviceLocation, DeviceLocationSelected, IntensityIndex, \
+                                        DeviceCenterRow, DeviceCenterColumn)</l>
+<c>            </c>
+<l>            PVITupleVector4Eachntensity :=  PVITupleVector4EachPos.at(IntensityIndex) </l>
+<l>            NoOfPVIArea                 :=  PVITupleVector4Eachntensity.at(0).at(0)</l>
+<c>            </c>
+<l>            if(NoOfPVIArea&gt;0)</l>
+<c>                ***** Rotate ****</c>
+<l>                smallest_rectangle2 (DeviceLocationSelected, Row6, Column6, Phi, Length1, Length2)</l>
+<c>                </c>
+<l>                Projection_Function (InspectImage, DeviceLocationSelected, \
+                                     RegionAffineRotateShift, ImageRotateShift, DebugImageOutFP, DebugRegionOutFP, \
+                                     IsStepMode, InspectRotationAngle, Row6, Column6, InspectShiftAlongRow, InspectShiftAlongColumn, 0, 0, DebugMessageOutFP)</l>
+<c>                </c>
+<c>                </c>
+<c>                **** Sub Image ***</c>
+<l>                abs_diff_image (TeachObj, ImageRotateShift, ImageAbsDiff, 1)</l>
+<c>                </c>
+<c>                </c>
+<c>                *** Inspection for each Pvi region **** </c>
+<c>                </c>
+<l>                for nPVIArea := 0 to NoOfPVIArea-1 by 1</l>
+<c>                    </c>
+<l>                    RetriveTeachValuesForRegionInspect (PVITupleVector4Eachntensity, nPVIArea,\
+                                                        NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize)</l>
+<c>                    </c>
+<c>                    **** Generate the PVI Teach Region.</c>
+<l>                    gen_empty_obj (PVIRegion)</l>
+<l>                    gen_rectangle2 (RegionForPVI_Inspection, PVI2DCenter[0], PVI2DCenter[1], PVIAngle, PVISize[0], PVISize[1])</l>
+<l>                    concat_obj (PVIRegion, RegionForPVI_Inspection, PVIRegion)</l>
+<c>                    </c>
+<l>                    gen_empty_obj (ConcatMasks)</l>
+<l>                    for maskIndex := 0 to NoOfMaskRegions-1 by 1</l>
+<c>                        </c>
+<l>                        SelectMask2DCenterPoints := Mask2DCenterPoints[2*maskIndex: 2*(maskIndex+1)-1]</l>
+<l>                        SelectMaskAngleConcat    := MaskAngleConcat[maskIndex]</l>
+<l>                        SelectMaskSize           := MaskSize[2*maskIndex: 2*(maskIndex+1)-1]</l>
+<c>                        </c>
+<l>                        gen_rectangle2 (RectMask, SelectMask2DCenterPoints[0], SelectMask2DCenterPoints[1], SelectMaskAngleConcat, SelectMaskSize[0], SelectMaskSize[1])</l>
+<l>                        concat_obj (ConcatMasks, RectMask, ConcatMasks)</l>
+<l>                    endfor</l>
+<c>                    </c>
+<l>                    if(NoOfMaskRegions&gt;0)</l>
+<l>                        union1 (ConcatMasks, FitMaskRegion)</l>
+<l>                        difference (RegionForPVI_Inspection, FitMaskRegion, RegionForPVI_Inspection)</l>
+<l>                    endif           </l>
+<c>                    </c>
+<c>                    *************************************************************</c>
+<c>                    **** Translate back ****</c>
+<c>                    </c>
+<c>                    </c>
+<l>                    Projection_Back_Function (InspectImage, RegionForPVI_Inspection, ImageAbsDiff, FitMaskRegion, PVIRegion, \
+                                              RegionForPVI_Inspection, Sub_Image, DebugImageOutBP, DebugRegionOutBP, \
+                                              IsStepMode, -InspectShiftAlongRow, -InspectShiftAlongColumn, 0, 0, -InspectRotationAngle, Row6, Column6, nPVIArea, DebugMessageOutBP)</l>
+<c>                    </c>
+<c>                    ****** Options of PVI Inspection</c>
+<c>                    **** Device Offset Inspection ***</c>
+<c>                    </c>
+<l>                    DeviceLocationOffset:=1</l>
+<c>                    </c>
+<l>                    if(DeviceLocationOffset)</l>
+<c>                        </c>
+<l>                        TupleVector4Eachntensity :=  TupleVector4EachPos.at(IntensityIndex) </l>
+<c>                        </c>
+<l>                        _Extract_DeviceLocation_Data (TupleVector4Eachntensity, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, PatternTeachRectRows, PatternTeachRectCols, LocationTeachRectRows, LocationTeachRectCols, ModelIDs, RefRotationAngle, RefPointRow, RefPointColumn, MaskSize, TeachDoc)</l>
+<c>                        </c>
+<l>                        if(LocationTeachRectRows=[] or LocationTeachRectCols=[])</l>
+<l>                            disp_message (WindowHandle, 'No Device Location', 'window', Row, Column, 'black', 'true')</l>
+<l>                            break  </l>
+<l>                        endif</l>
+<l>                        _FCI_Inspect_EdgeLocation (TeachObj, \
+                                                   TeachDeviceLocation, IsSobelFlag, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, LocationTeachRectRows, LocationTeachRectCols, MaskSize, FoV, nFoVs, \
+                                                   Track, EdgeRefRotationAngle, EdgeRefPointRow, EdgeRefPointColumn)</l>
+<c>                        </c>
+<l>                        smallest_rectangle2 (TeachDeviceLocation, Row1, Column1, Phi1, Length11, Length21)</l>
+<c>                        </c>
+<l>                        Projection_Function (InspectImage, TeachDeviceLocation, \
+                                             TeachRegionAffineRotateShift, ImageRotateShift, DebugImageOutFP, DebugRegionOutFP, \
+                                             IsStepMode, -InspectRotationAngle,  Row1, Column1, -InspectShiftAlongRow, -InspectShiftAlongColumn, 0, 0, DebugMessageOutFP)</l>
+<c>                        </c>
+<c>                        </c>
+<l>                        DeviceEdgeOffset:=50.5</l>
+<l>                        DeviceEdgeWidth:= 50.5</l>
+<c>                        </c>
+<l>                        BoolDeviceEdge := true</l>
+<l>                        _FCI_OffsetRegions (TeachRegionAffineRotateShift, Sub_Image, RegionForPVI_Inspection, ImageForPVI_Inspection, DebugImageOutDeviceOffset, DebugRegionOutDeviceOffset, IsStepMode, DeviceEdgeOffset, DeviceEdgeWidth, nPVIArea, BoolDeviceEdge, DebugMessageOutDeviceOffset)</l>
+<c>                        </c>
+<l>                    endif   </l>
+<c>                    </c>
+<c>                    ****** Device PVI Inspection ***</c>
+<l>                    DevicePVI:=1</l>
+<l>                    if(DevicePVI)</l>
+<c>                        </c>
+<l>                        reduce_domain (Sub_Image, RegionForPVI_Inspection, ImageForPVI_Inspection)</l>
+<c>                        </c>
+<l>                    endif</l>
+<c>                    </c>
+<c>                    **** Edge Inspection****</c>
+<l>                    Edge := 0</l>
+<l>                    if(Edge)</l>
+<c>                        </c>
+<l>                        MinEdgeContrast   := 60</l>
+<l>                        MaxEdgeContrast   := 255</l>
+<l>                        EdgeRegionOpening := 5.5</l>
+<c>                        </c>
+<c>                        *** To extract the exact edge ***</c>
+<c>                        </c>
+<l>                        _FCI_ExtractExactEdge (InspectImage, RegionForPVI_Inspection, RegionForPVI_Inspection, DebugImageOutExactEdge, DebugRegionOutExactEdge, IsStepMode, MinEdgeContrast, MaxEdgeContrast, EdgeRegionOpening, nPVIArea, IsPassEdge, DebugMessageOutExactEdge)</l>
+<c>                        </c>
+<c>                        **** Edge Offset Inspection****</c>
+<l>                        EdgeOffset:= 5.5</l>
+<l>                        EdgeWidth:=  5.5</l>
+<c>                        </c>
+<l>                        BoolDeviceEdge := false</l>
+<l>                        _FCI_OffsetRegions (RegionForPVI_Inspection, Sub_Image, RegionForPVI_Inspection, ImageForPVI_Inspection, DebugImageOutOffset, DebugRegionOutOffset, IsStepMode, EdgeOffset, EdgeWidth, nPVIArea, BoolDeviceEdge, DebugMessageOutOffset)</l>
+<c>                        </c>
+<l>                    endif</l>
+<c>                    </c>
+<c>                    ****************** PVI Inspection **********************</c>
+<c>                    ** Black = 0</c>
+<c>                    ** White = 1</c>
+<c>                    </c>
+<l>                    DefectCount := 'FM'</l>
+<c>                    </c>
+<l>                    DefectCharacteristics := 0</l>
+<l>                    Contrast             := 70             </l>
+<l>                    MinSize              := 100</l>
+<l>                    MinLength            := 50</l>
+<l>                    MinSquareSize        := 20</l>
+<l>                    MinCount             := 1 </l>
+<c>                    </c>
+<c>                    *** PVI Inspection ****</c>
+<l>                    BoolDeviceEdge := false</l>
+<l>                    _FCI_PVI_Inspection (ImageForPVI_Inspection, RegionForPVI_Inspection, InspectImage, PVI_DefectRegion, DebugImageOutPVI, DebugRegionOutPVI, DefectCharacteristics, Contrast, MinLength, MinSize, MinSquareSize, MinCount, IsStepMode, IntensityIndex, DefectCount, nPVIArea, BoolDeviceEdge, IsPass, DebugMessageOutPVI)</l>
+<c>                    </c>
+<l>                    if(IsPass = 0)</l>
+<l>                        PVI_Inspection_ReCheck (InspectImage, TeachObj, PVI_DefectRegion, DebugImageOutReCheck, DebugRegionOutReCheck, ActualPVIDefect, IsStepMode, InspectRotationAngle, Row6, Column6, InspectShiftAlongRow, InspectShiftAlongColumn, DefectCharacteristics, DefectCount, nPVIArea, DebugMessageOutReCheck, AllPVIDefectMinSize, AllPVIDefecMinLength, AllPVIDefecMinSquareSize)</l>
+<c>                        </c>
+<l>                        dev_display (InspectImage)</l>
+<l>                        dev_display (ActualPVIDefect)</l>
+<l>                    endif</l>
+<l>                endfor</l>
+<l>            endif</l>
+<c>            </c>
+<c>            ****************  Encap Inspection *************************</c>
+<c>            </c>
+<l>            dev_display(InspectImage)</l>
+<l>            IsEncapInspection := true</l>
+<l>            if(IsEncapInspection)</l>
+<c>                </c>
+<l>                WireColor := 0</l>
+<l>                EncapTupleVector4Eachntensity := EncapTupleVector4EachPos.at(IntensityIndex)</l>
+<l>                EncapTeachDoc := EncapTupleVector4Eachntensity.at(0)    </l>
+<c>                </c>
+<l>                if(IntensityIndex = EncapTeachDoc)</l>
+<c>                    </c>
+<l>                    _Extract_Encap_Data (EncapTupleVector4Eachntensity, MinEncapContrast, MaxEncapContrast, NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols)</l>
+<c>                    </c>
+<l>                    _FCI_CreateRegion (EncapLocationRegion, \
+                                       NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols)</l>
+<c>                    </c>
+<c>                    </c>
+<l>                    _FCI_Encap_RegionProjection (InspectImage, EncapLocationRegion, ProjectedEncapLocationRegion, DebugImageOutEncapProject, DebugRegionOutEncapProject, IsStepMode, DeviceCenterRow, DeviceCenterColumn, InspectRotationAngle, InspectShiftAlongRow, InspectShiftAlongColumn, DebugMessageOutEncapProject)</l>
+<c>                    </c>
+<l>                    _FCI_Inspect_EncapLocation (InspectImage, DeviceLocationSelected, ProjectedEncapLocationRegion, \
+                                                EncapLocation, DebugImageOutEncapLocation, DebugRegionOutEncapLocation, \
+                                                IsStepMode, WireColor, MinEncapContrast, MaxEncapContrast, \
+                                                IsPassEncap, DebugMessageOutEncapLocation)</l>
+<c>                    </c>
+<c>                    </c>
+<l>                    if(IsPassEncap)</l>
+<c>                        </c>
+<l>                        _FCI_AppendOverlayRegion (InspectImage, EncapLocation, \
+                                                  OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>                        </c>
+<l>                        dev_display (InspectImage)</l>
+<l>                        dev_display (EncapLocation)</l>
+<l>                        stop()</l>
+<c>                        </c>
+<c>                        ***** Encap surface Inspection</c>
+<l>                        ErosionOffset := 3.5</l>
+<l>                        MinDefectContrast := 60</l>
+<l>                        MinDefectArea := 16</l>
+<c>                        </c>
+<c>                        *** Extact surface defect</c>
+<l>                        _FCI_EncapDefect_Extraction (EncapLocation, InspectImage,\
+                                                     EncapDefectRegion, DebugImageOutEncapDefectExtract, DebugRegionOutEncapDefectExtract, \
+                                                     IsStepMode, ErosionOffset, MinDefectContrast, MinDefectArea, IsDefectFound,\
+                                                     DebugMessageOutEncapDefectExtract)</l>
+<c>                        </c>
+<l>                        if(IsDefectFound)</l>
+<c>                            </c>
+<l>                            MinCircularityBH := 0.5</l>
+<l>                            MinLengthBH := 10</l>
+<l>                            MinSquareSizeBH := 12</l>
+<l>                            GrayMeanBH := 100</l>
+<c>                            </c>
+<l>                            _FCI_Inspect_BlowHole (EncapDefectRegion, InspectImage, \
+                                                   BHDefectRegion, DebugImageOutBlowHole, DebugRegionOutBlowHole, \
+                                                   IsStepMode, MinCircularityBH, MinLengthBH, MinSquareSizeBH, GrayMeanBH, \
+                                                   IsBHPass, DebugMessageOutBlowHole, AllEBHDefectMinSize, AllEBHDefecMinLength, AllEBHDefecMinSquareSize)</l>
+<c>                            </c>
+<l>                            if(IsBHPass = false)</l>
+<l>                                dev_display (InspectImage)</l>
+<l>                                dev_display (BHDefectRegion)</l>
+<l>                                disp_message (WindowHandle, 'Blow Hole ', 'window', 12, 12, 'black', 'true')</l>
+<l>                                stop ()</l>
+<l>                            endif</l>
+<c>                            </c>
+<l>                            MaxCircularityCT := 0.5</l>
+<l>                            MinLengthCT := 10</l>
+<l>                            MinSquareSizeCT := 12</l>
+<c>                            </c>
+<l>                            _FCI_Inspect_Contamination (EncapDefectRegion, InspectImage, \
+                                                        ContaminationDefectRegion, DebugImageOutContamination, DebugRegionOutContamination, \
+                                                        IsStepMode, MinLengthCT, MinSquareSizeCT, MaxCircularityCT, \
+                                                        IsCTPass, DebugMessageOutContamination, AllECTDefectMinSize, AllECTDefecMinLength, AllECTDefecMinSquareSize)</l>
+<l>                            if(IsCTPass = false)</l>
+<l>                                dev_display (InspectImage)</l>
+<l>                                dev_display (ContaminationDefectRegion)</l>
+<l>                                disp_message (WindowHandle, 'Contamination', 'window', 12, 12, 'black', 'true')</l>
+<l>                                stop ()</l>
+<l>                            endif</l>
+<c>                            </c>
+<l>                        endif                    </l>
+<c>                        ***** End of Encap surface Inspection</c>
+<c>                        </c>
+<c>                        ******EnCap Insufficient and Excess</c>
+<l>                        _FCI_CreateRegion (EncapInspectRegion, \
+                                           NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols)</l>
+<c>                        </c>
+<l>                        _FCI_Encap_InnOuter_RgnProjection (InspectImage, EncapInspectRegion, ProjectedEncapInspectRegion, DebugImageOutEncapProject, DebugRegionOutEncapProject, IsStepMode, DeviceCenterRow, DeviceCenterColumn, InspectRotationAngle, InspectShiftAlongRow, InspectShiftAlongColumn, DebugMessageOutEncapProject)</l>
+<c>                        </c>
+<c>                        *****//Append EncapInspectRegion</c>
+<c>                        </c>
+<l>                        _FCI_Inspect_EncapDefects (InspectImage, EncapLocation, ProjectedEncapInspectRegion, \
+                                                   IsPassEncap, IsPass4Insufficient, IsPass4Excess)</l>
+<c>                        </c>
+<c>                        </c>
+<l>                        if(IsPassEncap = false)                        </l>
+<l>                            if(IsPass4Insufficient = false)</l>
+<l>                                dev_display (InspectImage)</l>
+<l>                                disp_message (WindowHandle, 'Encap Insufficient', 'window', 12, 12, 'black', 'true')</l>
+<l>                                stop()</l>
+<l>                            endif</l>
+<c>                            </c>
+<l>                            if(IsPass4Excess = false)</l>
+<l>                                dev_display (InspectImage)</l>
+<l>                                disp_message (WindowHandle, 'Excess Encap ', 'window', 12, 12, 'black', 'true')</l>
+<l>                                stop()</l>
+<l>                            endif</l>
+<l>                        endif</l>
+<l>                    endif</l>
+<l>                endif</l>
+<l>            endif</l>
+<c>            ******************** End Of Encap *********************</c>
+<c>            </c>
+<c>            ******************* COVER LAYER INSPECTION ************************</c>
+<l>            dev_display (InspectImage)</l>
+<l>            IsCoverLayerInspection := true</l>
+<c>            </c>
+<l>            if(IsCoverLayerInspection)</l>
+<c>                </c>
+<l>                CVLTupleVector4Eachntensity := CVLTupleVector4EachPos.at(IntensityIndex)</l>
+<l>                CVLTeachDoc := CVLTupleVector4Eachntensity.at(0)    </l>
+<c>                </c>
+<l>                if(IntensityIndex = CVLTeachDoc)</l>
+<c>                    </c>
+<l>                    _Retrieve_CVL_Data (CVLTupleVector4Eachntensity, NoOfRegions, CVLRectRgnRows, CVLRectRgnCols, \
+                                        NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, CVLDatumRows, CVLDatumCols, CVLModelID, \
+                                        CVLRefRotationAngle, CVLRefPointRow, CVLRefPointCol, CVLContrast, CVLLength, CVLMaskSize, CVLMinHeight)</l>
+<c>                    </c>
+<c>                    ******Flag from Teach // Halcon file</c>
+<l>                    IsDatum := |CVLModelID|                                     </l>
+<l>                    if(IsDatum)</l>
+<l>                        CVLTeachWithDatum := true</l>
+<l>                        CVLTeachWithoutDatum := false</l>
+<l>                    else</l>
+<l>                        if(NoOfRegions &gt; 0)</l>
+<l>                            CVLTeachWithoutDatum := true</l>
+<l>                            CVLTeachWithDatum := false</l>
+<l>                        else</l>
+<l>                            CVLTeachWithDatum := false</l>
+<l>                            CVLTeachWithoutDatum := false</l>
+<l>                        endif</l>
+<l>                    endif</l>
+<c>                    </c>
+<l>                    gen_empty_obj (ProjectedCVLRegion)</l>
+<c>                    ****case1: CVL Inspection WithOut Datum</c>
+<l>                    if(CVLTeachWithoutDatum) </l>
+<c>                        </c>
+<l>                        _FCI_CreateRegion (ProjectedCVLRegion, \
+                                           NoOfRegions, CVLRectRgnRows, CVLRectRgnCols)</l>
+<c>                        </c>
+<l>                    elseif(CVLTeachWithDatum)</l>
+<c>                        </c>
+<l>                        _FCI_Inspect_UniquePattern (InspectImage, MatchModelRegion, DebugImageOutUniquePattern, DebugRegionOutUniquePattern, IsStepMode, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MaxRotationAngle, MinAcceptanceScore, CVLModelID, CVLDatumRows, CVLDatumCols, IsFindDatum, MatchModelScore, FindRotationAngle, FindPointRow, FindPointCol, DebugMessageOutUniquePattern)</l>
+<c>                        </c>
+<l>                        _FCI_ConnectedRgn_RegionProjection (InspectImage, CVLInspectRgn, ProjectedCVLRegion, DebugImageOutCVLProject, DebugRegionOutCVLProject, IsStepMode, NoOfRegions, CVLRectRgnRows, CVLRectRgnCols, CVLRefRotationAngle, CVLRefPointRow, CVLRefPointCol, FindRotationAngle, FindPointRow, FindPointCol, DebugMessageOutCVLProject)</l>
+<l>                    endif  </l>
+<c>                    </c>
+<l>                    gen_empty_obj (CoverLayerRegion)</l>
+<l>                    for CVLRectIndex := 0 to NoOfRegions-1 by 1                          </l>
+<l>                        select_obj (ProjectedCVLRegion, SelectedCVLRgn, CVLRectIndex+1)                            </l>
+<c>                        </c>
+<c>                        *****Vision Parameter</c>
+<l>                        Contrast := CVLContrast[CVLRectIndex]</l>
+<l>                        LengthOfCVL := CVLLength[CVLRectIndex]</l>
+<l>                        MaskSize := CVLMaskSize[CVLRectIndex]</l>
+<l>                        MinCVLHeight := CVLMinHeight[CVLRectIndex]</l>
+<c>                        </c>
+<l>                        _FCI_Inspect_CoverLayer (InspectImage, SelectedCVLRgn, CoverLayerRegion4EachRgn, DebugImageOutCoverLayer, DebugRegionOutCoverLayer, IsStepMode, Contrast, MaskSize, MaskWidth, MaskHeight, LengthOfCVL, MinCVLHeight, FoV, nFoVs, IsCoverLayer, DebugMessageOutCoverLayer)</l>
+<c>                        </c>
+<l>                        if(IsCoverLayer)</l>
+<l>                            concat_obj (CoverLayerRegion, CoverLayerRegion4EachRgn, CoverLayerRegion)</l>
+<l>                        else</l>
+<l>                            disp_message (WindowHandle, 'CoverLayer Absent', 'window', 12, 12, 'black', 'true')</l>
+<l>                            return()</l>
+<l>                        endif</l>
+<l>                    endfor</l>
+<c>                    </c>
+<c>                    ******Overlay Coverlayer Region</c>
+<l>                    union1 (CoverLayerRegion, CVLUnion)</l>
+<l>                    _FCI_AppendOverlayRegion (InspectImage, CVLUnion, \
+                                              OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<l>                    dev_display (InspectImage)</l>
+<l>                    dev_display (CVLUnion)</l>
+<l>                    stop()</l>
+<c>                    </c>
+<c>                    ***** CoverLayer Alignment Inspection</c>
+<l>                    if(IsCoverLayer)</l>
+<c>                        </c>
+<c>                        ***** Using Pointer</c>
+<l>                        if(IsCVLATeachUsingPointer)</l>
+<l>                            count_obj (CVLAReferenceRegion, Number)</l>
+<l>                            for PntIndex := 1 to Number by 1</l>
+<c>                                </c>
+<c>                                ***** Vision Parameter</c>
+<c>                                *****// for dilation rectangle</c>
+<l>                                ToleranceDist := 20</l>
+<c>                                ****// 1 : Horizontal Dir., 0 : Vertical Dir.</c>
+<l>                                CVLRgnDir := 1</l>
+<c>                                </c>
+<l>                                _FCI_Inspect_CoverLayerAlignmentUsingPointer (InspectImage, CVLAReferenceRegion, CVLUnion, SelectedPointer, SkeletonOfCLRgn, ToleranceDist, CVLRgnDir, PntIndex, IsPassCVLA, Fraction)</l>
+<c>                                ****** Display Fraction Value</c>
+<l>                                if(IsPassCVLA)</l>
+<l>                                    disp_message (WindowHandle, 'CoverLayer Alignment is Perfect', 'window', 12, 12, 'black', 'true')</l>
+<l>                                    stop()</l>
+<l>                                else</l>
+<l>                                    disp_message (WindowHandle, 'CoverLayer Alignment is not Perfect', 'window', 12, 12, 'black', 'true')</l>
+<l>                                    stop()</l>
+<l>                                endif</l>
+<l>                            endfor</l>
+<l>                        endif</l>
+<c>                        </c>
+<c>                        ****** Using Flex LIne</c>
+<l>                        if(IsCVLATeachUsingFL) </l>
+<c>                            </c>
+<l>                            count_obj (CVLAReferenceRegion, Number)</l>
+<l>                            for FLIndex := 1 to Number by 1</l>
+<c>                                </c>
+<c>                                ***** Vision Parameter</c>
+<c>                                *****// Tolerance limit</c>
+<l>                                CVLATolerance := 20 </l>
+<c>                                ****// 1 : Horizontal Dir., 0 : Vertical Dir.</c>
+<l>                                CVLRgnDir := 1</l>
+<c>                                </c>
+<l>                                _FCI_Inspect_CoverLayerAlignmentUsingFL (InspectImage, CVLAReferenceRegion, CVLUnion, \
+                                                                         SelectedFL, SelectedCL, SelectedFLSkeleton, SelectedCLSkeleton, \
+                                                                         CVLATolerance, ConcatMaxDistanceBtnCLFL, FLIndex, CVLRgnDir, \
+                                                                         IsPassCVLA, GetDistance)</l>
+<c>                                </c>
+<l>                                if(IsPassCVLA)</l>
+<l>                                    disp_message (WindowHandle, 'CoverLayer Alignment is Perfect', 'window', 12, 12, 'black', 'true')</l>
+<l>                                    stop()</l>
+<l>                                else</l>
+<l>                                    disp_message (WindowHandle, 'CoverLayer Alignment is not Perfect', 'window', 12, 12, 'black', 'true')</l>
+<l>                                    stop()</l>
+<l>                                endif</l>
+<l>                            endfor</l>
+<l>                        endif</l>
+<c>                        ******</c>
+<l>                    endif</l>
+<l>                endif</l>
+<l>            endif        </l>
+<c>            *********************** End Of CVL ********************</c>
+<c>            </c>
+<c>            *************** CoverLayer Alignment *******************</c>
+<l>            stop()</l>
+<l>            dev_display (InspectImage)</l>
+<l>            IsCoverLayerAlignment := true</l>
+<l>            if(IsCoverLayerAlignment)</l>
+<c>                </c>
+<l>                CVLATupleVector4Eachntensity := CVLATupleVector4EachPos.at(IntensityIndex)</l>
+<l>                CVLATeachDoc := CVLATupleVector4Eachntensity.at(0)</l>
+<l>                if(IntensityIndex = CVLATeachDoc)</l>
+<c>                    </c>
+<l>                    IsCVLATeachUsingFixedPatterns := false </l>
+<l>                    IsCVLATeachUsingFlexLine := false</l>
+<l>                    IsDatum := false</l>
+<c>                    </c>
+<l>                    _Retrieve_CVLA_Data (CVLATupleVector4Eachntensity, NoOfCVLARect, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, CVLAModelIDs, CVLATeachRows, CVLATeachCols, NoOfCVLADatum, CVLADatumModelID, CVLADatumTeachRows, CVLADatumTeachCols, CVLARefRotationAngle, CVLARefPointRow, CVLARefPointColumn, NoOfCVLArectFL, CVLATeachRowsFL, CVLATeachColsFL, MaxDistanceBtnCLFL)</l>
+<c>                    </c>
+<l>                    if(NoOfCVLARect &gt; 0)</l>
+<l>                        IsCVLATeachUsingFixedPatterns := true</l>
+<l>                        IsCVLATeachUsingPointer := 1</l>
+<c>                        </c>
+<l>                    elseif(NoOfCVLADatum &gt; 0)</l>
+<l>                        IsCVLATeachUsingFlexLine := true</l>
+<l>                        IsDatum := true</l>
+<l>                        IsCVLATeachUsingFL := 1</l>
+<c>                        </c>
+<l>                    else</l>
+<l>                        IsCVLATeachUsingFlexLine := true</l>
+<l>                        IsDatum := false</l>
+<l>                        IsCVLATeachUsingFL := 1</l>
+<c>                        </c>
+<l>                    endif </l>
+<c>                    </c>
+<l>                    if(IsCVLATeachUsingFixedPatterns)</l>
+<c>                        </c>
+<l>                        for i := 0 to NoOfCVLARect-1 by 1</l>
+<c>                            </c>
+<l>                            SelectModelID := CVLAModelIDs[i]</l>
+<l>                            CVLAPatternRows := CVLATeachRows[2*i:2*(i+1)-1]</l>
+<l>                            CVLAPatternCols := CVLATeachCols[2*i:2*(i+1)-1]</l>
+<c>                            </c>
+<l>                            _FCI_Inspect_UniquePattern (InspectImage, \
+                                                        FindModel, DebugImageOut, DebugRegionOut, \
+                                                        IsStepMode, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MaxRotationAngle, MinAcceptanceScore, SelectModelID, CVLAPatternRows, CVLAPatternCols, \
+                                                        IsFindDatum, Dummy, Dummy, Dummy, Dummy, DebugMessageOut)                           </l>
+<l>                            concat_obj (CVLAReferenceRegion, FindModel, CVLAReferenceRegion)</l>
+<l>                        endfor </l>
+<c>                        </c>
+<l>                    elseif(IsCVLATeachUsingFlexLine)</l>
+<l>                        FindRotationAngle := []</l>
+<l>                        FindPointRow := []</l>
+<l>                        FindPointCol := []</l>
+<c>                        </c>
+<l>                        if(IsDatum)</l>
+<l>                            _FCI_Inspect_UniquePattern (InspectImage, \
+                                                        MatchModelRegion, DebugImageOutUniquePattern, DebugRegionOutUniquePattern, \
+                                                        IsStepMode, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MaxRotationAngle, MinAcceptanceScore, CVLADatumModelID, CVLADatumTeachRows, CVLADatumTeachCols, \
+                                                        IsFindDatum, MatchModelScore, FindRotationAngle, FindPointRow, FindPointCol, DebugMessageOutUniquePattern)</l>
+<l>                        endif</l>
+<c>                        </c>
+<l>                        _FCI_ConnectedRgn_RegionProjection (InspectImage, \
+                                                            CVLAInspectRgnFL, ProjectedCVLARegionFL, DebugImageOutCVLAProject, DebugRegionOutCVLAProject, \
+                                                            IsStepMode, NoOfCVLArectFL,  CVLATeachRowsFL, CVLATeachColsFL, CVLARefRotationAngle, CVLARefPointRow, CVLARefPointColumn, FindRotationAngle, FindPointRow, FindPointCol, DebugMessageOutCVLProject)</l>
+<c>                        </c>
+<l>                        _FCI_Extract_FlexLine (InspectImage, ProjectedCVLARegionFL, \
+                                               FlexLineRegion, DebugImageOutFL, DebugRegionOutFL, \
+                                               IsStepMode, DebugMessageOutFL)</l>
+<c>                        </c>
+<l>                        concat_obj (CVLAReferenceRegion, FlexLineRegion, CVLAReferenceRegion)</l>
+<l>                        tuple_concat (ConcatMaxDistanceBtnCLFL, MaxDistanceBtnCLFL, ConcatMaxDistanceBtnCLFL)</l>
+<l>                    endif                   </l>
+<l>                endif</l>
+<l>            endif</l>
+<c>            *************** End of CVLA ***************************   </c>
+<c>            </c>
+<c>            </c>
+<c>            *********************** Tilt Inspection ***************</c>
+<l>            dev_display(InspectImage)</l>
+<l>            IsTiltInspection := true</l>
+<c>            </c>
+<l>            if(IsTiltInspection)</l>
+<c>                *****Vision Parameter</c>
+<l>                Contrast := 100</l>
+<l>                Distance4TiltInsp := 40</l>
+<c>                </c>
+<c>                </c>
+<l>                TiltTupleVector4Eachntensity := TiltTupleVector4EachPos.at(IntensityIndex)</l>
+<l>                TiltTeachDoc := TiltTupleVector4Eachntensity.at(0)</l>
+<c>                </c>
+<l>                Track := 1              </l>
+<l>                if(IntensityIndex = TiltTeachDoc)</l>
+<c>                    </c>
+<l>                    _Retrieve_Tilt_Data (TiltTupleVector4Eachntensity, \
+                                         TiltRectRows, TiltRectCols)</l>
+<c>                    </c>
+<l>                    _FCI_Finding_TiltInspectionParameter (InspectImage, DeviceLocationSelected, \
+                                                          TiltRegion, InspectTiltRegionPortion, DebugImageOutTilt, DebugRegionOutTilt,\
+                                                          IsStepMode, TiltRectRows, TiltRectCols, InspectRotationAngle, InspectShiftAlongRow, InspectShiftAlongColumn, Contrast, Distance4TiltInsp, FoV, nFoVs, Track, TiltHeight,\
+                                                          DebugMessageOutTilt)</l>
+<c>                    </c>
+<l>                    if(FoV = 1)</l>
+<l>                        A1 := TiltHeight </l>
+<l>                    elseif(FoV = nFoVs)</l>
+<l>                        A2 := TiltHeight</l>
+<l>                    endif </l>
+<c>                    </c>
+<l>                    dev_display (InspectImage)</l>
+<l>                    dev_display (TiltRegion)</l>
+<l>                    stop()</l>
+<c>                    </c>
+<l>                endif   </l>
+<l>            endif</l>
+<c>            *********************** End of Tilt Inspection ********</c>
+<l>        endfor</l>
+<l>    endfor</l>
+<c>    </c>
+<c>    *************************Bottom Inspection***************************</c>
+<l>    stop()</l>
+<l>    _LoadImages (ImageFiles, PassImgPath, FailImgPath)</l>
+<l>    TotalNoOfImages := |ImageFiles|</l>
+<l>    for Img := 0 to TotalNoOfImages/nIntensityBottom-1 by 1</l>
+<l>        ImageFilesNew := ImageFiles[Img*nIntensityBottom:(Img+1)*nIntensityBottom-1]</l>
+<l>        gen_empty_obj(ConcatInspectImage)</l>
+<l>        for i:= 0 to nIntensityBottom-1 by 1</l>
+<l>            read_image(Image, ImageFilesNew[i])</l>
+<l>            concat_obj(ConcatInspectImage, Image, ConcatInspectImage)   </l>
+<l>        endfor</l>
+<c>        </c>
+<c>        ****Finding FoV of Image</c>
+<l>        tuple_strrstr (ImageFiles[Img*nIntensityBottom], '_Pos', Position)</l>
+<l>        tuple_str_bit_select(ImageFiles[Img*nIntensityBottom], Position+4, FindFoV)</l>
+<l>        FoVInspect := ['1','2','3','4','5','6','7','8']</l>
+<l>        tuple_find(FoVInspect, FindFoV, FoVIndex)</l>
+<l>        FoV := FoVIndex + 1</l>
+<c>        </c>
+<c>        ******Selected tuple vector </c>
+<l>        TupleVector4EachPos := BottomTupleVector.at(FoV-1)        </l>
+<l>        ConcatProjectionParam := []   </l>
+<l>        ConcatTeachDoc := []</l>
+<l>        tuple_gen_const (nIntensityBottom, 0, ConcatEdgeTeachTuple)</l>
+<l>        tuple_gen_const (nIntensityBottom, 0, ConcatDatumTeachTuple)</l>
+<c>        </c>
+<l>        gen_empty_obj (ConcatDeviceLocation)</l>
+<l>        for IntensityIndex := 0 to nIntensityTop-1 by 1</l>
+<c>            </c>
+<l>            GotRotationAngleDev := 0</l>
+<l>            GotShiftAlongRow := 0</l>
+<l>            GotShiftAlongCol := 0</l>
+<c>            </c>
+<l>            select_obj(ConcatInspectImage, InspectImage, IntensityIndex+1)</l>
+<l>            TupleVector4Eachntensity :=  TupleVector4EachPos.at(IntensityIndex) </l>
+<c>            </c>
+<l>            _Extract_DeviceLocation_Data (TupleVector4Eachntensity, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, PatternTeachRectRows, PatternTeachRectCols, LocationTeachRectRows, LocationTeachRectCols, ModelIDs, RefRotationAngle, RefPointRow, RefPointColumn, MaskSize, TeachDoc)            </l>
+<l>            IsDatumTeach := false</l>
+<l>            IsDeviceLocationTeach := false </l>
+<c>            </c>
+<l>            if(NoOfUniquePatterns&gt;=2)</l>
+<l>                ConcatDatumTeachTuple[IntensityIndex] := 1</l>
+<l>                IsDatumTeach := true</l>
+<l>            endif</l>
+<c>            </c>
+<l>            if(NoOfLocationTeachRegs &gt; 0)</l>
+<l>                ConcatEdgeTeachTuple[IntensityIndex] := 1</l>
+<l>                IsDeviceLocationTeach := true</l>
+<c>                </c>
+<l>            endif</l>
+<c>            </c>
+<l>            IsSobelFlag := false</l>
+<l>            Track := 2</l>
+<l>            MaskSize := 65</l>
+<l>            _FCI_Inspect_DeviceLocation (InspectImage, \
+                                         DeviceLocation, MatchModelRegion, DebugImageOutDeviceLocation, DebugRegionOutDeviceLocation, \
+                                         IsDatumTeach, IsDeviceLocationTeach, IsStepMode, IsSobelFlag, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, ModelIDs, RefRotationAngle, RefPointRow, RefPointColumn, PatternTeachRectRows, PatternTeachRectCols, LocationTeachRectRows, LocationTeachRectCols, MaskSize, FoV, nFoVs, Track, \
+                                         IsPass, IsFindDatum, GotRotationAngleDev, GotShiftAlongRow, GotShiftAlongCol, MatchModelScore, DebugMessageOut)</l>
+<c>            </c>
+<l>            concat_obj (ConcatDeviceLocation, DeviceLocation, ConcatDeviceLocation)</l>
+<l>            tuple_concat (ConcatProjectionParam, [GotRotationAngleDev, GotShiftAlongRow, GotShiftAlongCol], ConcatProjectionParam)            </l>
+<l>            tuple_concat (ConcatTeachDoc, TeachDoc, ConcatTeachDoc)</l>
+<l>            if(IsPass)             </l>
+<l>                if(IsFindDatum) </l>
+<l>                    gen_empty_obj (EmptyObject1)</l>
+<l>                    concat_obj (DeviceLocation, MatchModelRegion, EmptyObject1)</l>
+<l>                    _FCI_AppendOverlayRegion (InspectImage, EmptyObject1, \
+                                              OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>                    </c>
+<l>                else</l>
+<l>                    _FCI_AppendOverlayRegion (InspectImage, \
+                                              DeviceLocation, OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<l>                endif </l>
+<l>            endif</l>
+<l>            dev_display (InspectImage)</l>
+<l>            dev_display (DeviceLocation)</l>
+<l>            dev_display (MatchModelRegion)</l>
+<l>            stop()</l>
+<l>        endfor</l>
+<c>        </c>
+<c>        ****Region Inspection</c>
+<c>        ******Selected tuple vector***** </c>
+<l>        PVITupleVector4EachPos   := BottomPVITupleVector.at(FoV-1)</l>
+<l>        EncapTupleVector4EachPos := BottomEncapTupleVector.at(FoV-1)</l>
+<l>        CVLTupleVector4EachPos   := BottomCVLTupleVector.at(FoV-1)        </l>
+<l>        CVLATupleVector4EachPos  := BottomCVLATupleVector.at(FoV-1)</l>
+<l>        TiltTupleVector4EachPos  := BottomTiltTupleVector.at(FoV-1)</l>
+<c>        </c>
+<c>        </c>
+<l>        gen_empty_obj (CVLAReferenceRegion)</l>
+<l>        ConcatMaxDistanceBtnCLFL := []</l>
+<l>        IsCVLATeachUsingPointer := 0</l>
+<l>        IsCVLATeachUsingFL := 0</l>
+<c>        </c>
+<l>        area_center (ConcatDeviceLocation, ConcatArea, Row2, Column2)</l>
+<l>        tuple_max (ConcatArea, MaxArea)</l>
+<l>        if(MaxArea = 0 )</l>
+<l>            disp_message (WindowHandle, 'No Device Present', 'window', Row, Column, 'black', 'true')</l>
+<l>            continue</l>
+<l>        endif</l>
+<c>        </c>
+<l>        for IntensityIndex := 0 to nIntensityBottom-1 by 1</l>
+<c>            </c>
+<l>            select_obj(ConcatInspectImage, InspectImage, IntensityIndex+1) </l>
+<c>            </c>
+<l>            gen_empty_obj (TeachObj)</l>
+<l>            TeachObj:=BottomImageVector.at(FoV-1).at(IntensityIndex)</l>
+<c>            ****</c>
+<l>            _FCI_Extract_LocationParameterData (ConcatProjectionParam, ConcatTeachDoc, ConcatEdgeTeachTuple, ConcatDatumTeachTuple, IntensityIndex, \
+                                                IsSelect, InspectRotationAngle, InspectShiftAlongRow, InspectShiftAlongColumn)</l>
+<c>            </c>
+<l>            if(IsSelect = false)</l>
+<l>                disp_message (WindowHandle, 'No Device Present', 'window', Row, Column, 'black', 'true')</l>
+<l>                break</l>
+<l>            endif</l>
+<c>            </c>
+<c>            </c>
+<l>            _FCI_Select_DeviceLocation (ConcatDeviceLocation, DeviceLocationSelected, IntensityIndex, \
+                                        DeviceCenterRow, DeviceCenterColumn)</l>
+<c>            </c>
+<l>            PVITupleVector4Eachntensity :=  PVITupleVector4EachPos.at(IntensityIndex) </l>
+<l>            NoOfPVIArea                 :=  PVITupleVector4Eachntensity.at(0).at(0)</l>
+<c>            </c>
+<c>            </c>
+<l>            if(NoOfPVIArea # 0)</l>
+<c>                </c>
+<c>                ***** Rotate ****</c>
+<l>                smallest_rectangle2 (DeviceLocationSelected, Row6, Column6, Phi, Length1, Length2)</l>
+<c>                </c>
+<l>                Projection_Function (InspectImage, DeviceLocationSelected, \
+                                     RegionAffineRotateShift, ImageRotateShift, DebugImageOutFP, DebugRegionOutFP, \
+                                     IsStepMode, InspectRotationAngle, Row6, Column6, InspectShiftAlongRow, InspectShiftAlongColumn, 0, 0, DebugMessageOutFP)</l>
+<c>                </c>
+<c>                **** Sub Image ***</c>
+<l>                abs_diff_image (TeachObj, ImageRotateShift, ImageAbsDiff, 1)</l>
+<c>                </c>
+<c>                </c>
+<c>                *** Inspection for each Pvi region **** </c>
+<c>                </c>
+<l>                for nPVIArea := 0 to NoOfPVIArea-1 by 1</l>
+<l>                    RetriveTeachValuesForRegionInspect (PVITupleVector4Eachntensity, nPVIArea,\
+                                                        NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize)</l>
+<c>                    </c>
+<c>                    **** Generate the PVI Teach Region.</c>
+<l>                    gen_empty_obj (PVIRegion)</l>
+<l>                    gen_rectangle2 (RegionForPVI_Inspection, PVI2DCenter[0], PVI2DCenter[1], PVIAngle, PVISize[0], PVISize[1])</l>
+<l>                    concat_obj (PVIRegion, RegionForPVI_Inspection, PVIRegion)</l>
+<c>                    </c>
+<l>                    gen_empty_obj (ConcatMasks)</l>
+<l>                    for maskIndex := 0 to NoOfMaskRegions-1 by 1</l>
+<c>                        </c>
+<l>                        SelectMask2DCenterPoints := Mask2DCenterPoints[2*maskIndex: 2*(maskIndex+1)-1]</l>
+<l>                        SelectMaskAngleConcat    := MaskAngleConcat[maskIndex]</l>
+<l>                        SelectMaskSize           := MaskSize[2*maskIndex: 2*(maskIndex+1)-1]</l>
+<c>                        </c>
+<l>                        gen_rectangle2 (RectMask, SelectMask2DCenterPoints[0], SelectMask2DCenterPoints[1], SelectMaskAngleConcat, SelectMaskSize[0], SelectMaskSize[1])</l>
+<l>                        concat_obj (ConcatMasks, RectMask, ConcatMasks)</l>
+<l>                    endfor</l>
+<c>                    </c>
+<l>                    if(NoOfMaskRegions&gt;0)</l>
+<l>                        union1 (ConcatMasks, FitMaskRegion)</l>
+<l>                        difference (RegionForPVI_Inspection, FitMaskRegion, RegionForPVI_Inspection)</l>
+<l>                    endif           </l>
+<c>                    </c>
+<c>                    *************************************************************</c>
+<c>                    **** Translate back ****</c>
+<c>                    </c>
+<l>                    Projection_Back_Function (InspectImage, RegionForPVI_Inspection, ImageAbsDiff, FitMaskRegion, PVIRegion, RegionForPVI_Inspection, Sub_Image, DebugImageOutBP, DebugRegionOutTranslateBP, IsStepMode, -InspectShiftAlongRow, -InspectShiftAlongColumn, 0, 0, -InspectRotationAngle, Row6, Column6, nPVIArea, DebugMessageOutBP)</l>
+<c>                    </c>
+<c>                    ****** Options of PVI Inspection</c>
+<c>                    **** Device Offset Inspection ***</c>
+<c>                    </c>
+<l>                    DeviceLocationOffset:=1</l>
+<c>                    </c>
+<l>                    if(DeviceLocationOffset)</l>
+<c>                        </c>
+<l>                        TupleVector4Eachntensity :=  TupleVector4EachPos.at(IntensityIndex) </l>
+<c>                        </c>
+<l>                        _Extract_DeviceLocation_Data (TupleVector4Eachntensity, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, PatternTeachRectRows, PatternTeachRectCols, LocationTeachRectRows, LocationTeachRectCols, ModelIDs, RefRotationAngle, RefPointRow, RefPointColumn, MaskSize, TeachDoc)</l>
+<c>                        </c>
+<l>                        if(LocationTeachRectRows=[] or LocationTeachRectCols=[])</l>
+<l>                            disp_message (WindowHandle, 'No Device Location', 'window', Row, Column, 'black', 'true')</l>
+<l>                            break  </l>
+<l>                        endif</l>
+<l>                        _FCI_Inspect_EdgeLocation (TeachObj, \
+                                                   TeachDeviceLocation, IsSobelFlag, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, LocationTeachRectRows, LocationTeachRectCols, MaskSize, FoV, nFoVs, \
+                                                   Track, EdgeRefRotationAngle, EdgeRefPointRow, EdgeRefPointColumn)</l>
+<c>                        </c>
+<l>                        smallest_rectangle2 (TeachDeviceLocation, Row1, Column1, Phi1, Length11, Length21)</l>
+<c>                        </c>
+<l>                        Projection_Function (InspectImage, TeachDeviceLocation, \
+                                             TeachRegionAffineRotateShift, ImageRotateShift, DebugImageOutFP, DebugRegionOutFP, \
+                                             IsStepMode, -InspectRotationAngle,  Row1, Column1, -InspectShiftAlongRow, -InspectShiftAlongColumn, 0, 0, DebugMessageOutFP)</l>
+<c>                        </c>
+<c>                        </c>
+<l>                        DeviceEdgeOffset:=50.5</l>
+<l>                        DeviceEdgeWidth:= 50.5</l>
+<c>                        </c>
+<l>                        BoolDeviceEdge := true</l>
+<l>                        _FCI_OffsetRegions (TeachRegionAffineRotateShift, Sub_Image, RegionForPVI_Inspection, ImageForPVI_Inspection, DebugImageOutDeviceOffset, DebugRegionOutDeviceOffset, IsStepMode, DeviceEdgeOffset, DeviceEdgeWidth, nPVIArea, BoolDeviceEdge, DebugMessageOutDeviceOffset)</l>
+<c>                        </c>
+<l>                    endif    </l>
+<c>                    </c>
+<c>                    ****** Device PVI Inspection ***</c>
+<l>                    DevicePVI:=1</l>
+<l>                    if(DevicePVI)</l>
+<c>                        </c>
+<l>                        reduce_domain (Sub_Image, RegionForPVI_Inspection, ImageForPVI_Inspection)</l>
+<c>                        </c>
+<l>                    endif</l>
+<c>                    </c>
+<c>                    **** Edge Inspection****</c>
+<l>                    Edge := 0</l>
+<l>                    if(Edge)</l>
+<c>                        </c>
+<l>                        MinEdgeContrast   := 60</l>
+<l>                        MaxEdgeContrast   := 255</l>
+<l>                        EdgeRegionOpening := 5.5</l>
+<c>                        </c>
+<c>                        *** To extract the exact edge ***</c>
+<c>                        </c>
+<l>                        _FCI_ExtractExactEdge (InspectImage, RegionForPVI_Inspection, RegionForPVI_Inspection, DebugImageOutExactEdge, DebugRegionOutExactEdge, IsStepMode, MinEdgeContrast, MaxEdgeContrast, EdgeRegionOpening, nPVIArea, IsPassEdge, DebugMessageOutExactEdge)</l>
+<c>                        </c>
+<c>                        **** Edge Offset Inspection****</c>
+<l>                        EdgeOffset:= 5.5</l>
+<l>                        EdgeWidth:=  5.5</l>
+<c>                        </c>
+<l>                        BoolDeviceEdge := false</l>
+<l>                        _FCI_OffsetRegions (RegionForPVI_Inspection, Sub_Image, RegionForPVI_Inspection, ImageForPVI_Inspection, DebugImageOutOffset, DebugRegionOutOffset, IsStepMode, EdgeOffset, EdgeWidth, nPVIArea, BoolDeviceEdge, DebugMessageOutOffset)</l>
+<c>                        </c>
+<l>                    endif</l>
+<c>                    </c>
+<c>                    ****************** PVI Inspection **********************</c>
+<c>                    ** Black = 0</c>
+<c>                    ** White = 1</c>
+<l>                    DefectCount := 0</l>
+<c>                    </c>
+<l>                    DefectCharacteristics := 0</l>
+<l>                    Contrast             := 70             </l>
+<l>                    MinSize              := 100</l>
+<l>                    MinLength            := 50</l>
+<l>                    MinSquareSize        := 20</l>
+<l>                    MinCount             := 1 </l>
+<c>                    </c>
+<c>                    *** PVI Inspection ****</c>
+<l>                    BoolDeviceEdge := false</l>
+<l>                    _FCI_PVI_Inspection (ImageForPVI_Inspection, RegionForPVI_Inspection, InspectImage, PVI_DefectRegion, DebugImageOutPVI, DebugRegionOutPVI, DefectCharacteristics, Contrast, MinLength, MinSize, MinSquareSize, MinCount, IsStepMode, IntensityIndex, DefectCount, nPVIArea, BoolDeviceEdge, IsPass, DebugMessageOutPVI)</l>
+<l>                    if(IsPass = 0)</l>
+<l>                        PVI_Inspection_ReCheck (InspectImage, TeachObj, PVI_DefectRegion, DebugImageOutReCheck, DebugRegionOutReCheck, ActualPVIDefect, IsStepMode, InspectRotationAngle, Row6, Column6, InspectShiftAlongRow, InspectShiftAlongColumn, DefectCharacteristics, DefectCount, nPVIArea, DebugMessageOutReCheck, AllPVIDefectMinSize, AllPVIDefecMinLength, AllPVIDefecMinSquareSize)</l>
+<c>                        </c>
+<l>                        dev_display (InspectImage)</l>
+<l>                        dev_display (ActualPVIDefect)</l>
+<l>                        stop ()</l>
+<l>                    endif</l>
+<l>                endfor</l>
+<l>            endif</l>
+<c>            </c>
+<c>            ****************  Encap Inspection *************************</c>
+<c>            </c>
+<l>            dev_display(InspectImage)</l>
+<l>            IsEncapInspection := true</l>
+<l>            if(IsEncapInspection)</l>
+<c>                </c>
+<l>                WireColor := 1</l>
+<l>                EncapTupleVector4Eachntensity := EncapTupleVector4EachPos.at(IntensityIndex)</l>
+<l>                EncapTeachDoc := EncapTupleVector4Eachntensity.at(0)    </l>
+<c>                </c>
+<l>                if(IntensityIndex = EncapTeachDoc)</l>
+<c>                    </c>
+<l>                    _Extract_Encap_Data (EncapTupleVector4Eachntensity, MinEncapContrast, MaxEncapContrast, \
+                                         NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols, \
+                                         NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols)</l>
+<c>                    </c>
+<l>                    _FCI_CreateRegion (EncapLocationRegion, \
+                                       NoOfEncapRect4EncapLoc, EncapRectRows, EncapRectCols)</l>
+<c>                    </c>
+<l>                    _FCI_Encap_RegionProjection (InspectImage, EncapLocationRegion, ProjectedEncapLocationRegion, DebugImageOutEncapProject, DebugRegionOutEncapProject, IsStepMode, DeviceCenterRow, DeviceCenterColumn, InspectRotationAngle, InspectShiftAlongRow, InspectShiftAlongColumn, DebugMessageOutEncapProject)</l>
+<c>                    </c>
+<l>                    _FCI_Inspect_EncapLocation (InspectImage, DeviceLocationSelected, ProjectedEncapLocationRegion, \
+                                                EncapLocation, DebugImageOutEncapLocation, DebugRegionOutEncapLocation, \
+                                                IsStepMode, WireColor, MinEncapContrast, MaxEncapContrast, \
+                                                IsPassEncap, DebugMessageOutEncapLocation)</l>
+<c>                    </c>
+<c>                    </c>
+<l>                    if(IsPassEncap)</l>
+<c>                        </c>
+<l>                        _FCI_AppendOverlayRegion (InspectImage, EncapLocation, \
+                                                  OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>                        </c>
+<c>                        </c>
+<l>                        dev_display (InspectImage)</l>
+<l>                        dev_display (EncapLocation)</l>
+<l>                        stop()</l>
+<c>                        </c>
+<c>                        ***** Encap surface Inspection</c>
+<l>                        ErosionOffset := 3.5</l>
+<l>                        MinDefectContrast := 60</l>
+<l>                        MinDefectArea := 16</l>
+<c>                        </c>
+<c>                        *** Extact surface defect</c>
+<l>                        _FCI_EncapDefect_Extraction (EncapLocation, InspectImage,\
+                                                     EncapDefectRegion, DebugImageOutEncapDefectExtract, DebugRegionOutEncapDefectExtract,\
+                                                     IsStepMode, ErosionOffset, MinDefectContrast, MinDefectArea, IsDefectFound,\
+                                                     DebugMessageOutEncapDefectExtract)</l>
+<c>                        </c>
+<l>                        if(IsDefectFound)</l>
+<c>                            </c>
+<l>                            MinCircularityBH := 0.5</l>
+<l>                            MinLengthBH := 10</l>
+<l>                            MinSquareSizeBH := 12</l>
+<l>                            GrayMeanBH := 100</l>
+<c>                            </c>
+<l>                            _FCI_Inspect_BlowHole (EncapDefectRegion, InspectImage, \
+                                                   BHDefectRegion, DebugImageOutBlowHole, DebugRegionOutBlowHole, \
+                                                   IsStepMode, MinCircularityBH, MinLengthBH, MinSquareSizeBH, GrayMeanBH, \
+                                                   IsBHPass, DebugMessageOutBlowHole, AllEBHDefectMinSize, AllEBHDefecMinLength, AllEBHDefecMinSquareSize)</l>
+<c>                            </c>
+<l>                            if(IsBHPass = false)</l>
+<l>                                dev_display (InspectImage)</l>
+<l>                                dev_display (BHDefectRegion)</l>
+<l>                                disp_message (WindowHandle, 'Blow Hole ', 'window', 12, 12, 'black', 'true')</l>
+<l>                                stop ()</l>
+<l>                            endif</l>
+<c>                            </c>
+<l>                            MaxCircularityCT := 0.5</l>
+<l>                            MinLengthCT := 10</l>
+<l>                            MinSquareSizeCT := 12</l>
+<c>                            </c>
+<l>                            _FCI_Inspect_Contamination (EncapDefectRegion, InspectImage, \
+                                                        ContaminationDefectRegion, DebugImageOutContamination, DebugRegionOutContamination, \
+                                                        IsStepMode, MinLengthCT, MinSquareSizeCT, MaxCircularityCT, \
+                                                        IsCTPass, DebugMessageOutContamination, AllECTDefectMinSize, AllECTDefecMinLength, AllECTDefecMinSquareSize)</l>
+<l>                            if(IsCTPass = false)</l>
+<l>                                dev_display (InspectImage)</l>
+<l>                                dev_display (ContaminationDefectRegion)</l>
+<l>                                disp_message (WindowHandle, 'Contamination', 'window', 12, 12, 'black', 'true')</l>
+<l>                                stop ()</l>
+<l>                            endif</l>
+<c>                            </c>
+<l>                        endif                       </l>
+<c>                        ***** End of Encap surface Inspection</c>
+<c>                        </c>
+<c>                        </c>
+<c>                        ******EnCap Insufficient and Excess</c>
+<l>                        _FCI_CreateRegion (EncapInspectRegion, \
+                                           NoOfRectangle4EncapInsp, EncapInspectRectRows, EncapInspectRectCols)</l>
+<c>                        </c>
+<l>                        _FCI_Encap_InnOuter_RgnProjection (InspectImage, EncapInspectRegion, ProjectedEncapInspectRegion, DebugImageOutEncapProject, DebugRegionOutEncapProject, IsStepMode, DeviceCenterRow, DeviceCenterColumn, InspectRotationAngle, InspectShiftAlongRow, InspectShiftAlongColumn, DebugMessageOutEncapProject)</l>
+<c>                        </c>
+<c>                        *****//Append EncapInspectRegion</c>
+<c>                        </c>
+<l>                        _FCI_Inspect_EncapDefects (InspectImage, EncapLocation, ProjectedEncapInspectRegion, \
+                                                   IsPassEncap, IsPass4Insufficient, IsPass4Excess)</l>
+<c>                        </c>
+<c>                        </c>
+<l>                        if(IsPassEncap = false)                        </l>
+<l>                            if(IsPass4Insufficient = false)</l>
+<l>                                dev_display (InspectImage)</l>
+<l>                                disp_message (WindowHandle, 'Encap Insufficient', 'window', 12, 12, 'black', 'true')</l>
+<l>                            endif</l>
+<c>                            </c>
+<l>                            if(IsPass4Excess = false)</l>
+<l>                                dev_display (InspectImage)</l>
+<l>                                disp_message (WindowHandle, 'Excess Encap ', 'window', 12, 12, 'black', 'true')</l>
+<c>                                </c>
+<l>                            endif</l>
+<l>                        endif</l>
+<l>                    endif</l>
+<l>                endif</l>
+<l>            endif</l>
+<c>            ******************** End Of Encap *********************</c>
+<c>            </c>
+<c>            ******************* COVER LAYER INSPECTION ************************</c>
+<l>            dev_display (InspectImage)</l>
+<l>            IsCoverLayerInspection := true</l>
+<c>            </c>
+<l>            if(IsCoverLayerInspection)</l>
+<c>                </c>
+<l>                CVLTupleVector4Eachntensity := CVLTupleVector4EachPos.at(IntensityIndex)</l>
+<l>                CVLTeachDoc := CVLTupleVector4Eachntensity.at(0)    </l>
+<c>                </c>
+<l>                if(IntensityIndex = CVLTeachDoc)</l>
+<c>                    </c>
+<l>                    _Retrieve_CVL_Data (CVLTupleVector4Eachntensity, NoOfRegions, CVLRectRgnRows, CVLRectRgnCols, \
+                                        NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, CVLDatumRows, CVLDatumCols, CVLModelID, \
+                                        CVLRefRotationAngle, CVLRefPointRow, CVLRefPointCol, CVLContrast, CVLLength, CVLMaskSize, CVLMinHeight)</l>
+<c>                    </c>
+<c>                    ******Flag from Teach // Halcon file</c>
+<l>                    IsDatum := |CVLModelID|                                     </l>
+<l>                    if(IsDatum)</l>
+<l>                        CVLTeachWithDatum := true</l>
+<l>                        CVLTeachWithoutDatum := false</l>
+<l>                    else</l>
+<l>                        if(NoOfRegions &gt; 0)</l>
+<l>                            CVLTeachWithoutDatum := true</l>
+<l>                            CVLTeachWithDatum := false</l>
+<l>                        else</l>
+<l>                            CVLTeachWithDatum := false</l>
+<l>                            CVLTeachWithoutDatum := false</l>
+<l>                        endif</l>
+<l>                    endif</l>
+<c>                    </c>
+<l>                    gen_empty_obj (ProjectedCVLRegion)</l>
+<c>                    ****case1: CVL Inspection WithOut Datum</c>
+<l>                    if(CVLTeachWithoutDatum) </l>
+<c>                        </c>
+<l>                        _FCI_CreateRegion (ProjectedCVLRegion, \
+                                           NoOfRegions, CVLRectRgnRows, CVLRectRgnCols)</l>
+<c>                        </c>
+<l>                    elseif(CVLTeachWithDatum)</l>
+<c>                        </c>
+<l>                        _FCI_Inspect_UniquePattern (InspectImage, MatchModelRegion, DebugImageOutUniquePattern, DebugRegionOutUniquePattern, IsStepMode, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MaxRotationAngle, MinAcceptanceScore, CVLModelID, CVLDatumRows, CVLDatumCols, IsFindDatum, MatchModelScore, FindRotationAngle, FindPointRow, FindPointCol, DebugMessageOutUniquePattern)</l>
+<c>                        </c>
+<l>                        _FCI_ConnectedRgn_RegionProjection (InspectImage, CVLInspectRgn, ProjectedCVLRegion, DebugImageOutCVLProject, DebugRegionOutCVLProject, IsStepMode, NoOfRegions, CVLRectRgnRows, CVLRectRgnCols, CVLRefRotationAngle, CVLRefPointRow, CVLRefPointCol, FindRotationAngle, FindPointRow, FindPointCol, DebugMessageOutCVLProject)</l>
+<c>                        </c>
+<l>                    endif  </l>
+<c>                    </c>
+<l>                    gen_empty_obj (CoverLayerRegion)</l>
+<l>                    for CVLRectIndex := 0 to NoOfRegions-1 by 1                          </l>
+<l>                        select_obj (ProjectedCVLRegion, SelectedCVLRgn, CVLRectIndex+1)                            </l>
+<c>                        </c>
+<c>                        *****Vision Parameter</c>
+<l>                        Contrast := CVLContrast[CVLRectIndex]</l>
+<l>                        LengthOfCVL := CVLLength[CVLRectIndex]</l>
+<l>                        MaskSize := CVLMaskSize[CVLRectIndex]</l>
+<l>                        MinCVLHeight := CVLMinHeight[CVLRectIndex]</l>
+<l>                        MaskWidth := 0.5</l>
+<l>                        MaskHeight := 0.5</l>
+<l>*                         MaxGap := CVLMaxGap[CVLRectIndex]</l>
+<c>                        </c>
+<l>                        _FCI_Inspect_CoverLayer (InspectImage, SelectedCVLRgn, CoverLayerRegion4EachRgn, DebugImageOutCoverLayer, DebugRegionOutCoverLayer, IsStepMode, Contrast, MaskSize, MaskWidth, MaskHeight, LengthOfCVL, MinCVLHeight, FoV, nFoVs, IsCoverLayer, DebugMessageOutCoverLayer)</l>
+<c>                        </c>
+<l>                        if(IsCoverLayer)</l>
+<l>                            concat_obj (CoverLayerRegion, CoverLayerRegion4EachRgn, CoverLayerRegion)</l>
+<l>                        else</l>
+<l>                            disp_message (WindowHandle, 'CoverLayer Absent', 'window', 12, 12, 'black', 'true')</l>
+<l>                            break</l>
+<l>                            stop()</l>
+<l>                        endif</l>
+<l>                    endfor</l>
+<c>                    </c>
+<c>                    *****Overlay CoverLayer Region</c>
+<l>                    union1 (CoverLayerRegion, CVLUnion)</l>
+<l>                    _FCI_AppendOverlayRegion (InspectImage, CVLUnion, \
+                                              OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>                    </c>
+<l>                    dev_display (InspectImage)</l>
+<l>                    dev_display (CVLUnion)</l>
+<l>                    stop()</l>
+<c>                    </c>
+<c>                    ***** CoverLayer Alignment Inspection</c>
+<l>                    if(IsCoverLayer)</l>
+<c>                        </c>
+<c>                        ***** Using Pointer</c>
+<l>                        if(IsCVLATeachUsingPointer)</l>
+<l>                            count_obj (CVLAReferenceRegion, Number)</l>
+<l>                            for PntIndex := 1 to Number by 1</l>
+<c>                                </c>
+<c>                                ***** Vision Parameter</c>
+<c>                                *****// Minimum Overlap Percantage</c>
+<l>                                ToleranceDist := 1</l>
+<c>                                ****// 1 : Horizontal Dir., 0 : Vertical Dir.</c>
+<l>                                CVLRgnDir := 1</l>
+<c>                                </c>
+<l>                                _FCI_Inspect_CoverLayerAlignmentUsingPointer (InspectImage, CVLAReferenceRegion, CVLUnion, SelectedPointer, SkeletonOfCLRgn, ToleranceDist, CVLRgnDir, PntIndex, IsPassCVLA, Fraction)</l>
+<c>                                ****** Display Fraction Value</c>
+<l>                                if(IsPassCVLA)</l>
+<l>                                    disp_message (WindowHandle, 'CoverLayer Alignment is Perfect', 'window', 12, 12, 'black', 'true')</l>
+<l>                                    stop()</l>
+<l>                                else</l>
+<l>                                    disp_message (WindowHandle, 'CoverLayer Alignment is not Perfect', 'window', 12, 12, 'black', 'true')</l>
+<l>                                    stop()</l>
+<l>                                endif</l>
+<l>                            endfor</l>
+<l>                        endif</l>
+<c>                        </c>
+<c>                        ****** Using Flex LIne</c>
+<l>                        if(IsCVLATeachUsingFL) </l>
+<c>                            </c>
+<l>                            count_obj (CVLAReferenceRegion, Number)</l>
+<l>                            for FLIndex := 1 to Number by 1</l>
+<c>                                </c>
+<c>                                ***** Vision Parameter</c>
+<c>                                *****// Tolerance limit</c>
+<l>                                CVLATolerance := 20 </l>
+<c>                                ****// 1 : Horizontal Dir., 0 : Vertical Dir.</c>
+<l>                                CVLRgnDir := 1</l>
+<c>                                </c>
+<l>                                _FCI_Inspect_CoverLayerAlignmentUsingFL (InspectImage, CVLAReferenceRegion, CVLUnion, \
+                                                                         SelectedFL, SelectedCL, SelectedFLSkeleton, SelectedCLSkeleton, \
+                                                                         CVLATolerance, ConcatMaxDistanceBtnCLFL, FLIndex, CVLRgnDir, \
+                                                                         IsPassCVLA, GetDistance)</l>
+<c>                                </c>
+<l>                                if(IsPassCVLA)</l>
+<l>                                    disp_message (WindowHandle, 'CoverLayer Alignment is Perfect', 'window', 12, 12, 'black', 'true')</l>
+<l>                                    stop()</l>
+<l>                                else</l>
+<l>                                    disp_message (WindowHandle, 'CoverLayer Alignment is not Perfect', 'window', 12, 12, 'black', 'true')</l>
+<l>                                    stop()</l>
+<l>                                endif</l>
+<l>                            endfor</l>
+<l>                        endif</l>
+<c>                        ******</c>
+<l>                    endif</l>
+<l>                endif</l>
+<l>            endif      </l>
+<c>            *********************** End Of CVL ********************</c>
+<c>            </c>
+<c>            *************** CoverLayer Alignment *******************</c>
+<l>            stop()</l>
+<l>            dev_display (InspectImage)</l>
+<l>            IsCoverLayerAlignment := true</l>
+<l>            if(IsCoverLayerAlignment)</l>
+<c>                </c>
+<l>                CVLATupleVector4Eachntensity := CVLATupleVector4EachPos.at(IntensityIndex)</l>
+<l>                CVLATeachDoc := CVLATupleVector4Eachntensity.at(0)</l>
+<l>                if(IntensityIndex = CVLATeachDoc)</l>
+<c>                    </c>
+<l>                    IsCVLATeachUsingFixedPatterns := false </l>
+<l>                    IsCVLATeachUsingFlexLine := false</l>
+<l>                    IsDatum := false</l>
+<c>                    </c>
+<l>                    _Retrieve_CVLA_Data (CVLATupleVector4Eachntensity, NoOfCVLARect, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, CVLAModelIDs, CVLATeachRows, CVLATeachCols, NoOfCVLADatum, CVLADatumModelID, CVLADatumTeachRows, CVLADatumTeachCols, CVLARefRotationAngle, CVLARefPointRow, CVLARefPointColumn, NoOfCVLArectFL, CVLATeachRowsFL, CVLATeachColsFL, MaxDistanceBtnCLFL)</l>
+<c>                    </c>
+<l>                    if(NoOfCVLARect &gt; 0)</l>
+<l>                        IsCVLATeachUsingFixedPatterns := true</l>
+<l>                        IsCVLATeachUsingPointer := 1</l>
+<c>                        </c>
+<l>                    elseif(NoOfCVLADatum &gt; 0)</l>
+<l>                        IsCVLATeachUsingFlexLine := true</l>
+<l>                        IsDatum := true</l>
+<l>                        IsCVLATeachUsingFL := 1</l>
+<c>                        </c>
+<l>                    else</l>
+<l>                        IsCVLATeachUsingFlexLine := true</l>
+<l>                        IsDatum := false</l>
+<l>                        IsCVLATeachUsingFL := 1</l>
+<c>                        </c>
+<l>                    endif </l>
+<c>                    </c>
+<l>                    if(IsCVLATeachUsingFixedPatterns)</l>
+<c>                        </c>
+<l>                        for i := 0 to NoOfCVLARect-1 by 1</l>
+<c>                            </c>
+<l>                            SelectModelID := CVLAModelIDs[i]</l>
+<l>                            CVLAPatternRows := CVLATeachRows[2*i:2*(i+1)-1]</l>
+<l>                            CVLAPatternCols := CVLATeachCols[2*i:2*(i+1)-1]</l>
+<c>                            </c>
+<l>                            _FCI_Inspect_UniquePattern (InspectImage, \
+                                                        FindModel, DebugImageOut, DebugRegionOut, \
+                                                        IsStepMode, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MaxRotationAngle, MinAcceptanceScore, SelectModelID, CVLAPatternRows, CVLAPatternCols, \
+                                                        IsFindDatum, Dummy, Dummy, Dummy, Dummy, DebugMessageOut)                           </l>
+<l>                            concat_obj (CVLAReferenceRegion, FindModel, CVLAReferenceRegion)</l>
+<l>                        endfor </l>
+<c>                        </c>
+<l>                    elseif(IsCVLATeachUsingFlexLine)</l>
+<l>                        FindRotationAngle := []</l>
+<l>                        FindPointRow := []</l>
+<l>                        FindPointCol := []</l>
+<c>                        </c>
+<l>                        if(IsDatum)</l>
+<l>                            _FCI_Inspect_UniquePattern (InspectImage, \
+                                                        MatchModelRegion, DebugImageOutUniquePattern, DebugRegionOutUniquePattern, \
+                                                        IsStepMode, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MaxRotationAngle, MinAcceptanceScore, CVLADatumModelID, CVLADatumTeachRows, CVLADatumTeachCols, \
+                                                        IsFindDatum, MatchModelScore, FindRotationAngle, FindPointRow, FindPointCol, DebugMessageOutUniquePattern)</l>
+<l>                        endif</l>
+<c>                        </c>
+<l>                        _FCI_ConnectedRgn_RegionProjection (InspectImage, \
+                                                            CVLAInspectRgnFL, ProjectedCVLARegionFL, DebugImageOutCVLAProject, DebugRegionOutCVLAProject, \
+                                                            IsStepMode, NoOfCVLArectFL,  CVLATeachRowsFL, CVLATeachColsFL, CVLARefRotationAngle, CVLARefPointRow, CVLARefPointColumn, FindRotationAngle, FindPointRow, FindPointCol, DebugMessageOutCVLProject)</l>
+<c>                        </c>
+<l>                        _FCI_Extract_FlexLine (InspectImage, ProjectedCVLARegionFL, \
+                                               FlexLineRegion, DebugImageOutFL, DebugRegionOutFL, \
+                                               IsStepMode, DebugMessageOutFL)</l>
+<c>                        </c>
+<l>                        concat_obj (CVLAReferenceRegion, FlexLineRegion, CVLAReferenceRegion)</l>
+<l>                        tuple_concat (ConcatMaxDistanceBtnCLFL, MaxDistanceBtnCLFL, ConcatMaxDistanceBtnCLFL)</l>
+<l>                    endif                   </l>
+<l>                endif</l>
+<l>            endif</l>
+<c>            *************** End of CVLA ***************************   </c>
+<c>            </c>
+<c>            *********************** Tilt Inspection ***************</c>
+<l>            dev_display(InspectImage)</l>
+<l>            IsTiltInspection := true</l>
+<c>            </c>
+<l>            if(IsTiltInspection)</l>
+<c>                *****Vision Parameter</c>
+<l>                Contrast := 100</l>
+<l>                Distance4TiltInsp := 40</l>
+<l>                Track := 2</l>
+<c>                </c>
+<l>                TiltTupleVector4Eachntensity := TiltTupleVector4EachPos.at(IntensityIndex)</l>
+<l>                TiltTeachDoc := TiltTupleVector4Eachntensity.at(0)</l>
+<c>                </c>
+<l>                if(IntensityIndex = TiltTeachDoc)</l>
+<c>                    </c>
+<l>                    _Retrieve_Tilt_Data (TiltTupleVector4Eachntensity, \
+                                         TiltRectRows, TiltRectCols)</l>
+<c>                    </c>
+<l>                    _FCI_Finding_TiltInspectionParameter (InspectImage, DeviceLocationSelected,\
+                                                          TiltRegion, InspectTiltRegionPortion, DebugImageOutTilt, DebugRegionOutTilt,\
+                                                          IsStepMode, TiltRectRows, TiltRectCols, InspectRotationAngle, InspectShiftAlongRow, InspectShiftAlongColumn, Contrast, Distance4TiltInsp, FoV, nFoVs, Track, \
+                                                          TiltHeight, DebugMessageOutTilt)</l>
+<c>                    </c>
+<l>                    if(FoV = 1)</l>
+<l>                        A1 := TiltHeight </l>
+<l>                    elseif(FoV = nFoVs)</l>
+<l>                        A2 := TiltHeight</l>
+<l>                    endif               </l>
+<l>                endif   </l>
+<l>            endif</l>
+<c>            *********************** End of Tilt Inspection ********</c>
+<l>        endfor </l>
+<l>    endfor  </l>
+<c>    </c>
+<c>    </c>
+<c>    **************  Inspect Side Images  ***************</c>
+<c>    ****Inspect Location for Side Images</c>
+<l>    stop()</l>
+<l>    _LoadImages (ImageFiles, PassImgPath, FailImgPath)</l>
+<l>    TotalNoOfImages := |ImageFiles|</l>
+<l>    for Img := 0 to TotalNoOfImages/nIntensitySide-1 by 1</l>
+<l>        ImageFilesNew := ImageFiles[Img*nIntensitySide:(Img+1)*nIntensitySide-1]</l>
+<l>        gen_empty_obj(ConcatInspectImage)</l>
+<l>        for i:= 0 to nIntensitySide-1 by 1</l>
+<l>            read_image(Image, ImageFilesNew[i])</l>
+<l>            concat_obj(ConcatInspectImage, Image, ConcatInspectImage)   </l>
+<l>        endfor</l>
+<c>        </c>
+<c>        ****Finding FoV of Image</c>
+<l>        tuple_strrstr (ImageFiles[Img*nIntensitySide], '_Pos', Position)</l>
+<l>        tuple_str_bit_select(ImageFiles[Img*nIntensitySide], Position+4, FindFoV)</l>
+<l>        FoVInspect := ['1','2','3','4','5','6','7','8']</l>
+<l>        tuple_find(FoVInspect, FindFoV, FoVIndex)</l>
+<l>        FoV := FoVIndex + 1</l>
+<c>        </c>
+<c>        ******Selected tuple vector </c>
+<l>        TupleVector4EachPos := SideTupleVector.at(FoV-1)        </l>
+<l>        ConcatProjectionParam := []   </l>
+<l>        ConcatTeachDoc := []</l>
+<l>        tuple_gen_const (nIntensitySide, 0, ConcatEdgeTeachTuple)</l>
+<l>        tuple_gen_const (nIntensitySide, 0, ConcatDatumTeachTuple)</l>
+<c>        </c>
+<l>        gen_empty_obj (ConcatDeviceLocation)</l>
+<l>        for IntensityIndex := 0 to nIntensitySide-1 by 1</l>
+<c>            </c>
+<l>            GotRotationAngleDev := 0</l>
+<l>            GotShiftAlongRow := 0</l>
+<l>            GotShiftAlongCol := 0</l>
+<c>            </c>
+<l>            select_obj(ConcatInspectImage, InspectImage, IntensityIndex+1)</l>
+<l>            TupleVector4Eachntensity :=  TupleVector4EachPos.at(IntensityIndex) </l>
+<c>            </c>
+<l>            _Extract_DeviceLocation_Data (TupleVector4Eachntensity, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, PatternTeachRectRows, PatternTeachRectCols, LocationTeachRectRows, LocationTeachRectCols, ModelIDs, RefRotationAngle, RefPointRow, RefPointColumn, MaskSize, TeachDoc)            </l>
+<l>            IsDatumTeach := false</l>
+<l>            IsDeviceLocationTeach := false </l>
+<c>            </c>
+<l>            if(NoOfUniquePatterns&gt;=2)</l>
+<l>                ConcatDatumTeachTuple[IntensityIndex] := 1</l>
+<l>                IsDatumTeach := true</l>
+<l>            endif</l>
+<c>            </c>
+<l>            if(NoOfLocationTeachRegs &gt; 0)</l>
+<l>                ConcatEdgeTeachTuple[IntensityIndex] := 1</l>
+<l>                IsDeviceLocationTeach := true</l>
+<c>                </c>
+<l>            endif</l>
+<c>            </c>
+<c>            </c>
+<l>            IsSobelFlag := false</l>
+<l>            Track := 3</l>
+<l>            _FCI_Inspect_DeviceLocation (InspectImage, \
+                                         DeviceLocation, MatchModelRegion, DebugImageOutDeviceLocation, DebugRegionOutDeviceLocation, \
+                                         IsDatumTeach, IsDeviceLocationTeach, IsStepMode, IsSobelFlag, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, ModelIDs, RefRotationAngle, RefPointRow, RefPointColumn, PatternTeachRectRows, PatternTeachRectCols, LocationTeachRectRows, LocationTeachRectCols, MaskSize, FoV, nFoVs, Track, \
+                                         IsPass, IsFindDatum, GotRotationAngleDev, GotShiftAlongRow, GotShiftAlongCol, MatchModelScore, DebugMessageOut)</l>
+<c>            </c>
+<l>            concat_obj (ConcatDeviceLocation, DeviceLocation, ConcatDeviceLocation)</l>
+<l>            tuple_concat (ConcatProjectionParam, [GotRotationAngleDev, GotShiftAlongRow, GotShiftAlongCol], ConcatProjectionParam)            </l>
+<l>            tuple_concat (ConcatTeachDoc, TeachDoc, ConcatTeachDoc)</l>
+<l>            if(IsPass)             </l>
+<l>                if(IsFindDatum) </l>
+<l>                    gen_empty_obj (EmptyObject1)</l>
+<l>                    concat_obj (DeviceLocation, MatchModelRegion, EmptyObject1)</l>
+<l>                    _FCI_AppendOverlayRegion (InspectImage, EmptyObject1, \
+                                              OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<c>                    </c>
+<l>                else</l>
+<l>                    _FCI_AppendOverlayRegion (InspectImage, \
+                                              DeviceLocation, OverlayImage, OverlayRegionOut, 'green', RegionColors)</l>
+<l>                endif </l>
+<l>            endif </l>
+<l>            dev_display (InspectImage)</l>
+<l>            dev_display (DeviceLocation)</l>
+<l>            dev_display (MatchModelRegion)</l>
+<l>            stop()</l>
+<l>        endfor</l>
+<c>        </c>
+<c>        ****Region Inspection</c>
+<c>        ******Selected tuple vector***** </c>
+<l>        PVITupleVector4EachPos   := SidePVITupleVector.at(FoV-1)</l>
+<l>        EncapTupleVector4EachPos := SideEncapTupleVector.at(FoV-1)</l>
+<l>        CVLTupleVector4EachPos   := SideCVLTupleVector.at(FoV-1)        </l>
+<l>        CVLATupleVector4EachPos  := SideCVLATupleVector.at(FoV-1)</l>
+<c>        </c>
+<l>        area_center (ConcatDeviceLocation, ConcatArea, Row2, Column2)</l>
+<l>        tuple_max (ConcatArea, MaxArea)</l>
+<l>        if(MaxArea = 0 )</l>
+<l>            disp_message (WindowHandle, 'No Device Present', 'window', Row, Column, 'black', 'true')</l>
+<l>            continue</l>
+<l>        endif</l>
+<c>            </c>
+<l>        for IntensityIndex := 0 to nIntensitySide-1 by 1</l>
+<l>            select_obj(ConcatInspectImage, InspectImage, IntensityIndex+1)             </l>
+<l>            gen_empty_obj (TeachObj)</l>
+<l>            TeachObj:=SideImageVector.at(FoV-1).at(IntensityIndex)</l>
+<c>            ****</c>
+<l>            _FCI_Extract_LocationParameterData (ConcatProjectionParam, ConcatTeachDoc, ConcatEdgeTeachTuple, ConcatDatumTeachTuple, IntensityIndex, \
+                                                IsSelect, InspectRotationAngle, InspectShiftAlongRow, InspectShiftAlongColumn)</l>
+<c>            </c>
+<l>            if(IsSelect = false)</l>
+<l>                disp_message (WindowHandle, 'No Device Present', 'window', Row, Column, 'black', 'true')</l>
+<l>                break</l>
+<l>            endif</l>
+<c>            </c>
+<c>            </c>
+<l>            _FCI_Select_DeviceLocation (ConcatDeviceLocation, DeviceLocationSelected, IntensityIndex, \
+                                        DeviceCenterRow3, DeviceCenterColumn3)</l>
+<c>            </c>
+<l>            PVITupleVector4Eachntensity :=  PVITupleVector4EachPos.at(IntensityIndex) </l>
+<l>            NoOfPVIArea                 :=  PVITupleVector4Eachntensity.at(0).at(0)</l>
+<c>            </c>
+<c>            </c>
+<l>            if(NoOfPVIArea # 0)</l>
+<c>                </c>
+<c>                ***** Rotate ****</c>
+<l>                smallest_rectangle2 (DeviceLocationSelected, Row6, Column6, Phi, Length1, Length2)</l>
+<c>                </c>
+<l>                Projection_Function (InspectImage, DeviceLocationSelected, \
+                                     RegionAffineRotateShift, ImageRotateShift, DebugImageOutFP, DebugRegionOutFP, \
+                                     IsStepMode, InspectRotationAngle, Row6, Column6, InspectShiftAlongRow, InspectShiftAlongColumn, 0, 0, DebugMessageOutFP)</l>
+<c>                </c>
+<c>                </c>
+<c>                **** Sub Image ***</c>
+<l>                abs_diff_image (TeachObj, ImageRotateShift, ImageAbsDiff, 1)</l>
+<c>                </c>
+<c>                </c>
+<c>                *** Inspection for each Pvi region **** </c>
+<c>                </c>
+<l>                for nPVIArea := 0 to NoOfPVIArea-1 by 1</l>
+<l>                    RetriveTeachValuesForRegionInspect (PVITupleVector4Eachntensity, nPVIArea,\
+                                                        NoOfMaskRegions, PVIAngle, PVI2DCenter, PVISize, Mask2DCenterPoints, MaskAngleConcat, MaskSize)</l>
+<c>                    </c>
+<c>                    **** Generate the PVI Teach Region.</c>
+<l>                    gen_empty_obj (PVIRegion)</l>
+<l>                    gen_rectangle2 (RegionForPVI_Inspection, PVI2DCenter[0], PVI2DCenter[1], PVIAngle, PVISize[0], PVISize[1])</l>
+<l>                    concat_obj (PVIRegion, RegionForPVI_Inspection, PVIRegion)</l>
+<c>                    </c>
+<l>                    gen_empty_obj (ConcatMasks)</l>
+<l>                    for maskIndex := 0 to NoOfMaskRegions-1 by 1</l>
+<c>                        </c>
+<l>                        SelectMask2DCenterPoints := Mask2DCenterPoints[2*maskIndex: 2*(maskIndex+1)-1]</l>
+<l>                        SelectMaskAngleConcat    := MaskAngleConcat[maskIndex]</l>
+<l>                        SelectMaskSize           := MaskSize[2*maskIndex: 2*(maskIndex+1)-1]</l>
+<c>                        </c>
+<l>                        gen_rectangle2 (RectMask, SelectMask2DCenterPoints[0], SelectMask2DCenterPoints[1], SelectMaskAngleConcat, SelectMaskSize[0], SelectMaskSize[1])</l>
+<c>                        </c>
+<l>                        concat_obj (ConcatMasks, RectMask, ConcatMasks)</l>
+<l>                    endfor</l>
+<c>                    </c>
+<l>                    if(NoOfMaskRegions&gt;0)</l>
+<l>                        union1 (ConcatMasks, FitMaskRegion)</l>
+<l>                        difference (RegionForPVI_Inspection, FitMaskRegion, RegionForPVI_Inspection)</l>
+<l>                    endif           </l>
+<c>                    </c>
+<c>                    *************************************************************</c>
+<c>                    **** Translate back ****</c>
+<c>                    </c>
+<l>                    Projection_Back_Function (InspectImage, RegionForPVI_Inspection, ImageAbsDiff, FitMaskRegion, PVIRegion, RegionForPVI_Inspection, Sub_Image, DebugImageOutBP, DebugRegionOutTranslateBP, IsStepMode, -InspectShiftAlongRow, -InspectShiftAlongColumn, 0, 0, -InspectRotationAngle, Row6, Column6, nPVIArea, DebugMessageOutBP)</l>
+<c>                    </c>
+<c>                    </c>
+<c>                    ****** Options of PVI Inspection</c>
+<c>                    **** Device Offset Inspection ***</c>
+<c>                    </c>
+<l>                    DeviceLocationOffset:=1</l>
+<c>                    </c>
+<l>                    if(DeviceLocationOffset)</l>
+<c>                        </c>
+<l>                        TupleVector4Eachntensity :=  TupleVector4EachPos.at(IntensityIndex) </l>
+<c>                        </c>
+<l>                        _Extract_DeviceLocation_Data (TupleVector4Eachntensity, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, NoOfUniquePatterns, MaxRotationAngle, PatternSearchAreaAlongX, PatternSearchAreaAlongY, MinAcceptanceScore, PatternTeachRectRows, PatternTeachRectCols, LocationTeachRectRows, LocationTeachRectCols, ModelIDs, RefRotationAngle, RefPointRow, RefPointColumn, MaskSize, TeachDoc)</l>
+<c>                        </c>
+<l>                        if(LocationTeachRectRows=[] or LocationTeachRectCols=[])</l>
+<l>                            disp_message (WindowHandle, 'No Device Location', 'window', Row, Column, 'black', 'true')</l>
+<l>                            break  </l>
+<l>                        endif</l>
+<l>                        _FCI_Inspect_EdgeLocation (TeachObj, \
+                                                   TeachDeviceLocation, IsSobelFlag, NoOfLocationTeachRegs, DeviceWidth, DeviceHeight, MinDeviceContrast, LocationTeachRectRows, LocationTeachRectCols, MaskSize, FoV, nFoVs, \
+                                                   Track, EdgeRefRotationAngle, EdgeRefPointRow, EdgeRefPointColumn)</l>
+<c>                        </c>
+<l>                        smallest_rectangle2 (TeachDeviceLocation, Row1, Column1, Phi1, Length11, Length21)</l>
+<c>                        </c>
+<l>                        Projection_Function (InspectImage, TeachDeviceLocation, \
+                                             TeachRegionAffineRotateShift, ImageRotateShift, DebugImageOutFP, DebugRegionOutFP, \
+                                             IsStepMode, -InspectRotationAngle,  Row1, Column1, -InspectShiftAlongRow, -InspectShiftAlongColumn, 0, 0, DebugMessageOutFP)</l>
+<c>                        </c>
+<c>                        </c>
+<l>                        DeviceEdgeOffset := 50.5</l>
+<l>                        DeviceEdgeWidth :=  50.5</l>
+<c>                        </c>
+<l>                        BoolDeviceEdge := true</l>
+<l>                        _FCI_OffsetRegions (TeachRegionAffineRotateShift, Sub_Image, RegionForPVI_Inspection, ImageForPVI_Inspection, DebugImageOutDeviceOffset, DebugRegionOutDeviceOffset, IsStepMode, DeviceEdgeOffset, DeviceEdgeWidth, nPVIArea, BoolDeviceEdge, DebugMessageOutDeviceOffset)</l>
+<c>                        </c>
+<l>                    endif    </l>
+<c>                    </c>
+<c>                    ****** Device PVI Inspection ***</c>
+<l>                    DevicePVI:=1</l>
+<l>                    if(DevicePVI)</l>
+<c>                        </c>
+<l>                        reduce_domain (Sub_Image, RegionForPVI_Inspection, ImageForPVI_Inspection)</l>
+<c>                        </c>
+<l>                    endif</l>
+<c>                    </c>
+<c>                    **** Edge Inspection****</c>
+<l>                    Edge := 0</l>
+<l>                    if(Edge)</l>
+<c>                        </c>
+<l>                        MinEdgeContrast   := 60</l>
+<l>                        MaxEdgeContrast   := 255</l>
+<l>                        EdgeRegionOpening := 5.5</l>
+<c>                        </c>
+<c>                        *** To extract the exact edge ***</c>
+<c>                        </c>
+<l>                        _FCI_ExtractExactEdge (InspectImage, RegionForPVI_Inspection, RegionForPVI_Inspection, DebugImageOutExactEdge, DebugRegionOutExactEdge, IsStepMode, MinEdgeContrast, MaxEdgeContrast, EdgeRegionOpening, nPVIArea, IsPassEdge, DebugMessageOutExactEdge)</l>
+<c>                        </c>
+<c>                        **** Edge Offset Inspection****</c>
+<l>                        EdgeOffset:= 5.5</l>
+<l>                        EdgeWidth:=  5.5</l>
+<c>                        </c>
+<l>                        BoolDeviceEdge := false</l>
+<l>                        _FCI_OffsetRegions (RegionForPVI_Inspection, Sub_Image, RegionForPVI_Inspection, ImageForPVI_Inspection, DebugImageOutOffset, DebugRegionOutOffset, IsStepMode, EdgeOffset, EdgeWidth, nPVIArea, BoolDeviceEdge, DebugMessageOutOffset)</l>
+<c>                        </c>
+<l>                    endif</l>
+<c>                    </c>
+<c>                    ****************** PVI Inspection **********************</c>
+<c>                    ** Black = 0</c>
+<c>                    ** White = 1</c>
+<l>                    DefectCount := 0</l>
+<c>                    </c>
+<l>                    DefectCharacteristics := 0</l>
+<l>                    Contrast             := 70             </l>
+<l>                    MinSize              := 100</l>
+<l>                    MinLength            := 50</l>
+<l>                    MinSquareSize        := 20</l>
+<l>                    MinCount             := 1 </l>
+<c>                    </c>
+<c>                    *** PVI Inspection ****</c>
+<l>                    BoolDeviceEdge := false</l>
+<l>                    _FCI_PVI_Inspection (ImageForPVI_Inspection, RegionForPVI_Inspection, InspectImage, PVI_DefectRegion, DebugImageOutPVI, DebugRegionOutPVI, DefectCharacteristics, Contrast, MinLength, MinSize, MinSquareSize, MinCount, IsStepMode, IntensityIndex, DefectCount, nPVIArea, BoolDeviceEdge, IsPass, DebugMessageOutPVI)</l>
+<l>                    if(IsPass=0)</l>
+<l>                        PVI_Inspection_ReCheck (InspectImage, TeachObj, PVI_DefectRegion, DebugImageOutReCheck, DebugRegionOutReCheck, ActualPVIDefect, IsStepMode, InspectRotationAngle, Row6, Column6, InspectShiftAlongRow, InspectShiftAlongColumn, DefectCharacteristics, DefectCount, nPVIArea, DebugMessageOutReCheck, AllPVIDefectMinSize, AllPVIDefecMinLength, AllPVIDefecMinSquareSize)</l>
+<c>                        </c>
+<l>                        dev_display (InspectImage)</l>
+<l>                        dev_display (ActualPVIDefect)</l>
+<l>                        stop ()</l>
+<l>                    endif</l>
+<l>                endfor</l>
+<l>            endif</l>
+<c>            </c>
+<c>            ****************  Encap Inspection *************************</c>
+<c>            </c>
+<c>            *********************** Tilt Inspection ***************</c>
+<l>            dev_display(InspectImage)</l>
+<l>            IsTiltInspection := true</l>
+<c>            </c>
+<l>            if(IsTiltInspection)</l>
+<c>                *****Vision Parameter</c>
+<l>                Contrast := 100</l>
+<l>                Distance4TiltInsp := 40</l>
+<l>                Track := 3</l>
+<c>                </c>
+<l>                _FCI_Finding_TiltInspectionParameter (InspectImage, DeviceLocationSelected,\
+                                                      TiltRegion, InspectTiltRegionPortion, DebugImageOutTilt, DebugRegionOutTilt,\
+                                                      IsStepMode, TiltRectRows, TiltRectCols, InspectRotationAngle, InspectShiftAlongRow, InspectShiftAlongColumn, Contrast, Distance4TiltInsp, FoV, nFoVs, Track,\
+                                                      TiltHeight, DebugMessageOutTilt)</l>
+<c>                </c>
+<l>                if(FoV = 1)</l>
+<l>                    B1 := TiltHeight </l>
+<l>                elseif(FoV = nFoVs)</l>
+<l>                    B2 := TiltHeight</l>
+<l>                endif               </l>
+<l>            endif   </l>
+<c>            *********************** End of Tilt Inspection ********</c>
+<l>        endfor</l>
+<l>    endfor</l>
+<l>endif</l>
+<c></c>
+<c></c>
+<c>*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-</c>
+<c>*************************** TILT INSPECTION **********************</c>
+<c></c>
+<c>**** h = | {B1*tan(α) –A1sin(α) }  –  {B2*tan(α) –A2sin(α)  } | </c>
+<c>**** if(h &gt; VisionParameter) then fail else pass</c>
+<c></c>
+<c>*****Tilt Inspection</c>
+<l>IsTiltInspection := true</l>
+<l>if(IsTiltInspection)</l>
+<c>    </c>
+<l>    TiltTolerance := 100</l>
+<l>    AngleOfSideView := 40</l>
+<l>    ResolutionAlongYInMicronPerPixelTop := 5.5</l>
+<l>    ResolutionAlongYInMicronPerPixelSide := 8.8</l>
+<c>    </c>
+<l>    _FCI_Tilt_Inspection (A1, A2, ResolutionAlongYInMicronPerPixelTop, B1, B2, ResolutionAlongYInMicronPerPixelSide, TiltTolerance, AngleOfSideView, \
+                          IsPass, h)</l>
+<c>    </c>
+<c>    ***** Display h value in debug viewer</c>
+<l>    if(IsPass = false)</l>
+<l>        disp_message (WindowHandle, 'Device is Tilted', 'window', 12, 12, 'black', 'true')</l>
+<l>        return()</l>
+<l>    else</l>
+<l>        disp_message (WindowHandle, 'Device is Not Tilted', 'window', 12, 12, 'black', 'true')</l>
+<l>        return()</l>
+<l>    endif</l>
+<c>    </c>
+<l>endif</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

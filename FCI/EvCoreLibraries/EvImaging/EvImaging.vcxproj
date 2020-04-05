@@ -1,0 +1,229 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E1F9180D-A889-461E-818D-F35BA2F74779}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>EvImaging</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\..\_$(PlatformName)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IntDir>$(PlatformName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\..\_$(PlatformName)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>$(PlatformName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\EvCoreHeaders\$(ProjectName);..\..\EvCoreHeaders\EvUtilities;..\..\EvCoreHeaders\$(ProjectName)\Jpeg;..\..\EvCoreHeaders</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\EvCoreHeaders\$(ProjectName);..\..\EvCoreHeaders\EvUtilities;..\..\EvCoreHeaders\$(ProjectName)\Jpeg;..\..\EvCoreHeaders</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\AppDef.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\BitmapFunctions.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Calibrate.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ColorConversion.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\CudaInterface.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\DIBSectionLite.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\DisplayOverlay.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\EdgeMatching.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\EdgeTool.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\EdgeToolStruct.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ExternalFunctions.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\FloodFill.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\GUIGraphicsFunction.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ImageBuffer.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ImageDef.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ImageDisplayAdapter.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ImageFunction.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ImageStruct.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Imaging.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ImgSplitColorBuf.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\JpegFunctions.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\cderror.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\cdjpeg.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jchuff.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jconfig.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jdct.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jdhuff.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jerror.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jinclude.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jmemsys.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jmorecfg.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jpeg.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jpegint.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jversion.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\MarkInsp.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\MarkStruct.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\MarkTool.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\MarkToolStruct.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\MathAlgo.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\MathDef.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\MathValidations.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Morphology.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\OvalContour.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Parameters.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\PkgLocStruct.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ProcAlgo.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ProcAlgoStruct.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\TrigTable.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\VisionStruct.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BitmapFunctions.cpp" />
+    <ClCompile Include="Calibrate.cpp" />
+    <ClCompile Include="ColorConversion.cpp" />
+    <ClCompile Include="CudaInterface.cpp" />
+    <ClCompile Include="DIBSectionLite.cpp" />
+    <ClCompile Include="DisplayOverlay.cpp" />
+    <ClCompile Include="EdgeMatching.cpp" />
+    <ClCompile Include="EdgeTool.cpp" />
+    <ClCompile Include="EdgeToolStruct.cpp" />
+    <ClCompile Include="FloodFill.cpp" />
+    <ClCompile Include="GUIGraphicsFunction.cpp" />
+    <ClCompile Include="ImageBuffer.cpp" />
+    <ClCompile Include="ImageDisplayAdapter.cpp" />
+    <ClCompile Include="ImageFunction.cpp" />
+    <ClCompile Include="ImgSplitColorBuf.cpp" />
+    <ClCompile Include="JpegFunctions.cpp" />
+    <ClCompile Include="Jpeg\jcapimin.cpp" />
+    <ClCompile Include="Jpeg\jcapistd.cpp" />
+    <ClCompile Include="Jpeg\jccoefct.cpp" />
+    <ClCompile Include="Jpeg\jccolor.cpp" />
+    <ClCompile Include="Jpeg\jcdctmgr.cpp" />
+    <ClCompile Include="Jpeg\jchuff.cpp" />
+    <ClCompile Include="Jpeg\jcinit.cpp" />
+    <ClCompile Include="Jpeg\jcmainct.cpp" />
+    <ClCompile Include="Jpeg\jcmarker.cpp" />
+    <ClCompile Include="Jpeg\jcmaster.cpp" />
+    <ClCompile Include="Jpeg\jcomapi.cpp" />
+    <ClCompile Include="Jpeg\jcparam.cpp" />
+    <ClCompile Include="Jpeg\jcphuff.cpp" />
+    <ClCompile Include="Jpeg\jcprepct.cpp" />
+    <ClCompile Include="Jpeg\jcsample.cpp" />
+    <ClCompile Include="Jpeg\jctrans.cpp" />
+    <ClCompile Include="Jpeg\jdapimin.cpp" />
+    <ClCompile Include="Jpeg\jdapistd.cpp" />
+    <ClCompile Include="Jpeg\jdatadst.cpp" />
+    <ClCompile Include="Jpeg\jdatasrc.cpp" />
+    <ClCompile Include="Jpeg\jdcoefct.cpp" />
+    <ClCompile Include="Jpeg\jdcolor.cpp" />
+    <ClCompile Include="Jpeg\jddctmgr.cpp" />
+    <ClCompile Include="Jpeg\jdhuff.cpp" />
+    <ClCompile Include="Jpeg\jdinput.cpp" />
+    <ClCompile Include="Jpeg\jdmainct.cpp" />
+    <ClCompile Include="Jpeg\jdmarker.cpp" />
+    <ClCompile Include="Jpeg\jdmaster.cpp" />
+    <ClCompile Include="Jpeg\jdmerge.cpp" />
+    <ClCompile Include="Jpeg\jdphuff.cpp" />
+    <ClCompile Include="Jpeg\jdpostct.cpp" />
+    <ClCompile Include="Jpeg\jdsample.cpp" />
+    <ClCompile Include="Jpeg\jdtrans.cpp" />
+    <ClCompile Include="Jpeg\jerror.cpp" />
+    <ClCompile Include="Jpeg\jfdctflt.cpp" />
+    <ClCompile Include="Jpeg\jfdctfst.cpp" />
+    <ClCompile Include="Jpeg\jfdctint.cpp" />
+    <ClCompile Include="Jpeg\jidctflt.cpp" />
+    <ClCompile Include="Jpeg\jidctfst.cpp" />
+    <ClCompile Include="Jpeg\jidctint.cpp" />
+    <ClCompile Include="Jpeg\jidctred.cpp" />
+    <ClCompile Include="Jpeg\jmemmgr.cpp" />
+    <ClCompile Include="Jpeg\jmemnobs.cpp" />
+    <ClCompile Include="Jpeg\jquant1.cpp" />
+    <ClCompile Include="Jpeg\jquant2.cpp" />
+    <ClCompile Include="Jpeg\jutils.cpp" />
+    <ClCompile Include="Jpeg\rdbmp.cpp" />
+    <ClCompile Include="Jpeg\wrbmp.cpp" />
+    <ClCompile Include="MarkInsp.cpp" />
+    <ClCompile Include="MarkTool.cpp" />
+    <ClCompile Include="MarkToolStruct.cpp" />
+    <ClCompile Include="MathAlgo.cpp" />
+    <ClCompile Include="MathValidation.cpp" />
+    <ClCompile Include="Morphology.cpp" />
+    <ClCompile Include="OvalContour.cpp" />
+    <ClCompile Include="Parameters.cpp" />
+    <ClCompile Include="PkgLocStruct.cpp" />
+    <ClCompile Include="ProcAlgo.cpp" />
+    <ClCompile Include="ProcAlgoStruct.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TrigTable.cpp" />
+    <ClCompile Include="VisionStruct.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

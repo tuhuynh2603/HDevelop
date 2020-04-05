@@ -1,0 +1,834 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Comm">
+      <UniqueIdentifier>{0a6b73e9-9fd2-465a-9675-18d49513d651}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Comm">
+      <UniqueIdentifier>{24c24617-fb62-48ca-b1ed-33d3bbb1641d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Centralized Comm">
+      <UniqueIdentifier>{270bd6f2-3f0b-44ff-af1c-bb7f66167c74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Centralized Comm">
+      <UniqueIdentifier>{497d909a-043f-4953-a9fe-785bb9c618ad}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\output_wnd.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\output_wnd_hc.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\properties_wnd.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\properties_wnd_hc.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\properties.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\properties_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\nav_large.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\nav_large_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\pages.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\pages_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\pages_small.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\pages_small_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\info.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\buttons.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\filelarge.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\filesmall.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\main.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\writelarge.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\writesmall.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ribbon.mfcribbon-ms">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Toolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Toolbar256.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\bitmap1.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\EV24.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\toolbar1.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ChildToolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Doc1.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Doc2.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Doc3.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Doc.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ribbon1.mfcribbon-ms">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\SplashScreen.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\EV32.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\EvApplication.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\EvApplication.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\EvApplicationDoc.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\writelarge.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\default.bin">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\Help-icon.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\MotionDown.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\MotionPlay.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\MotionHome.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\MotionLeft.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\MotionRight.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\MotionStop.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\MotionUp.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\StationMapAdd.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\StationMapRemove.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\StationMapRetake.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\StationMapZUp.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\StationMapZDown.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\bitmap3.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\StationMapSwap.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\bitmap4.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\StationMap.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\StationMapNull.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\bitmap5.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\CalibDown.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\icon1.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangePasswordDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateNewUserDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DeleteUserDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hardware.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageQueueHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LotStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ModifyAccounts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OpticsDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StatisticsResetDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemLogger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UserLoginAccount.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MemCDC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StatisticsView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraSetupDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SplashScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AdvSecurityDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MyData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MyList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PropertyItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PropertyListCtrl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SmartString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InPlaceComboBoxImp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InPlaceEditImp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AppDoc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AppPropWnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AppTabView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AppView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ApplicationDef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LightHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LightControlDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IOTestDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PasswordDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MultipleRecipeDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NewRecipeDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InspectionHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OpticsDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inspection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InspParms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScanBarcode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectGoodBDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\evlsapp.blister_latest 03Aug\trunk\+EvApplication\EvApplication\EncryptionCore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Encryption.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LotInfoDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageSelectionDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PictureCtrl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StepSelection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AuditTrailDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ChildFormView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AppTeachPropWnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AppDefectPropWnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StationMapping.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MotionControlDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SavePositionDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PVIInspectionParameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DefectPrioritySelDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileOperations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CalibrationSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CalibInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CommInterface.h">
+      <Filter>Header Files\Comm</Filter>
+    </ClInclude>
+    <ClInclude Include="CommManager.h">
+      <Filter>Header Files\Comm</Filter>
+    </ClInclude>
+    <ClInclude Include="CommMonitor.h">
+      <Filter>Header Files\Comm</Filter>
+    </ClInclude>
+    <ClInclude Include="CommDef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelRuler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InfoMsgDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DisplayOnlinePanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InspectionSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveCalibRationPosition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DefectErrorCodeSelection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectFolder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgressBarDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="motion_information.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MotionParameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="position_info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScanningTeachDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvUtilities\multivectorOperations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DefectCodesDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CentralizedFTPSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CentralizedCommInterface.h">
+      <Filter>Header Files\Centralized Comm</Filter>
+    </ClInclude>
+    <ClInclude Include="CentralizedCommManager.h">
+      <Filter>Header Files\Centralized Comm</Filter>
+    </ClInclude>
+    <ClInclude Include="CentralizedCommMonitor.h">
+      <Filter>Header Files\Centralized Comm</Filter>
+    </ClInclude>
+    <ClInclude Include="CentralizedCommunicationDlg.h">
+      <Filter>Header Files\Centralized Comm</Filter>
+    </ClInclude>
+    <ClInclude Include="CentralizedMonitorDlg.h">
+      <Filter>Header Files\Comm</Filter>
+    </ClInclude>
+    <ClInclude Include="SequenceThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CDeepLearningInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FCI_Integrate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ErrorDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ChangePasswordDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateNewUserDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DeleteUserDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hardware.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageQueueHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LotStruct.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModifyAccounts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OpticsDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StatisticsResetDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemLogger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UserLoginAccount.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StatisticsView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraSetupDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SplashScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AdvSecurityDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MyData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertyItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertyListCtrl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SmartString.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InPlaceComboBoxImp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InPlaceEditImp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AppDoc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AppPropWnd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AppTabView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AppView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TrackHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LightHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LightControlDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IOTestDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PasswordDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MultipleRecipeDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NewRecipeDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InspectionHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OpticsDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Inspection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InspParms.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScanBarcode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectGoodBDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Encryption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LotInfoDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageSelectionDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PictureCtrl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StepSelection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AuditTrailDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AppTeachPropWnd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AppDefectPropWnd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StationMapping.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MotionControlDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SavePositionDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PVIInspectionParameters.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DeviceConfig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DefectPrioritySelDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileOperations.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CalibrationSettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CalibInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CommInterface.cpp">
+      <Filter>Source Files\Comm</Filter>
+    </ClCompile>
+    <ClCompile Include="CommManager.cpp">
+      <Filter>Source Files\Comm</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelRuler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InfoMsgDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DisplayOnlinePanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InspectionSettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SaveCalibRationPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DefectErrorCodeSelection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectFolder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ProgressBarDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="motion_information.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MotionParameters.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="position_info.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScanningTeachDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CentralizedFTPSettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DefectCodesDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CommMonitor.cpp">
+      <Filter>Source Files\Comm</Filter>
+    </ClCompile>
+    <ClCompile Include="CentralizedCommInterface.cpp">
+      <Filter>Source Files\Centralized Comm</Filter>
+    </ClCompile>
+    <ClCompile Include="CentralizedCommManager.cpp">
+      <Filter>Source Files\Centralized Comm</Filter>
+    </ClCompile>
+    <ClCompile Include="CentralizedCommMonitor.cpp">
+      <Filter>Source Files\Centralized Comm</Filter>
+    </ClCompile>
+    <ClCompile Include="CentralizedCommunicationDlg.cpp">
+      <Filter>Source Files\Centralized Comm</Filter>
+    </ClCompile>
+    <ClCompile Include="CentralizedMonitorDlg.cpp">
+      <Filter>Source Files\Centralized Comm</Filter>
+    </ClCompile>
+    <ClCompile Include="SequenceThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CDeepLearningInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ErrorDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="EvApplication.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\filetypes.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\arrows\arrow_left_grey.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\arrows\arrow_left_grey_clicked.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\arrows\arrow_right_grey.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\arrows\arrow_right_grey_clicked.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\arrows\arrow_down_grey.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\arrows\arrow_down_grey_clicked.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\arrows\arrow_up_grey.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\arrows\arrow_up_grey_clicked.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\arrows_small\arrow_down_grey.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\arrows_small\arrow_down_grey_clicked.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\arrows_small\arrow_left_grey.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\arrows_small\arrow_left_grey_clicked.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\arrows_small\arrow_right_grey.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\arrows_small\arrow_right_grey_clicked.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\arrows_small\arrow_up_grey.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\arrows_small\arrow_up_grey_clicked.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\StopButton.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\stop_but.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\StopButton_pressed.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Retry_Disabled.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\writelarge_extend.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

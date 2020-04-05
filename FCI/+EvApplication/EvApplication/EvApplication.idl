@@ -1,0 +1,34 @@
+// EvApplication.idl : IDL source for EvApplication
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (EvApplication.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	uuid(D81CE524-43AF-4263-BDC2-C7BCA2DA6E51),
+	version(1.0)	
+]
+library EvApplicationLib
+{
+	importlib("stdole2.tlb");
+};
+// EvApplication.idl : IDL source for EvApplication
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (EvApplication.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	uuid(91CD1289-BEA3-4FAA-999F-E705662780F6),
+	version(1.0)	
+]
+library EvApplicationLib
+{
+	importlib("stdole2.tlb");
+};

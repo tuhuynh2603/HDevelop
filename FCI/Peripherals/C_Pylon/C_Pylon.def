@@ -1,0 +1,35 @@
+; C_PYLON.def : Declares the module parameters for the DLL.
+
+LIBRARY      "C_PYLON"
+
+EXPORTS
+    ; Explicit exports can go here
+	InitDLL;
+	FreeDLL;
+	RegisterCamera;
+	ReleaseCamera;
+	ImageGrab;
+	EnqueueAsyncGrabNoTrigger;
+	RegHookFunction;
+	WaitForCompletion;
+	CancelPendingGrab;
+	EnqueueAsyncGrab;
+	SetTriggerMode;
+	SetTriggerParms;
+	GetTriggerMode;
+	SetGrabTimeOut;
+	GetResolution;
+    WaitForExposure;
+	GetCameraAoi;
+	SetCameraAoi;
+	GetCameraGain;
+	SetCameraGain;
+	GetExposure;
+	SetExposure;
+	GetBytesPerPkt;
+	SetBytesPerPkt;
+	GetBlackLevel;
+	SetBlackLevel;
+	SetOutputLine;
+	SetWhiteBalance;
+	EnableMulticast;

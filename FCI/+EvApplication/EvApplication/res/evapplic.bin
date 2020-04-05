@@ -1,0 +1,22 @@
+HKCR
+{
+	NoRemove AppID
+	{
+		'%APPID%' = s 'EvApplication'
+				'EvApplication.EXE'
+				{
+			val AppID = s '%APPID%'
+		}
+	}
+}
+HKCR
+{
+	NoRemove AppID
+	{
+		'%APPID%' = s 'EvApplication'
+				'EvApplication.EXE'
+				{
+			val AppID = s '%APPID%'
+		}
+	}
+}

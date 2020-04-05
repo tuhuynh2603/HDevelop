@@ -1,0 +1,484 @@
+// This is the Type Library for PylonGenericInterface.dll
+	[
+#ifdef _DEBUG
+		uuid (A5D88932-31A9-4478-8818-93314F5D1A78),
+		helpstring ("Pylon 2.0 Generic Interface Debug Version"),
+#else
+		uuid (0AACB95C-772B-4ca3-B2E4-390A3C1C6D3C),
+		helpstring ("Pylon 2.0 Generic Interface"),
+#endif
+		version (1.0)
+	]
+#ifdef _DEBUG
+	library PylonGenericInterfaceDebug
+#else
+	library PylonGenericInterface
+#endif
+	{
+		typedef [public] long PYLONCAMHANDLE;
+		typedef [public] long PYLONBUFFERHANDLE;
+		typedef [public] long PYLONCCHANDLE;
+		typedef [public] long PYLONCALLBACKHANDLE;
+
+		// Pylon GenICam Interface Types
+		typedef [public] enum 
+		{
+			_UndefinedInterface=-1,	// Not Implemented
+			IPylonNode,				// INode
+			IPylonEnumeration,		// IEnumeration
+			IPylonInteger,			// IInteger
+			IPylonFloat,			// IFloat
+			IPylonBoolean,			// IBoolean
+			IPylonString,			// IString
+			IPylonCommand			// ICommand
+		} EPylonInterface;
+
+		// Possible grab status values
+		typedef [public] enum 
+		{
+			_UndefinedGrabStatus=-1,
+			Idle,       // currently not used
+			Queued,     // in the input queue
+			Grabbed,    // filled with data
+			Canceled,   // request was canceled
+			Failed      // request failed
+		} EPylonGrabStatus;
+
+		// access mode of a feature
+		typedef [public] enum 
+		{
+			NI,        // Not implemented
+			NA,        // Not available
+			WO,        // Write Only
+			RO,        // Read Only
+			RW,        // Read and Write
+			_UndefinedAccesMode // Object is not yetinitialized
+		} EPylonAccessMode; 
+
+		// Camera or StreamGrabber Feature
+		typedef [public] enum 
+		{
+			CAM_FEATURE,	// Camera Feature
+			STREAM_FEATURE, // StreamGrabber Feature
+			EVENT_FEATURE   // EventGrabber Feature
+		} EPylonFeatureType; 
+
+		// Recommended visibility of a node
+		typedef [public] enum 
+		{
+			Beginner = 0,				// Always visible
+			Expert = 1,					// Visible for experts or Gurus
+			Guru = 2,					// Visible for Gurus
+			Invisible = 3,				// Not Visible
+			_UndefinedVisibility  = 99	// Object is not yetinitialized
+		} EPylonVisibility;
+
+		// Structure for device information
+		typedef [public] struct
+		{
+			LPCTSTR FriendlyName;		// e.g. "Basler scA1390-17gc (20610330)"
+			LPCTSTR FullName;			// e.g. "Basler scA1390-17gc#00305309501A#192.168.0.110:39ÌscA1390-17gc"
+			LPCTSTR ModelName;			// e.g. "scA1399-17gc"
+			LPCTSTR SerialNumber;		// SerialNumber, could be "N/A" for Basler 1394 Cameras
+			LPCTSTR UserDefinedName;	// Name for Camera which can be defined by the user
+			LPCTSTR VendorName;			// e.g. "Basler"
+		} SCameraInfo;
+
+		[
+			helpstring ("Pylon 2.0 Generic Interface functions"),
+			version (1.0),
+#ifdef _DEBUG
+			dllname ("PylonGenericInterfaced.dll")
+#else
+			dllname ("PylonGenericInterface.dll")
+#endif
+		]
+
+		module PylonGenericInterface
+		{
+			[
+				helpstring ("Returns last error"),
+				entry ("PylonGetLastErrorMsg")
+			]
+			void PylonGetLastErrorMsg ([out] LPCSTR ErrMessage);
+
+			[
+				helpstring ("Initialize Pylon framework"),
+				entry ("PylonInitialize")
+			]
+			void PylonInitialize ();
+
+			[
+				helpstring ("Terminates Pylon framework"),
+				entry ("PylonTerminate")
+			]
+			void PylonTerminate ();
+
+			[
+				helpstring ("Yields number of all GenICam Cameras"),
+				entry ("PylonGetNumCam")
+			]
+			BOOL PylonGetNumCam ([out] long *NumberOfCameras);
+
+			[
+				helpstring ("Yields the Basler Camera's serial number"),
+				entry ("PylonGetSerialNumberByIndex")
+			]
+			BOOL PylonGetSerialNumberByIndex ([in] long Index, 
+											  [out] LPTSTR SerialNumber);
+
+			[
+				helpstring ("Yields Camera device information"),
+				entry ("PylonGetCameraInfo")
+			]
+			BOOL PylonGetCameraInfo ([in] PYLONCAMHANDLE hCamera, 
+									 [out] SCameraInfo *info);
+
+			[
+				helpstring ("Yields PYLONCAMHANDLE. Opens Camera and Streamgrabber"),
+				entry ("PylonCamOpen")
+			]
+			PYLONCAMHANDLE PylonCamOpen ([in] long Index);
+
+			[
+				helpstring ("Yields PYLONCAMHANDLE. Opens Camera and Streamgrabber by Camera's SerialNumber"),
+				entry ("PylonCamOpenBySerialNumber")
+			]
+			PYLONCAMHANDLE PylonCamOpenBySerialNumber ([in] LPCTSTR SerialNumber);
+
+			[
+				helpstring ("Prepare Grabbing"),
+				entry ("PylonPrepareGrab")
+			]
+			BOOL PylonPrepareGrab ([in] PYLONCAMHANDLE hCamera);
+
+			[
+				helpstring ("Register Buffer at StreamGrabber"),
+				entry ("PylonRegisterBuffer")
+			]
+			PYLONBUFFERHANDLE PylonRegisterBuffer ([in] PYLONCAMHANDLE hCamera, 
+												   [in] BYTE *ImageBuffer, 
+												   [in] long BufferSize);
+
+			[
+				helpstring ("Queue-in Buffer"),
+				entry ("PylonQueueBuffer")
+			]
+			BOOL PylonQueueBuffer ([in] PYLONCAMHANDLE hCamera, 
+								   [in] PYLONBUFFERHANDLE hBuffer, 
+								   [in] long BufferIndex);
+
+			[
+				helpstring ("Yields ImageBuffer after acquiring image"),
+				entry ("PylonGetBuffer")
+			]
+			PYLONBUFFERHANDLE PylonGetBuffer ([in] PYLONCAMHANDLE hCamera, 
+											  [in] long timeout,
+											  [out] long *BufferIndex, 
+											  [out] EPylonGrabStatus *status,
+											  [out] LPTSTR ErrStr);
+
+			[
+				helpstring ("Cancel grabbing"),
+				entry ("PylonCancelGrab")
+			]
+			BOOL PylonCancelGrab ([in] PYLONCAMHANDLE hCamera);
+
+			[
+				helpstring ("Finish grabbing"),
+				entry ("PylonFinishGrab")
+			]
+			BOOL PylonFinishGrab ([in] PYLONCAMHANDLE hCamera);
+
+			[
+				helpstring ("Deregistrering Buffer from Streamgrabber"),
+				entry ("PylonDeregisterBuffer")
+			]
+			BOOL PylonDeregisterBuffer ([in] PYLONCAMHANDLE hCamera, 
+										[in] PYLONBUFFERHANDLE hBuffer);
+
+			[
+				helpstring ("Closes Camera and Streamgrabber"),
+				entry ("PylonCamClose")
+			]
+			BOOL PylonCamClose ([in] PYLONCAMHANDLE hCamera);
+
+			[
+				helpstring ("Setting the Enum value of an Enumeration"),
+				entry ("PylonSetEnumFeature")
+			]
+			BOOL PylonSetEnumFeature ([in] PYLONCAMHANDLE hCamera, 
+									  [in] EPylonFeatureType ftype, 
+									  [in] LPCTSTR FeatureName, 
+									  [in] LPCTSTR EntryName);
+
+			[
+				helpstring ("Setting the Enum value of an Enumeration by its Index"),
+				entry ("PylonSetEnumFeatureByIndex")
+			]
+			BOOL PylonSetEnumFeatureByIndex ([in] PYLONCAMHANDLE hCamera, 
+											 [in] EPylonFeatureType ftype, 
+											 [in] LPCTSTR FeatureName, 
+											 [in] long Index);
+
+			[
+				helpstring ("Setting an Integer Value"),
+				entry ("PylonSetIntFeature")
+			]
+			BOOL PylonSetIntFeature ([in] PYLONCAMHANDLE hCamera, 
+									 [in] EPylonFeatureType ftype, 
+									 [in] LPCTSTR FeatureName, 
+									 [in] long Val);
+
+			[
+				helpstring ("Setting a Float Value"),
+				entry ("PylonSetFloatFeature")
+			]
+			BOOL PylonSetFloatFeature ([in] PYLONCAMHANDLE hCamera, 
+									   [in] EPylonFeatureType ftype, 
+									   [in] LPCTSTR FeatureName, 
+									   [in] double Val);
+
+			[
+				helpstring ("Setting a String Value"),
+				entry ("PylonSetStringFeature")
+			]
+			BOOL PylonSetStringFeature ([in] PYLONCAMHANDLE hCamera, 
+									    [in] EPylonFeatureType ftype, 
+									    [in] LPCTSTR FeatureName, 
+									    [in] LPCTSTR Val);
+
+			[
+				helpstring ("Setting a Boolean Value"),
+				entry ("PylonSetBoolFeature")
+			]
+			BOOL PylonSetBoolFeature ([in] PYLONCAMHANDLE hCamera, 
+									  [in] EPylonFeatureType ftype, 
+									  [in] LPCTSTR FeatureName, 
+									  [in] BOOL Val);
+
+			[
+				helpstring ("Getting the Enum Entry of an Enumeration"),
+				entry ("PylonGetEnumFeature")
+			]
+			BOOL PylonGetEnumFeature ([in] PYLONCAMHANDLE hCamera, 
+									  [in] EPylonFeatureType ftype, 
+									  [in] LPCTSTR FeatureName, 
+									  [out] LPTSTR EntryName);
+
+			[
+				helpstring ("Getting the Index of asn Enum Entry of an Enumeration"),
+				entry ("PylonGetEnumFeatureIndex")
+			]
+			BOOL PylonGetEnumFeatureIndex ([in] PYLONCAMHANDLE hCamera, 
+										   [in] EPylonFeatureType ftype, 
+										   [in] LPCTSTR FeatureName, 
+										   [out] long *Index);
+
+			[
+				helpstring ("Getting an Integer value"),
+				entry ("PylonGetIntFeature")
+			]
+			BOOL PylonGetIntFeature ([in] PYLONCAMHANDLE hCamera, 
+									 [in] EPylonFeatureType ftype, 
+									 [in] LPCTSTR FeatureName, 
+									 [out] long *Val, 
+									 [out] long *Min, 
+									 [out] long *Max, 
+									 [out] long *Inc);
+
+			[
+				helpstring ("Getting a Float value"),
+				entry ("PylonGetFloatFeature")
+			]
+			BOOL PylonGetFloatFeature ([in] PYLONCAMHANDLE hCamera, 
+									   [in] EPylonFeatureType ftype, 
+									   [in] LPCTSTR FeatureName, 
+									   [out] double *Val, 
+									   [out] double *Min, 
+									   [out] double *Max);
+
+			[
+				helpstring ("Getting a String value"),
+				entry ("PylonGetStringFeature")
+			]
+			BOOL PylonGetStringFeature ([in] PYLONCAMHANDLE hCamera, 
+									    [in] EPylonFeatureType ftype, 
+									    [in] LPCTSTR FeatureName, 
+									    [out] LPTSTR Val); 
+
+			[
+				helpstring ("Getting a Boolean value"),
+				entry ("PylonGetBoolFeature")
+			]
+			BOOL PylonGetBoolFeature ([in] PYLONCAMHANDLE hCamera, 
+									  [in] EPylonFeatureType ftype, 
+									  [in] LPCTSTR FeatureName, 
+									  [out] BOOL *Val);
+
+			[
+				helpstring ("Getting the number of entries of an Enumeration"),
+				entry ("PylonGetNumEnumEntries")
+			]
+			BOOL PylonGetNumEnumEntries ([in] PYLONCAMHANDLE hCamera, 
+										 [in] EPylonFeatureType ftype, 
+										 [in] LPCTSTR FeatureName, 
+										 [out] long *Num);
+
+			[
+				helpstring ("Getting the Enumeration entry of an Enumeration by Enumerationindex"),
+				entry ("PylonGetEnumEntryByIndex")
+			]
+			BOOL PylonGetEnumEntryByIndex ([in] PYLONCAMHANDLE hCamera, 
+										   [in] EPylonFeatureType ftype, 
+										   [in] LPCTSTR FeatureName, 
+										   [in] long Index, 
+										   [out] LPTSTR EntryName, 
+										   [out] LPTSTR DisplayName, 
+										   [out] EPylonAccessMode *Mode);
+
+			[
+				helpstring ("Checking the availability and AccessMode of a feature"),
+				entry ("PylonGetFeatureAvailability")
+			]
+			BOOL PylonGetFeatureAvailability ([in] PYLONCAMHANDLE hCamera, 
+											  [in] EPylonFeatureType ftype, 
+											  [in] LPCTSTR FeatureName, 
+											  [out] EPylonAccessMode *mode);
+
+			[
+				helpstring ("Checking the availability and AccessMode of an Enumeration entry"),
+				entry ("PylonGetEnumEntryAvailability")
+			]
+			BOOL PylonGetEnumEntryAvailability ([in] PYLONCAMHANDLE hCamera, 
+												[in] EPylonFeatureType ftype, 
+												[in] LPCTSTR FeatureName, 
+												[in] LPCTSTR EntryName,
+												[out] EPylonAccessMode *mode);
+
+			[
+				helpstring ("Executing a command"),
+				entry ("PylonExecCommand")
+			]
+			BOOL PylonExecCommand ([in] PYLONCAMHANDLE hCamera, 
+								   [in] EPylonFeatureType ftype, 
+								   [in] LPCTSTR Command);
+
+			[
+				helpstring ("Checking the status of a command"),
+				entry ("PylonGetCommandStatus")
+			]
+			BOOL PylonGetCommandStatus ([in] PYLONCAMHANDLE hCamera, 
+										[in] EPylonFeatureType ftype, 
+										[in] LPCTSTR Command, 
+										[out] BOOL *bDone);
+
+			[
+				helpstring ("Returns Number of Childnodes of ParentNode specified by NodeName"),
+				entry ("PylonGetNumChildNodes")
+			]
+			BOOL PylonGetNumChildNodes ([in] PYLONCAMHANDLE hCamera, 
+										[in] EPylonFeatureType ftype, 
+										[in] LPCTSTR NodeName, 
+										[out] long *NumChildNodes);
+
+			[
+				helpstring ("Returns Name and Visibility of Childnode of ParentNode specified by ParentNodeName and Index"),
+				entry ("PylonGetChildNodeByIndex")
+			]
+			BOOL PylonGetChildNodeByIndex ([in] PYLONCAMHANDLE hCamera, 
+										   [in] EPylonFeatureType ftype, 
+										   [in] LPCTSTR ParentNodeName, 
+										   [in] long Index, 
+										   [out] LPTSTR ChildNodeName, 
+										   [out] EPylonVisibility *Visibility);
+
+			[
+				helpstring ("Returns Interface Type, Display Name and Tooltip for a Node"),
+				entry ("PylonGetNodeInfo")
+			]
+			BOOL PylonGetNodeInfo ([in] PYLONCAMHANDLE hCamera, 
+								   [in] EPylonFeatureType ftype, 
+								   [in] LPCTSTR NodeName, 
+								   [out] EPylonInterface *PylonInterface, 
+								   [out] EPylonAccessMode *AccessMode, 
+								   [out] EPylonVisibility *Visibility, 
+								   [out] LPTSTR DisplayName, 
+								   [out] LPTSTR ToolTip);
+
+			[
+				helpstring ("Opens a Colorconverter for transforming any GenICam Pixel Format into Mono8 or RGBA"),
+				entry ("PylonOpenColorConverter")
+			]
+			PYLONCCHANDLE PylonOpenColorConverter ([in] PYLONCAMHANDLE hCamera, 
+												   [in] LPCTSTR PixelFormat, 
+												   [in] long Width, 
+												   [in] long Height,
+												   [out] BOOL *bIsColorFormat);
+
+
+			[
+				helpstring ("Closes the Colorconverter"),
+				entry ("PylonCloseColorConverter")
+			]
+			BOOL PylonCloseColorConverter ([in] PYLONCCHANDLE hColorConverter);
+
+
+			[
+				helpstring ("Converts an ImageBuffer into Mono8 or RGBA"),
+				entry ("PylonConvertImageFormat")
+			]
+			BOOL PylonConvertImageFormat ([in] PYLONCCHANDLE hColorConverter, 
+										  [in] BYTE *ImageBuffer, 
+										  [in] long InBufSize, 
+										  [in] long OutBufSize, 
+										  [out] BYTE *OutBuffer);
+
+
+			[
+				helpstring ("Registers a Callback for Parameter Changes"),
+				entry ("PylonRegisterParamCB")
+			]
+			PYLONCALLBACKHANDLE PylonRegisterParamCB ([in] PYLONCAMHANDLE hCamera, 
+													  [in] EPylonFeatureType ftype, 
+													  [in] LPCTSTR NodeName, 
+													  [in] long pFunc);
+
+			[
+				helpstring ("Unregisters a Callback for Parameter Changes"),
+				entry ("PylonUnRegisterParamCB")
+			]
+			BOOL PylonUnRegisterParamCB ([in] PYLONCAMHANDLE hCamera, 
+										 [in] EPylonFeatureType ftype, 
+										 [in] PYLONCALLBACKHANDLE hParamCB, 
+										 [in] LPCTSTR NodeName);
+
+			[
+				helpstring ("Retrieves Information about a GenICam Node"),
+				entry ("PylonGetFeatureByNode")
+			]
+			BOOL PylonGetFeatureByNode ([in] void *pInNode, 
+										[out] EPylonInterface *PylonInterface, 
+										[out] LPTSTR FeatureName, 
+										[out] LPTSTR CurrVal);
+
+			[
+				helpstring ("Retrieves physical memory address of a GenICam Node"),
+				entry ("PylonGetNodeAddress")
+			]
+			BOOL PylonGetNodeAddress ([in] PYLONCAMHANDLE hCamera, 
+									  [in] EPylonFeatureType ftype, 
+									  [in] LPCTSTR NodeName, 
+									  [out] long *Address);
+
+
+			[
+				helpstring ("Translates a void *__vptr into GenApi::INode Address"),
+				entry ("PylonGetNodeByNode")
+			]
+			BOOL PylonGetNodeByNode ([in] void *pInNode, 
+									 [out] long *Address);
+
+
+		} // end of module
+	}; // enod of library

@@ -1,0 +1,17 @@
+#pragma once
+
+#include "BitmapFunctions.h"
+#include "JpegFunctions.h"
+#include "DIBSectionLite.h"
+#include "ImageDisplayAdapter.h"
+#include "MathDef.h"
+#include "Utilities.h"
+#include "ImageBuffer.h"
+#include "ImageDef.h"
+#include "ImageFunction.h"
+#include "MarkTool.h"
+#include "MarkToolStruct.h"
+#include "ProcAlgo.h"
+#include "EdgeTool.h"
+#include "TrigTable.h"
+#include "GUIGraphicsFunction.h"

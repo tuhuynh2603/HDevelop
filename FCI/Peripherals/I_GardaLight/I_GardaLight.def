@@ -1,0 +1,14 @@
+; I_GardaLight.def : Declares the module parameters for the DLL.
+
+LIBRARY      "I_GardaLight"
+
+EXPORTS
+
+	InitIODLL;
+	FreeIODLL;
+	RegIOCard;
+	FreeIOCard;
+	ConfigIOPortLight;
+	FreeIOPort;
+	OutPortWriteString;
+	InPortRead;

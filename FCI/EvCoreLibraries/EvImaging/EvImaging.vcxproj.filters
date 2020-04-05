@@ -1,0 +1,410 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Jpeg">
+      <UniqueIdentifier>{f6bc1307-868d-4d28-bd9c-1e03412bedf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Jpeg">
+      <UniqueIdentifier>{054568f7-10eb-41bd-82b6-feb598888ca2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\cderror.h">
+      <Filter>Header Files\Jpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\cdjpeg.h">
+      <Filter>Header Files\Jpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jchuff.h">
+      <Filter>Header Files\Jpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jconfig.h">
+      <Filter>Header Files\Jpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jdct.h">
+      <Filter>Header Files\Jpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jdhuff.h">
+      <Filter>Header Files\Jpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jerror.h">
+      <Filter>Header Files\Jpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jinclude.h">
+      <Filter>Header Files\Jpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jmemsys.h">
+      <Filter>Header Files\Jpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jmorecfg.h">
+      <Filter>Header Files\Jpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jpeg.h">
+      <Filter>Header Files\Jpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jpegint.h">
+      <Filter>Header Files\Jpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Jpeg\jversion.h">
+      <Filter>Header Files\Jpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\AppDef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\BitmapFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\DIBSectionLite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\EdgeMatching.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ExternalFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\FloodFill.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\GUIGraphicsFunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ImageBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ImageDef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ImageDisplayAdapter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ImageFunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ImageStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Imaging.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\JpegFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\MathAlgo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\MathDef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\MathValidations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Morphology.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ProcAlgo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ProcAlgoStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\TrigTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Parameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\Calibrate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\DisplayOverlay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\EdgeTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\EdgeToolStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\MarkInsp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\MarkStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\MarkTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\MarkToolStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\PkgLocStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\VisionStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\CudaInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ColorConversion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\ImgSplitColorBuf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\EvCoreHeaders\EvImaging\OvalContour.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EdgeMatching.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FloodFill.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIGraphicsFunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageDisplayAdapter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageFunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DIBSectionLite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="JpegFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MathAlgo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MathValidation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Morphology.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcAlgo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcAlgoStruct.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TrigTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jcapimin.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jcapistd.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jccoefct.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jccolor.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jcdctmgr.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jchuff.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jcinit.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jcmainct.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jcmarker.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jcmaster.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jcomapi.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jcparam.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jcphuff.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jcprepct.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jcsample.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jctrans.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jdapimin.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jdapistd.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jdatadst.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jdatasrc.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jdcoefct.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jdcolor.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jddctmgr.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jdhuff.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jdinput.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jdmainct.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jdmarker.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jdmaster.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jdmerge.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jdphuff.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jdpostct.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jdsample.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jdtrans.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jerror.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jfdctflt.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jfdctfst.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jfdctint.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jidctflt.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jidctfst.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jidctint.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jidctred.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jmemmgr.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jmemnobs.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jquant1.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jquant2.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\jutils.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\rdbmp.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Jpeg\wrbmp.cpp">
+      <Filter>Source Files\Jpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Parameters.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Calibrate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DisplayOverlay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EdgeTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EdgeToolStruct.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MarkInsp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MarkTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MarkToolStruct.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PkgLocStruct.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VisionStruct.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CudaInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorConversion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImgSplitColorBuf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OvalContour.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

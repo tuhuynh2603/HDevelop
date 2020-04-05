@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{87A9D7A4-FE89-46DF-A451-E3CEC0DD33EF}</ProjectGuid>
+    <RootNamespace>EvFramework</RootNamespace>
+    <Keyword>MFCDLLProj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\_$(PlatformName)\$(Configuration)\</OutDir>
+    <IntDir>$(PlatformName)\$(Configuration)\</IntDir>
+    <EmbedManifest>false</EmbedManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\_$(PlatformName)\$(Configuration)\</OutDir>
+    <IntDir>$(PlatformName)\$(Configuration)\</IntDir>
+    <EmbedManifest>false</EmbedManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_AFXEXT;%(PreprocessorDefinitions);_WINDOW_IF</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\EvCoreHeaders\$(ProjectName)\Controls;..\..\EvCoreHeaders\$(ProjectName);..\..\EvCoreHeaders\EvImaging;..\..\EvCoreHeaders\EvUtilities</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ModuleDefinitionFile>.\EvFramework.def</ModuleDefinitionFile>
+      <AdditionalDependencies>EvUtilities.lib;EvImaging.lib;EvPeripherals.lib;DebugViewerLib.lib;version.lib%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;%(PreprocessorDefinitions);_WINDOW_IF</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\EvCoreHeaders\$(ProjectName)\Controls;..\..\EvCoreHeaders\$(ProjectName);..\..\EvCoreHeaders\EvImaging;..\..\EvCoreHeaders\EvUtilities</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>.\EvFramework.def</ModuleDefinitionFile>
+      <AdditionalDependencies>EvUtilities.lib;EvImaging.lib;EvPeripherals.lib;DebugViewerLib.lib;version.lib%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>$(OutDir)\$(TargetName).map</MapFileName>
+      <AssemblyDebug>false</AssemblyDebug>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="EvFramework.def" />
+    <None Include="res\Doc.ico" />
+    <None Include="res\EvFramework.rc2" />
+    <None Include="res\History.bmp" />
+    <None Include="res\info.bmp" />
+    <None Include="res\MessageLogger.bmp" />
+    <None Include="res\Multicast.bmp" />
+    <None Include="res\Multicast.png" />
+    <None Include="res\output_wnd.ico" />
+    <None Include="res\output_wnd_hc.ico" />
+    <None Include="res\pages.bmp" />
+    <None Include="res\pages_hc.bmp" />
+    <None Include="res\pages_small.bmp" />
+    <None Include="res\pages_small_hc.bmp" />
+    <None Include="res\properties.bmp" />
+    <None Include="res\properties_hc.bmp" />
+    <None Include="res\RibbonMulticast.bmp" />
+    <None Include="res\RibbonMulticast.png" />
+    <None Include="res\writelarge.bmp" />
+    <None Include="ribbon1.mfcribbon-ms" />
+    <None Include="toolbar1.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CalendarBar.cpp" />
+    <ClCompile Include="Controls\BarChart.cpp" />
+    <ClCompile Include="EditEx.cpp" />
+    <ClCompile Include="EvChildFrame.cpp" />
+    <ClCompile Include="ChildView.cpp" />
+    <ClCompile Include="dllmain.cpp">
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeader>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="EvDebugViewPane.cpp" />
+    <ClCompile Include="EvDefectPropertiesWnd.cpp" />
+    <ClCompile Include="EvFrameWnd.cpp" />
+    <ClCompile Include="EvFramework.cpp" />
+    <ClCompile Include="EvSdiChildWnd.cpp" />
+    <ClCompile Include="EvSdiTemplate.cpp" />
+    <ClCompile Include="EvStatsTabPage.cpp" />
+    <ClCompile Include="EvTeachPropertiesWnd.cpp" />
+    <ClCompile Include="EvTrackHandler.cpp" />
+    <ClCompile Include="EvTabDoc.cpp" />
+    <ClCompile Include="EvTabPage.cpp" />
+    <ClCompile Include="EvTabPane.cpp" />
+    <ClCompile Include="EvTabView.cpp" />
+    <ClCompile Include="EvHistoryTabView.cpp" />
+    <ClCompile Include="EvStatsPane.cpp" />
+    <ClCompile Include="ImageRotationDlg.cpp" />
+    <ClCompile Include="LineChartCtrl.cpp" />
+    <ClCompile Include="EvHistoryImagePane.cpp" />
+    <ClCompile Include="MagnifierWindow.cpp" />
+    <ClCompile Include="NewTabDialog.cpp" />
+    <ClCompile Include="OutputWnd.cpp" />
+    <ClCompile Include="PanWindow.cpp" />
+    <ClCompile Include="EvPropertiesWnd.cpp" />
+    <ClCompile Include="PropertyGridColorProperty.cpp" />
+    <ClCompile Include="PropertyGridProperty.cpp" />
+    <ClCompile Include="PropertyList.cpp" />
+    <ClCompile Include="RibbonControl.cpp" />
+    <ClCompile Include="StatisticsDoc.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="SupportFunction.cpp" />
+    <ClCompile Include="ThresholdDialog.cpp" />
+    <ClCompile Include="EvImageDoc.cpp" />
+    <ClCompile Include="EvMainFrame.cpp" />
+    <ClCompile Include="EvImageView.cpp" />
+    <ClCompile Include="EvImageZoomView.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\CalendarBar.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\ContactLensPVI.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\EditEx.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\EvChildFrame.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\EvFrameWnd.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\EvSdiChildWnd.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\EvSdiTemplate.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\EvTrackHandler.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\EvTabDoc.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\EvTabPage.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\EvTabPane.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\EvTabView.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\ImageRotationDlg.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\InspectionCore.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\LineChartCtrl.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\MsgCode.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\EvHistoryImagePane.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\NewTabDialog.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\PanWindow.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\EvPropertiesWnd.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\PropertyGridColorProperty.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\PropertyGridProperty.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\PropertyList.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\RibbonControl.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\StatisticsDoc.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\SupportFunction.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\ThresholdDialog.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\EvImageDoc.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\EvMainFrame.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\EvImageView.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\EvImageZoomView.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\TopSealInspect.h" />
+    <ClInclude Include="..\..\EvCoreHeaders\EvFramework\TopSealLocation.h" />
+    <ClInclude Include="ChildDockablePane.h" />
+    <ClInclude Include="Controls\BarChart.h" />
+    <ClInclude Include="EvDebugViewPane.h" />
+    <ClInclude Include="EvDefectPropertiesWnd.h" />
+    <ClInclude Include="EvStatsPane.h" />
+    <ClInclude Include="EvHistoryTabView.h" />
+    <ClInclude Include="EvStatsTabPage.h" />
+    <ClInclude Include="EvTeachPropertiesWnd.h" />
+    <ClInclude Include="MagnifierWindow.h" />
+    <ClInclude Include="OutputWnd.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="EvFramework.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\bitmap2.bmp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="EvFramework.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
